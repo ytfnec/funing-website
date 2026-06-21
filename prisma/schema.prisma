@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteContent {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  zh    String
+  en    String
+}
+
+model UploadedImage {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  url       String
+  category  String   @default("general")
+  createdAt DateTime @default(now())
+}
+
+model NewsArticle {
+  id        Int     @id @default(autoincrement())
+  date      String
+  titleZh   String
+  titleEn   String
+  summaryZh String
+  summaryEn String
+  imageUrl  String?
+  order     Int     @default(0)
+}

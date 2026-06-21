@@ -1,0 +1,17 @@
+name = "funing-website"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 数据库绑定
+[[d1_databases]]
+binding = "DB"
+database_name = "funing-db"
+database_id = "placeholder-will-be-replaced"
+
+# R2 存储绑定（用于图片上传）
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "funing-storage"
+
+[vars]
+ADMIN_PASSWORD = "funing2026"
