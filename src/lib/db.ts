@@ -1,13 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+// This file is no longer used in Cloudflare deployment.
+// All database operations use D1 via src/lib/cloudflare.ts
+// Kept as empty export to prevent import errors during local development.
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
-
-export const db =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: ['query'],
-  })
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+export const db = null;
