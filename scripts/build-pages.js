@@ -14,6 +14,18 @@ if (fs.existsSync(workerJs) && !fs.existsSync(underscoreWorkerJs)) {
   console.log('  ⏭️  _worker.js already exists');
 }
 
+// 移除 _worker.js 中 Pages 不支持的 Durable Objects 导出
+let workerContent = fs.readFileSync(underscoreWorkerJs, 'utf-8');
+const lines = workerContent.split('\n');
+const filteredLines = lines.filter(line => {
+  if (line.includes('DOQueueHandler') || line.includes('DOShardedTagCache') || line.includes('BucketCachePurge')) {
+    return false;
+  }
+  return true;
+});
+fs.writeFileSync(underscoreWorkerJs, filteredLines.join('\n'));
+console.log('  ✅ Removed Durable Object exports (not supported in Pages)');
+
 const assetsDir = path.join(outputDir, 'assets');
 if (fs.existsSync(assetsDir)) {
   const entries = fs.readdirSync(assetsDir, { withFileTypes: true });
