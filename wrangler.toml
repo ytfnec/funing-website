@@ -4,5 +4,11 @@ compatibility_flags = ["nodejs_compat"]
 
 pages_build_output_dir = ".open-next"
 
+[[d1_databases]]
+binding = "DB"
+database_name = "funing-db"
+database_id = "e34f35c7-46c0-4547-a366-ada19c09af48"
+
+
 [vars]
 ADMIN_PASSWORD = "funing2026"
