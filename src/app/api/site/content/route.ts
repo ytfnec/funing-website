@@ -18,7 +18,6 @@ const staticMap = buildStaticMap();
 export async function GET() {
   try {
     // Try Cloudflare D1 first
-    const { getDB } = await import('@/lib/cloudflare');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const env = (globalThis as any).__cloudflare_env__;
     if (env?.DB) {
@@ -34,20 +33,9 @@ export async function GET() {
       });
     }
   } catch {
-    // Not in Cloudflare environment, try Prisma
+    // Not in Cloudflare or D1 not available, fall through to static
   }
 
-  try {
-    const { db } = await import('@/lib/db');
-    const dbContents = await db.siteContent.findMany();
-    const contents = buildStaticMap();
-    for (const c of dbContents) {
-      contents[c.key] = { zh: c.zh, en: c.en };
-    }
-    const news = await db.newsArticle.findMany({ orderBy: { order: 'asc' } });
-    return NextResponse.json({ contents, news });
-  } catch {
-    // Ultimate fallback to static
-    return NextResponse.json({ contents: staticMap, news: [] });
-  }
+  // Ultimate fallback to static content
+  return NextResponse.json({ contents: staticMap, news: [] });
 }
