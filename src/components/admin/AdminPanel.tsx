@@ -246,7 +246,6 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
                   登录
                 </Button>
               </form>
-              <p className="text-xs text-gray-400 text-center mt-4">默认密码: funing2026</p>
             </motion.div>
           </motion.div>
         )}
