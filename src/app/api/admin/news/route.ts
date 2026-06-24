@@ -1,69 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getDB } from '@/lib/db';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const env = (globalThis as any).__cloudflare_env__;
-    if (env?.DB) {
-      const results = await env.DB.prepare('SELECT * FROM NewsArticle ORDER BY "order" ASC').all();
-      return NextResponse.json({ news: results.results });
-    }
-    return NextResponse.json({ error: 'Database not available' }, { status: 503 });
+    const db = await getDB(request);
+    if (!db) return NextResponse.json({ error: 'No database' }, { status: 500 });
+    const result = await db.prepare('SELECT * FROM news_article ORDER BY "order" ASC').all();
+    return NextResponse.json({ news: result.results || [] });
   } catch {
-    return NextResponse.json({ error: 'Failed to fetch news' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const env = (globalThis as any).__cloudflare_env__;
-    if (env?.DB) {
-      await env.DB.prepare('INSERT INTO NewsArticle (date, titleZh, titleEn, summaryZh, summaryEn, imageUrl, "order") VALUES (?, ?, ?, ?, ?, ?, ?)').bind(
-        data.date, data.titleZh, data.titleEn, data.summaryZh, data.summaryEn, data.imageUrl || null, data.order || 0
-      ).run();
-      return NextResponse.json({ success: true });
-    }
-    return NextResponse.json({ error: 'Database not available' }, { status: 503 });
+    const db = await getDB(request);
+    if (!db) return NextResponse.json({ error: 'No database' }, { status: 500 });
+    const { date, titleZh, titleEn, summaryZh, summaryEn, imageUrl, order } = await request.json();
+    const result = await db.prepare(
+      'INSERT INTO news_article (date, title_zh, title_en, summary_zh, summary_en, image_url, "order") VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).bind(date, titleZh, titleEn, summaryZh, summaryEn, imageUrl || null, order || 0).run();
+    return NextResponse.json({ success: true, id: result.meta.last_row_id });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create news', details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create' }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const { id, ...data } = await request.json();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const env = (globalThis as any).__cloudflare_env__;
-    if (env?.DB) {
-      const sets: string[] = [];
-      const vals: unknown[] = [];
-      for (const [k, v] of Object.entries(data)) {
-        sets.push(`"${k}" = ?`);
-        vals.push(v);
-      }
-      vals.push(id);
-      await env.DB.prepare(`UPDATE NewsArticle SET ${sets.join(', ')} WHERE id = ?`).bind(...vals).run();
-      return NextResponse.json({ success: true });
-    }
-    return NextResponse.json({ error: 'Database not available' }, { status: 503 });
+    const db = await getDB(request);
+    if (!db) return NextResponse.json({ error: 'No database' }, { status: 500 });
+    const { id, date, titleZh, titleEn, summaryZh, summaryEn, imageUrl, order } = await request.json();
+    await db.prepare(
+      'UPDATE news_article SET date=?, title_zh=?, title_en=?, summary_zh=?, summary_en=?, image_url=?, "order"=? WHERE id=?'
+    ).bind(date, titleZh, titleEn, summaryZh, summaryEn, imageUrl || null, order || 0, id).run();
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update news', details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
+    const db = await getDB(request);
+    if (!db) return NextResponse.json({ error: 'No database' }, { status: 500 });
     const { id } = await request.json();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const env = (globalThis as any).__cloudflare_env__;
-    if (env?.DB) {
-      await env.DB.prepare('DELETE FROM NewsArticle WHERE id = ?').bind(Number(id)).run();
-      return NextResponse.json({ success: true });
-    }
-    return NextResponse.json({ error: 'Database not available' }, { status: 503 });
+    await db.prepare('DELETE FROM news_article WHERE id=?').bind(id).run();
+    return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: 'Failed to delete news' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }
