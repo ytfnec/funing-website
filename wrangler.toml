@@ -9,5 +9,9 @@ binding = "DB"
 database_name = "funing-db"
 database_id = "e34f35c7-46c0-4547-a366-ada19c09af48"
 
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "funing-storage"
+
 [vars]
 ADMIN_PASSWORD = "funing2026"
