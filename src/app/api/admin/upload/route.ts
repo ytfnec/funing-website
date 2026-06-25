@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getEnv } from '@/lib/cloudflare';
+import { getDB } from '@/lib/db';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,25 +9,29 @@ export async function POST(request: NextRequest) {
     const category = (formData.get('category') as string) || 'general';
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      return NextResponse.json({ error: 'No file' }, { status: 400 });
     }
 
-    const env = getEnv(request);
+    const { env } = await getCloudflareContext({ request });
+    const ext = file.name.split('.').pop() || 'png';
+    const key = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-    // Try R2 storage
+    // Upload to R2
     if (env.STORAGE) {
-      const ext = file.name.split('.').pop() || 'png';
-      const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      await env.STORAGE.put(filename, file.stream());
-      const imageUrl = `/api/admin/proxy-image?file=${filename}`;
-      return NextResponse.json({ success: true, image: { filename: file.name, url: imageUrl, category } });
+      await env.STORAGE.put(key, file.stream(), {
+        httpMetadata: { contentType: file.type },
+      });
     }
 
-    // Fallback: store as data URL in D1
-    const bytes = await file.arrayBuffer();
-    const base64 = Buffer.from(bytes).toString('base64');
-    const mimeType = file.type || 'image/png';
-    const imageUrl = `data:${mimeType};base64,${base64}`;
+    const imageUrl = `/api/admin/proxy-image?file=${key}`;
+
+    // Save metadata to D1
+    const db = await getDB(request);
+    if (db) {
+      await db.prepare(
+        'INSERT INTO uploaded_images (filename, url, category) VALUES (?, ?, ?)'
+      ).bind(file.name, imageUrl, category).run();
+    }
 
     return NextResponse.json({ success: true, image: { filename: file.name, url: imageUrl, category } });
   } catch (error) {
@@ -34,10 +39,37 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
-  return NextResponse.json({ images: [] });
+export async function GET(request: NextRequest) {
+  try {
+    const db = await getDB(request);
+    if (!db) return NextResponse.json({ images: [] });
+    const result = await db.prepare('SELECT * FROM uploaded_images ORDER BY id DESC').all();
+    return NextResponse.json({ images: result.results || [] });
+  } catch {
+    return NextResponse.json({ images: [] });
+  }
 }
 
 export async function DELETE(request: NextRequest) {
-  return NextResponse.json({ success: true });
+  try {
+    const { id } = await request.json();
+    const db = await getDB(request);
+
+    // Get file key from url
+    if (db) {
+      const row = await db.prepare('SELECT url FROM uploaded_images WHERE id=?').bind(id).first();
+      if (row) {
+        const url = row.url as string;
+        const fileKey = url.split('file=')[1];
+        if (fileKey) {
+          const { env } = await getCloudflareContext({ request });
+          if (env.STORAGE) await env.STORAGE.delete(fileKey);
+        }
+        await db.prepare('DELETE FROM uploaded_images WHERE id=?').bind(id).run();
+      }
+    }
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
+  }
 }
