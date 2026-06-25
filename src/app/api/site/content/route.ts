@@ -5,7 +5,7 @@ import { translations } from '@/lib/i18n';
 export async function GET(request: NextRequest) {
   try {
     const db = await getDB(request);
-    if (!db) throw new Error('No DB');
+    if (!db) throw new Error('getDB returned null');
 
     const contentResult = await db.prepare('SELECT * FROM site_content').all();
     const newsResult = await db.prepare('SELECT * FROM news_article ORDER BY "order" ASC').all();
@@ -24,12 +24,16 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { contents: merged, news: newsResult.results || [], _t: Date.now() },
-      { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } }
+      { contents: merged, news: newsResult.results || [], _t: Date.now(), _source: 'd1' },
+      { headers: { 'Cache-Control': 'no-store' } }
     );
-  } catch {
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       {
+        _error: msg,
+        _t: Date.now(),
+        _source: 'fallback',
         contents: Object.keys(translations.zh).reduce((acc, key) => {
           acc[key] = {
             zh: translations.zh[key as keyof typeof translations.zh],
@@ -38,9 +42,8 @@ export async function GET(request: NextRequest) {
           return acc;
         }, {} as Record<string, { zh: string; en: string }>),
         news: [],
-        _t: Date.now(),
       },
-      { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } }
+      { headers: { 'Cache-Control': 'no-store' } }
     );
   }
 }
