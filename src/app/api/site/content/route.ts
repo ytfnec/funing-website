@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import { getDB } from '@/lib/db';
 import { translations } from '@/lib/i18n';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const db = await getDB();
+    const db = await getDB(request);
     if (!db) throw new Error('No DB');
 
     const contentResult = await db.prepare('SELECT * FROM site_content').all();
