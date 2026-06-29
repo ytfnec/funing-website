@@ -6,6 +6,11 @@ export async function GET(request: NextRequest) {
     const file = new URL(request.url).searchParams.get('file');
     if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 });
 
+    // Security: prevent path traversal
+    if (file.includes('..') || file.includes('/') || file.includes('\\')) {
+      return NextResponse.json({ error: 'Invalid file' }, { status: 400 });
+    }
+
     const { env } = await getCloudflareContext({ request });
     if (!env.STORAGE) return NextResponse.json({ error: 'No storage' }, { status: 500 });
 
