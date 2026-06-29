@@ -56,7 +56,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const refreshContent = useCallback(async () => {
     try {
-      // CRITICAL: ?_t= timestamp prevents Cloudflare CDN cached stale data
       const res = await fetch(`/api/site/content?_t=${Date.now()}`);
       const data = await res.json();
       if (data.contents) setContents(data.contents);

@@ -33,13 +33,10 @@ export async function PATCH(request: NextRequest) {
     const db = await getDB(request);
     if (!db) return NextResponse.json({ error: 'No database' }, { status: 500, headers: NO_CACHE });
     const { items } = await request.json();
-    const stmts = items.map((item: { key: string; zh: string; en: string }) =>
-      db.prepare(
+    for (const item of items) {
+      await db.prepare(
         'INSERT INTO site_content (key, zh, en) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET zh=excluded.zh, en=excluded.en'
-      ).bind(item.key, item.zh, item.en)
-    );
-    for (const stmt of stmts) {
-      await stmt.run();
+      ).bind(item.key, item.zh, item.en).run();
     }
     return NextResponse.json({ success: true }, { headers: NO_CACHE });
   } catch (error) {

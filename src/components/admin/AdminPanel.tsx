@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Save, Image as ImageIcon, FileText, Newspaper, LogOut,
-  Loader2, Check, Upload, Trash2, Plus, Languages, Lock
+  Loader2, Check, Upload, Trash2, Plus, Languages, Lock, Copy, Link
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -66,6 +66,7 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
   const [editingNews, setEditingNews] = useState<Partial<NewsArticle> | null>(null);
   const [images, setImages] = useState<{ id: number; filename: string; url: string; category: string }[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const fetchImages = useCallback(async () => {
     try {
@@ -82,6 +83,24 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
       fetchImages();
     }
   }, [authenticated, fetchImages]);
+
+  const copyUrl = async (url: string, id: number) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -331,6 +350,13 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
                         </Button>
                       </div>
 
+                      {activeSection === 'hero' && (
+                        <div className="rounded-lg border bg-blue-50 border-blue-200 p-3 mb-3">
+                          <p className="text-xs text-blue-700 font-medium mb-1">如何设置背景图？</p>
+                          <p className="text-[11px] text-blue-600">1. 先去「图片管理」上传图片 → 2. 点击图片的「复制链接」 → 3. 粘贴到下方 hero_bg_image 字段 → 4. 点击「保存全部」</p>
+                        </div>
+                      )}
+
                       <div className="rounded-lg border bg-teal-50/50 border-teal-100 p-3 mb-3">
                         <p className="text-xs text-teal-700">
                           每个字段包含中文和英文两个输入框，修改后点击「保存全部」即可实时生效。
@@ -343,16 +369,16 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
                         return (
                         <Card key={key} className="border shadow-none">
                           <CardHeader className="pb-1 pt-3 px-4">
-                            <CardTitle className="text-[10px] font-mono text-gray-400">{key}</CardTitle>
+                            <CardTitle className="text-[10px] font-mono text-gray-400">{key}{isImage ? ' (图片URL)' : ''}</CardTitle>
                           </CardHeader>
                           <CardContent className="px-4 pb-4 space-y-2">
                             {isImage && imgPreview && (
-                              <div className="mb-2 rounded-lg overflow-hidden border border-gray-200">
-                                <img src={imgPreview} alt={key} className="w-full h-32 object-cover" />
+                              <div className="mb-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                                <img src={imgPreview} alt={key} className="w-full h-32 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                               </div>
                             )}
                             <div>
-                              <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">{isImage ? '图片URL (中英文相同)' : '中文'}</label>
+                              <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">{isImage ? '图片URL (中英文共用，保存时自动同步)' : '中文'}</label>
                               <Textarea
                                 value={isImage ? (editContents[key]?.zh || '') : (editContents[key]?.zh || '')}
                                 onChange={(e) => {
@@ -390,6 +416,11 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
                 {/* Image Manager */}
                 <TabsContent value="images" className="flex-1 overflow-y-auto p-6 m-0">
                   <div className="space-y-6">
+                    <div className="rounded-lg border bg-blue-50 border-blue-200 p-3">
+                      <p className="text-xs text-blue-700 font-medium">使用说明</p>
+                      <p className="text-[11px] text-blue-600 mt-1">上传图片后，点击图片下方的「复制链接」按钮，然后到「文字内容」对应板块粘贴到图片URL字段中。</p>
+                    </div>
+
                     <Card>
                       <CardContent className="p-6">
                         <h3 className="font-bold text-gray-900 mb-3 text-sm">上传图片</h3>
@@ -413,8 +444,18 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
                               <div className="aspect-square bg-gray-100">
                                 <img src={img.url} alt={img.filename} className="w-full h-full object-cover" />
                               </div>
-                              <div className="p-2">
-                                <p className="text-[10px] text-teal-600 font-mono truncate">{img.url}</p>
+                              <div className="p-2 space-y-1">
+                                <p className="text-[10px] text-gray-500 truncate">{img.filename}</p>
+                                <button
+                                  onClick={() => copyUrl(img.url, img.id)}
+                                  className="flex items-center gap-1 text-[10px] text-teal-600 hover:text-teal-800 transition-colors w-full"
+                                >
+                                  {copiedId === img.id ? (
+                                    <><Check className="w-3 h-3" />已复制</>
+                                  ) : (
+                                    <><Copy className="w-3 h-3" />复制链接</>
+                                  )}
+                                </button>
                               </div>
                               <button
                                 onClick={() => handleDeleteImage(img.id)}
