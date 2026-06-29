@@ -13,6 +13,7 @@ export const translations = {
     nav_lang: 'EN',
 
     // Hero
+    hero_bg_image: '',
     hero_title: '烟台富宁电子有限公司',
     hero_subtitle: '专业电子制造服务商',
     hero_description: '专注PCB制造、SMT贴片、电子组装及OEM/ODM服务，为全球客户提供高品质电子制造解决方案。',
@@ -20,6 +21,7 @@ export const translations = {
     hero_cta2: '联系我们',
 
     // About
+    about_image: '',
     about_tag: '关于我们',
     about_title: '深耕电子制造，铸就卓越品质',
     about_p1: '烟台富宁电子有限公司成立于2008年，坐落于美丽的滨海城市——山东烟台。公司专注于印制电路板（PCB）制造、表面贴装技术（SMT）加工、电子组件组装及整机制造，是一家集研发、生产、销售于一体的综合性电子制造企业。',
@@ -36,16 +38,22 @@ export const translations = {
     products_tag: '产品中心',
     products_title: '一站式电子制造解决方案',
     products_subtitle: '从设计到交付，为您提供全流程电子制造服务',
+    prod_pcb_image: '',
     prod_pcb_title: 'PCB制造',
     prod_pcb_desc: '高精度多层印制电路板制造，支持1-32层板，涵盖FR-4、铝基板、高TG材料等多种基材，最小线宽线距3mil，满足高密度互连（HDI）需求。',
+    prod_smt_image: '',
     prod_smt_title: 'SMT贴片',
     prod_smt_desc: '全自动高速SMT贴片加工，配备YAMAHA、松下等品牌贴片机，支持01005-50组件封装，BGA/CSP等高精度贴装，满足最小批量及大批量生产需求。',
+    prod_pca_image: '',
     prod_pca_title: 'PCBA组装',
     prod_pca_desc: '提供PCB组装、波峰焊、选择性焊接等全流程组装服务。支持DIP插件、线束加工、整机组装及测试，具备完善的质量管控体系。',
+    prod_oem_image: '',
     prod_oem_title: 'OEM/ODM服务',
     prod_oem_desc: '提供从产品设计、原理图绘制、PCB Layout到批量生产的全流程OEM/ODM服务，拥有经验丰富的研发工程团队，可快速响应客户定制化需求。',
+    prod_box_image: '',
     prod_box_title: '整机制造',
     prod_box_desc: '提供电子产品整机组装、外壳定制、包装设计等一站式服务。支持从小批量试产到大批量稳定交付，完善的供应链管理确保交期可控。',
+    prod_test_image: '',
     prod_test_title: '测试服务',
     prod_test_desc: '配备AOI自动光学检测、X-Ray检测、ICT在线测试、FCT功能测试等先进检测设备，确保每一件产品都经过严格的质量验证。',
     prod_view: '查看详情',
@@ -134,17 +142,6 @@ export const translations = {
     contact_form_submit: '提交留言',
     contact_form_success: '感谢您的留言！我们会尽快与您联系。',
 
-
-    // Images (URLs, same for zh/en)
-    hero_bg_image: '',
-    about_image: '',
-    prod_pcb_image: '',
-    prod_smt_image: '',
-    prod_pca_image: '',
-    prod_oem_image: '',
-    prod_box_image: '',
-    prod_test_image: '',
-
     // Footer
     footer_desc: '烟台富宁电子有限公司 — 您值得信赖的电子制造合作伙伴。专注PCB制造、SMT贴片、电子组装及OEM/ODM服务。',
     footer_links: '快速导航',
@@ -164,6 +161,7 @@ export const translations = {
     nav_lang: '中文',
 
     // Hero
+    hero_bg_image: '',
     hero_title: 'Yantai Funing Electronics Co., Ltd.',
     hero_subtitle: 'Professional Electronics Manufacturing Services',
     hero_description: 'Specializing in PCB manufacturing, SMT assembly, electronics assembly, and OEM/ODM services, delivering high-quality electronics manufacturing solutions to global customers.',
@@ -171,9 +169,10 @@ export const translations = {
     hero_cta2: 'Contact Us',
 
     // About
+    about_image: '',
     about_tag: 'About Us',
     about_title: 'Excellence in Electronics Manufacturing',
-    about_p1: 'Founded in 2008, Yantai Funing Electronics Co., Ltd. is located in the beautiful coastal city of Yantai, Shandong Province. The company specializes in printed circuit board (PCB) manufacturing, surface mount technology (SMT) processing, electronic component assembly, and整机 manufacturing, serving as a comprehensive electronics manufacturing enterprise integrating R&D, production, and sales.',
+    about_p1: 'Founded in 2008, Yantai Funing Electronics Co., Ltd. is located in the beautiful coastal city of Yantai, Shandong Province. The company specializes in printed circuit board (PCB) manufacturing, surface mount technology (SMT) processing, electronic component assembly, and whole machine manufacturing, serving as a comprehensive electronics manufacturing enterprise integrating R&D, production, and sales.',
     about_p2: 'After more than a decade of development, Funing Electronics has built a modern standardized factory covering over 20,000 square meters, equipped with multiple fully automated SMT production lines, wave soldering lines, and precision inspection equipment. The company\'s annual capacity reaches 500,000 square meters of PCB and 1 billion SMT placement points, with products widely used in consumer electronics, communication equipment, industrial control, automotive electronics, and medical devices.',
     about_p3: 'We always adhere to the business philosophy of "Quality First, Customer Supreme, Continuous Innovation," committed to becoming a trusted partner in the global electronics manufacturing industry.',
     stat_years: 'Years of Experience',
@@ -187,16 +186,22 @@ export const translations = {
     products_tag: 'Products',
     products_title: 'One-Stop Electronics Manufacturing Solutions',
     products_subtitle: 'From design to delivery, providing full-process electronics manufacturing services',
+    prod_pcb_image: '',
     prod_pcb_title: 'PCB Manufacturing',
     prod_pcb_desc: 'High-precision multi-layer PCB manufacturing, supporting 1-32 layer boards with FR-4, aluminum base, high-TG materials, and more. Minimum trace width/space of 3mil, meeting HDI (High Density Interconnect) requirements.',
+    prod_smt_image: '',
     prod_smt_title: 'SMT Assembly',
     prod_smt_desc: 'Fully automated high-speed SMT processing with YAMAHA and Panasonic placement machines. Supporting 01005-50 component packages, BGA/CSP high-precision mounting for both small batch and mass production.',
+    prod_pca_image: '',
     prod_pca_title: 'PCBA Assembly',
     prod_pca_desc: 'Full-process assembly services including PCB assembly, wave soldering, selective soldering. Supporting DIP insertion, cable harness processing, whole machine assembly and testing with a comprehensive quality control system.',
+    prod_oem_image: '',
     prod_oem_title: 'OEM/ODM Services',
     prod_oem_desc: 'End-to-end OEM/ODM services from product design, schematic drawing, PCB layout to mass production. An experienced R&D engineering team enables rapid response to customized customer needs.',
+    prod_box_image: '',
     prod_box_title: 'Box Build',
     prod_box_desc: 'One-stop services for electronic product assembly, enclosure customization, and packaging design. Supporting small batch trial production to large-scale stable delivery with supply chain management ensuring on-time delivery.',
+    prod_test_image: '',
     prod_test_title: 'Testing Services',
     prod_test_desc: 'Equipped with AOI automatic optical inspection, X-Ray inspection, ICT online testing, FCT functional testing and other advanced inspection equipment to ensure every product undergoes rigorous quality verification.',
     prod_view: 'View Details',
@@ -284,28 +289,6 @@ export const translations = {
     contact_form_msg: 'Message',
     contact_form_submit: 'Submit',
     contact_form_success: 'Thank you for your message! We will contact you soon.',
-
-
-    // Images (URLs, same for zh/en)
-    hero_bg_image: '',
-    about_image: '',
-    prod_pcb_image: '',
-    prod_smt_image: '',
-    prod_pca_image: '',
-    prod_oem_image: '',
-    prod_box_image: '',
-    prod_test_image: '',
-
-
-    // Images (URLs, same for zh/en)
-    hero_bg_image: '',
-    about_image: '',
-    prod_pcb_image: '',
-    prod_smt_image: '',
-    prod_pca_image: '',
-    prod_oem_image: '',
-    prod_box_image: '',
-    prod_test_image: '',
 
     // Footer
     footer_desc: 'Yantai Funing Electronics Co., Ltd. — Your trusted electronics manufacturing partner. Specializing in PCB manufacturing, SMT assembly, electronics assembly and OEM/ODM services.',
