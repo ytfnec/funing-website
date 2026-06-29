@@ -134,6 +134,17 @@ export const translations = {
     contact_form_submit: '提交留言',
     contact_form_success: '感谢您的留言！我们会尽快与您联系。',
 
+
+    // Images (URLs, same for zh/en)
+    hero_bg_image: '',
+    about_image: '',
+    prod_pcb_image: '',
+    prod_smt_image: '',
+    prod_pca_image: '',
+    prod_oem_image: '',
+    prod_box_image: '',
+    prod_test_image: '',
+
     // Footer
     footer_desc: '烟台富宁电子有限公司 — 您值得信赖的电子制造合作伙伴。专注PCB制造、SMT贴片、电子组装及OEM/ODM服务。',
     footer_links: '快速导航',
@@ -273,6 +284,28 @@ export const translations = {
     contact_form_msg: 'Message',
     contact_form_submit: 'Submit',
     contact_form_success: 'Thank you for your message! We will contact you soon.',
+
+
+    // Images (URLs, same for zh/en)
+    hero_bg_image: '',
+    about_image: '',
+    prod_pcb_image: '',
+    prod_smt_image: '',
+    prod_pca_image: '',
+    prod_oem_image: '',
+    prod_box_image: '',
+    prod_test_image: '',
+
+
+    // Images (URLs, same for zh/en)
+    hero_bg_image: '',
+    about_image: '',
+    prod_pcb_image: '',
+    prod_smt_image: '',
+    prod_pca_image: '',
+    prod_oem_image: '',
+    prod_box_image: '',
+    prod_test_image: '',
 
     // Footer
     footer_desc: 'Yantai Funing Electronics Co., Ltd. — Your trusted electronics manufacturing partner. Specializing in PCB manufacturing, SMT assembly, electronics assembly and OEM/ODM services.',
