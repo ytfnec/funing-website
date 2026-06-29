@@ -16,9 +16,9 @@ import type { SiteContentMap, NewsArticle } from '@/context/ContentContext';
 
 // Content section groups
 const contentSections: Record<string, string[]> = {
-  'hero': ['hero_title', 'hero_subtitle', 'hero_description', 'hero_cta', 'hero_cta2'],
-  'about': ['about_tag', 'about_title', 'about_p1', 'about_p2', 'about_p3', 'stat_years', 'stat_area', 'stat_pcb', 'stat_smt', 'stat_clients', 'stat_countries'],
-  'products': ['products_tag', 'products_title', 'products_subtitle', 'prod_pcb_title', 'prod_pcb_desc', 'prod_smt_title', 'prod_smt_desc', 'prod_pca_title', 'prod_pca_desc', 'prod_oem_title', 'prod_oem_desc', 'prod_box_title', 'prod_box_desc', 'prod_test_title', 'prod_test_desc', 'prod_view'],
+  'hero': ['hero_bg_image', 'hero_title', 'hero_subtitle', 'hero_description', 'hero_cta', 'hero_cta2'],
+  'about': ['about_image', 'about_tag', 'about_title', 'about_p1', 'about_p2', 'about_p3', 'stat_years', 'stat_area', 'stat_pcb', 'stat_smt', 'stat_clients', 'stat_countries'],
+  'products': ['products_tag', 'products_title', 'products_subtitle', 'prod_pcb_image', 'prod_pcb_title', 'prod_pcb_desc', 'prod_smt_image', 'prod_smt_title', 'prod_smt_desc', 'prod_pca_image', 'prod_pca_title', 'prod_pca_desc', 'prod_oem_image', 'prod_oem_title', 'prod_oem_desc', 'prod_box_image', 'prod_box_title', 'prod_box_desc', 'prod_test_image', 'prod_test_title', 'prod_test_desc', 'prod_view'],
   'capabilities': ['cap_tag', 'cap_title', 'cap_subtitle', 'cap_equip_title', 'cap_equip_1', 'cap_equip_2', 'cap_equip_3', 'cap_equip_4', 'cap_equip_5', 'cap_equip_6', 'cap_equip_7', 'cap_equip_8', 'cap_line_title', 'cap_line_1', 'cap_line_2', 'cap_line_3', 'cap_line_4', 'cap_line_5', 'cap_adv_title', 'cap_adv_1', 'cap_adv_2', 'cap_adv_3', 'cap_adv_4', 'cap_adv_5'],
   'quality': ['quality_tag', 'quality_title', 'quality_subtitle', 'q_iso', 'q_iso_desc', 'q_iso14001', 'q_iso14001_desc', 'q_iatf', 'q_iatf_desc', 'q_ul', 'q_ul_desc', 'quality_p1', 'quality_p2', 'quality_process', 'quality_step1', 'quality_step2', 'quality_step3', 'quality_step4', 'quality_step5', 'quality_step6', 'quality_step7'],
   'news_section': ['news_tag', 'news_title', 'news_subtitle', 'news_read', 'news_more'],
@@ -27,9 +27,16 @@ const contentSections: Record<string, string[]> = {
   'footer': ['footer_desc', 'footer_links', 'footer_contact', 'footer_copyright', 'footer_icp'],
 };
 
+// Fields that contain image URLs (rendered with preview in admin)
+const imageFields = new Set([
+  'hero_bg_image', 'about_image',
+  'prod_pcb_image', 'prod_smt_image', 'prod_pca_image',
+  'prod_oem_image', 'prod_box_image', 'prod_test_image',
+]);
+
 const sectionLabels: Record<string, string> = {
-  hero: 'Hero 横幅',
-  about: '关于我们',
+  hero: 'Hero 横幅/背景图',
+  about: '关于我们/公司照片',
   products: '产品中心',
   capabilities: '制造能力',
   quality: '质量认证',
@@ -330,33 +337,52 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
                         </p>
                       </div>
 
-                      {contentSections[activeSection]?.map((key) => (
+                      {contentSections[activeSection]?.map((key) => {
+                        const isImage = imageFields.has(key);
+                        const imgPreview = isImage ? (editContents[key]?.zh || '') : '';
+                        return (
                         <Card key={key} className="border shadow-none">
                           <CardHeader className="pb-1 pt-3 px-4">
                             <CardTitle className="text-[10px] font-mono text-gray-400">{key}</CardTitle>
                           </CardHeader>
                           <CardContent className="px-4 pb-4 space-y-2">
+                            {isImage && imgPreview && (
+                              <div className="mb-2 rounded-lg overflow-hidden border border-gray-200">
+                                <img src={imgPreview} alt={key} className="w-full h-32 object-cover" />
+                              </div>
+                            )}
                             <div>
-                              <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">中文</label>
+                              <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">{isImage ? '图片URL (中英文相同)' : '中文'}</label>
                               <Textarea
-                                value={editContents[key]?.zh || ''}
-                                onChange={(e) => handleUpdateField(key, 'zh', e.target.value)}
-                                rows={key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1}
+                                value={isImage ? (editContents[key]?.zh || '') : (editContents[key]?.zh || '')}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  if (isImage) {
+                                    setEditContents(prev => ({ ...prev, [key]: { zh: val, en: val } }));
+                                  } else {
+                                    handleUpdateField(key, 'zh', val);
+                                  }
+                                }}
+                                rows={isImage ? 1 : (key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1)}
                                 className="text-xs bg-white border-gray-200 focus:border-teal-400 resize-none"
+                                placeholder={isImage ? '/api/admin/proxy-image?file=xxx.jpg 或外部图片链接' : ''}
                               />
                             </div>
-                            <div>
-                              <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">English</label>
-                              <Textarea
-                                value={editContents[key]?.en || ''}
-                                onChange={(e) => handleUpdateField(key, 'en', e.target.value)}
-                                rows={key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1}
-                                className="text-xs bg-white border-gray-200 focus:border-teal-400 resize-none"
-                              />
-                            </div>
+                            {!isImage && (
+                              <div>
+                                <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">English</label>
+                                <Textarea
+                                  value={editContents[key]?.en || ''}
+                                  onChange={(e) => handleUpdateField(key, 'en', e.target.value)}
+                                  rows={key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1}
+                                  className="text-xs bg-white border-gray-200 focus:border-teal-400 resize-none"
+                                />
+                              </div>
+                            )}
                           </CardContent>
                         </Card>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </TabsContent>
