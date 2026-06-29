@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useLanguage } from '@/context/ContentContext';
+import { useContent } from '@/context/ContentContext';
 
 const stats = [
   { zh: '18', en: '18', key: 'stat_years' as const, icon: '📅' },
@@ -24,7 +24,8 @@ const fadeUp = {
 };
 
 export default function AboutSection() {
-  const { t } = useLanguage();
+  const { t, contents, language } = useContent();
+  const aboutImage = contents['about_image']?.[language] || '';
 
   return (
     <section id="about" className="py-20 md:py-28 bg-gray-50">
@@ -55,14 +56,14 @@ export default function AboutSection() {
           ))}
         </div>
 
-        {/* Content */}
-        <div className="max-w-4xl mx-auto text-center">
+        {/* Content with optional image */}
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-12 text-center"
           >
             <Badge variant="outline" className="mb-4 text-teal-600 border-teal-200 bg-teal-50 px-4 py-1">
               {t('about_tag')}
@@ -72,34 +73,51 @@ export default function AboutSection() {
             </h2>
           </motion.div>
 
-          <div className="space-y-6 text-left">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.6 }}
-              className="text-base md:text-lg text-gray-600 leading-relaxed"
-            >
-              {t('about_p1')}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-base md:text-lg text-gray-600 leading-relaxed"
-            >
-              {t('about_p2')}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-base md:text-lg text-gray-600 leading-relaxed"
-            >
-              {t('about_p3')}
-            </motion.p>
+          <div className={`flex flex-col ${aboutImage ? 'lg:flex-row gap-10 items-start' : ''}`}>
+            {/* Image */}
+            {aboutImage && (
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="lg:w-5/12 shrink-0"
+              >
+                <div className="rounded-2xl overflow-hidden shadow-lg">
+                  <img src={aboutImage} alt="About Funing Electronics" className="w-full h-auto object-cover" />
+                </div>
+              </motion.div>
+            )}
+
+            {/* Text */}
+            <div className={`space-y-6 text-left ${aboutImage ? 'lg:w-7/12' : 'max-w-4xl mx-auto'}`}>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1, duration: 0.6 }}
+                className="text-base md:text-lg text-gray-600 leading-relaxed"
+              >
+                {t('about_p1')}
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-base md:text-lg text-gray-600 leading-relaxed"
+              >
+                {t('about_p2')}
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="text-base md:text-lg text-gray-600 leading-relaxed"
+              >
+                {t('about_p3')}
+              </motion.p>
+            </div>
           </div>
         </div>
       </div>
