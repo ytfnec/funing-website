@@ -23,6 +23,13 @@ export async function GET(request: NextRequest) {
       };
     }
 
+    // IMPORTANT: Also include any D1 keys that are NOT in translations (e.g. image URLs added later)
+    for (const key of Object.keys(dbMap)) {
+      if (!merged[key]) {
+        merged[key] = dbMap[key];
+      }
+    }
+
     return NextResponse.json(
       { contents: merged, news: newsResult.results || [] },
       { headers: { 'Cache-Control': 'no-store' } }
