@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     const headers = new Headers();
     object.writeHttpMetadata(headers);
     headers.set('Cache-Control', 'public, max-age=86400');
+    headers.set('Access-Control-Allow-Origin', '*');
 
     return new Response(object.body, { headers });
   } catch {
