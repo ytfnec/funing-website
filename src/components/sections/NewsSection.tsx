@@ -5,9 +5,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar } from 'lucide-react';
-import { useLanguage } from '@/context/ContentContext';
+import { useContent } from '@/context/ContentContext';
+import { translations } from '@/lib/i18n';
 
-const newsItems = [
+const defaultNews = [
   {
     dateKey: 'news1_date' as const,
     titleKey: 'news1_title' as const,
@@ -28,13 +29,31 @@ const newsItems = [
   },
 ];
 
+const gradients = ['from-teal-500 to-emerald-500', 'from-emerald-500 to-green-500', 'from-green-500 to-teal-500', 'from-cyan-500 to-teal-500'];
+
 export default function NewsSection() {
-  const { t } = useLanguage();
+  const { t, news, language } = useContent();
+
+  // Use D1 news if available, otherwise fall back to static
+  const displayNews = news && news.length > 0
+    ? news.slice(0, 6).map((item, i) => ({
+        date: item.date,
+        title: language === 'zh' ? item.titleZh : item.titleEn,
+        summary: language === 'zh' ? item.summaryZh : item.summaryEn,
+        imageUrl: item.imageUrl,
+        gradient: gradients[i % gradients.length],
+      }))
+    : defaultNews.map((n, i) => ({
+        date: t(n.dateKey),
+        title: t(n.titleKey),
+        summary: t(n.summaryKey),
+        imageUrl: '',
+        gradient: n.gradient,
+      }));
 
   return (
     <section id="news" className="py-20 md:py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -52,37 +71,34 @@ export default function NewsSection() {
           </p>
         </motion.div>
 
-        {/* News Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
-          {newsItems.map((news, i) => (
+          {displayNews.map((item, i) => (
             <motion.div
-              key={news.titleKey}
+              key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.5 }}
             >
               <Card className="group border-0 shadow-sm hover:shadow-lg transition-all duration-300 h-full overflow-hidden bg-white">
-                {/* Top accent bar */}
-                <div className={`h-1.5 bg-gradient-to-r ${news.gradient}`} />
+                {item.imageUrl ? (
+                  <div className="h-48 overflow-hidden">
+                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                ) : (
+                  <div className={`h-1.5 bg-gradient-to-r ${item.gradient}`} />
+                )}
                 <CardContent className="p-6 flex flex-col h-full">
-                  {/* Date */}
                   <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
                     <Calendar className="w-3.5 h-3.5" />
-                    {t(news.dateKey)}
+                    {item.date}
                   </div>
-
-                  {/* Title */}
                   <h3 className="text-lg font-bold text-gray-900 mb-3 leading-snug group-hover:text-teal-600 transition-colors line-clamp-2">
-                    {t(news.titleKey)}
+                    {item.title}
                   </h3>
-
-                  {/* Summary */}
                   <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1 line-clamp-3">
-                    {t(news.summaryKey)}
+                    {item.summary}
                   </p>
-
-                  {/* Read more */}
                   <Button
                     variant="ghost"
                     className="text-teal-600 hover:text-teal-700 hover:bg-teal-50 p-0 h-auto font-medium w-fit"
@@ -96,7 +112,6 @@ export default function NewsSection() {
           ))}
         </div>
 
-        {/* View More */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
