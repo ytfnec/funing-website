@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDB } from '@/lib/db';
 import { translations } from '@/lib/i18n';
 
+const NO_CACHE_HEADERS = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  'Pragma': 'no-cache',
+  'Expires': '0',
+};
+
 export async function GET(request: NextRequest) {
   try {
     const db = await getDB(request);
@@ -23,7 +29,7 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // IMPORTANT: Also include any D1 keys that are NOT in translations (e.g. image URLs added later)
+    // Include D1 keys not in i18n.ts (e.g. image URLs)
     for (const key of Object.keys(dbMap)) {
       if (!merged[key]) {
         merged[key] = dbMap[key];
@@ -32,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       { contents: merged, news: newsResult.results || [] },
-      { headers: { 'Cache-Control': 'no-store' } }
+      { headers: NO_CACHE_HEADERS }
     );
   } catch {
     return NextResponse.json(
@@ -46,7 +52,7 @@ export async function GET(request: NextRequest) {
         }, {} as Record<string, { zh: string; en: string }>),
         news: [],
       },
-      { headers: { 'Cache-Control': 'no-store' } }
+      { headers: NO_CACHE_HEADERS }
     );
   }
 }
