@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
     const ext = file.name.split('.').pop() || 'png';
     const key = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-    // Upload to R2
     if (env.STORAGE) {
       await env.STORAGE.put(key, file.stream(), {
         httpMetadata: { contentType: file.type },
@@ -25,7 +24,6 @@ export async function POST(request: NextRequest) {
 
     const imageUrl = `/api/admin/proxy-image?file=${key}`;
 
-    // Save metadata to D1
     const db = await getDB(request);
     if (db) {
       await db.prepare(
@@ -54,16 +52,16 @@ export async function DELETE(request: NextRequest) {
   try {
     const { id } = await request.json();
     const db = await getDB(request);
-
-    // Get file key from url
     if (db) {
       const row = await db.prepare('SELECT url FROM uploaded_images WHERE id=?').bind(id).first();
       if (row) {
         const url = row.url as string;
         const fileKey = url.split('file=')[1];
         if (fileKey) {
-          const { env } = await getCloudflareContext({ request });
-          if (env.STORAGE) await env.STORAGE.delete(fileKey);
+          try {
+            const { env } = await getCloudflareContext({ request });
+            if (env.STORAGE) await env.STORAGE.delete(fileKey);
+          } catch { /* ignore R2 delete failure */ }
         }
         await db.prepare('DELETE FROM uploaded_images WHERE id=?').bind(id).run();
       }
