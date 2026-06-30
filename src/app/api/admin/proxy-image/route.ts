@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 
-export const runtime = 'edge';
-
 export async function GET(request: Request) {
   try {
     const { env } = await getCloudflareContext({ request });
