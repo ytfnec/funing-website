@@ -30,6 +30,12 @@ export function useContent() {
   return ctx;
 }
 
+// Alias for components that import useLanguage
+export function useLanguage() {
+  const { lang, setLang } = useContent();
+  return { lang, setLang };
+}
+
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [contents, setContents] = useState<Record<string, { zh: string; en: string }>>(staticMap);
   const [news, setNews] = useState<any[]>([]);
