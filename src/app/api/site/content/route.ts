@@ -1,23 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getDB } from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 import { translations } from '@/lib/i18n';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const db = await getDB(request);
-    if (!db) throw new Error('No DB');
+    // Fetch all content from database
+    const contents = await db.siteContent.findMany();
+    const news = await db.newsArticle.findMany({ orderBy: { order: 'asc' } });
 
-    const contentResult = await db.prepare('SELECT * FROM site_content').all();
-    const newsResult = await db.prepare('SELECT * FROM news_article ORDER BY "order" ASC').all();
-
+    // Build content map from DB
     const dbMap: Record<string, { zh: string; en: string }> = {};
-    for (const c of contentResult.results || []) {
+    for (const c of contents) {
       dbMap[c.key] = { zh: c.zh, en: c.en };
     }
 
+    // Merge: start with i18n defaults, let DB override
     const merged: Record<string, { zh: string; en: string }> = {};
-
-    // 1. Include ALL i18n translation keys with D1 overrides
     for (const key of Object.keys(translations.zh)) {
       merged[key] = dbMap[key] || {
         zh: translations.zh[key as keyof typeof translations.zh],
@@ -25,30 +23,32 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // 2. CRITICAL FIX: Include ALL D1 keys NOT in i18n (e.g. hero_bg_image)
+    // CRITICAL FIX: Also include ALL DB keys that are NOT in i18n translations
+    // (e.g. hero_bg_image, about_image, product_image_*, etc.)
     for (const key of Object.keys(dbMap)) {
       if (!(key in merged)) {
         merged[key] = dbMap[key];
       }
     }
 
-    return NextResponse.json(
-      { contents: merged, news: newsResult.results || [] },
-      { headers: { 'Cache-Control': 'no-store' } }
-    );
-  } catch {
-    return NextResponse.json(
-      {
-        contents: Object.keys(translations.zh).reduce((acc, key) => {
-          acc[key] = {
-            zh: translations.zh[key as keyof typeof translations.zh],
-            en: translations.en[key as keyof typeof translations.en],
-          };
-          return acc;
-        }, {} as Record<string, { zh: string; en: string }>),
-        news: [],
+    return new NextResponse(JSON.stringify({ contents: merged, news }), {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       },
-      { headers: { 'Cache-Control': 'no-store' } }
-    );
+    });
+  } catch {
+    // Fallback to static translations
+    return NextResponse.json({
+      contents: Object.keys(translations.zh).reduce((acc, key) => {
+        acc[key] = {
+          zh: translations.zh[key as keyof typeof translations.zh],
+          en: translations.en[key as keyof typeof translations.en],
+        };
+        return acc;
+      }, {} as Record<string, { zh: string; en: string }>),
+      news: [],
+    });
   }
 }
