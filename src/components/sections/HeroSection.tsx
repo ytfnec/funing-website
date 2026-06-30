@@ -3,13 +3,13 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Phone } from 'lucide-react';
-import { useLanguage } from '@/context/ContentContext';
+import { useContent } from '@/context/ContentContext';
 
 export default function HeroSection() {
-  const { t, language, contents } = useLanguage();
+  const { t, contents } = useContent();
 
-  const heroBgImage = contents['hero_bg_image']?.[language] || contents['hero_bg_image']?.zh || '';
-  const hasBgImage = heroBgImage && heroBgImage.trim() !== '';
+  // Read background image URL from contents (saved via admin panel)
+  const bgImageUrl = contents['hero_bg_image']?.zh || '';
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -24,27 +24,31 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        {hasBgImage ? (
+        {bgImageUrl ? (
           <>
+            {/* Background image */}
             <img
-              src={heroBgImage}
+              src={bgImageUrl}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />
-            {/* Dark overlay 40% when image present */}
-            <div className="absolute inset-0 bg-black/40" />
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-black/50" />
           </>
         ) : (
           <>
+            {/* Default gradient background when no image */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-teal-900/90 to-gray-900" />
+            {/* Circuit pattern overlay */}
             <div className="absolute inset-0 opacity-[0.07]" style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0v20M30 40v20M0 30h20M40 30h20' stroke='%2300d4aa' stroke-width='1' fill='none'/%3E%3Ccircle cx='30' cy='30' r='3' fill='%2300d4aa'/%3E%3Ccircle cx='30' cy='0' r='2' fill='%2300d4aa'/%3E%3Ccircle cx='30' cy='60' r='2' fill='%2300d4aa'/%3E%3Ccircle cx='0' cy='30' r='2' fill='%2300d4aa'/%3E%3Ccircle cx='60' cy='30' r='2' fill='%2300d4aa'/%3E%3C/svg%3E")`,
               backgroundSize: '60px 60px',
             }} />
+            {/* Animated glow orbs */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
           </>
         )}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
       {/* Content */}
@@ -55,6 +59,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8 }}
           className="space-y-6"
         >
+          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,6 +71,7 @@ export default function HeroSection() {
             </span>
           </motion.div>
 
+          {/* Title */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -75,6 +81,7 @@ export default function HeroSection() {
             {t('hero_title')}
           </motion.h1>
 
+          {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -84,6 +91,7 @@ export default function HeroSection() {
             {t('hero_description')}
           </motion.p>
 
+          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,6 +118,7 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
