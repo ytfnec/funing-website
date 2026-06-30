@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { getTranslations } from '@/lib/i18n';
 
-export const runtime = 'edge';
-
 const NO_CACHE_HEADERS = {
   'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
   'Pragma': 'no-cache',
