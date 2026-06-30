@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Save, Image as ImageIcon, FileText, Newspaper, LogOut,
-  Loader2, Check, Upload, Trash2, Plus, Languages, Lock
+  Loader2, Check, Upload, Trash2, Plus, Languages, Lock, Link
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import type { SiteContentMap, NewsArticle } from '@/context/ContentContext';
 
-// Content section groups (including image keys)
+// Content section groups - includes image fields
 const contentSections: Record<string, string[]> = {
   'hero': ['hero_bg_image', 'hero_title', 'hero_subtitle', 'hero_description', 'hero_cta', 'hero_cta2'],
   'about': ['about_image', 'about_tag', 'about_title', 'about_p1', 'about_p2', 'about_p3', 'stat_years', 'stat_area', 'stat_pcb', 'stat_smt', 'stat_clients', 'stat_countries'],
@@ -27,8 +27,11 @@ const contentSections: Record<string, string[]> = {
   'footer': ['footer_desc', 'footer_links', 'footer_contact', 'footer_copyright', 'footer_icp'],
 };
 
-// Keys that hold image URLs
-const imageKeys = new Set(['hero_bg_image', 'about_image']);
+// Keys that are image URLs - render as image preview + URL input
+const imageKeys = new Set([
+  'hero_bg_image',
+  'about_image',
+]);
 
 const sectionLabels: Record<string, string> = {
   hero: 'Hero 横幅',
@@ -65,22 +68,8 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
 
   // Sync editContents when contents prop changes (e.g. after refresh)
   useEffect(() => {
-    setEditContents((prev) => {
-      const next = { ...contents };
-      // Preserve any unsaved edits for keys that exist in prev but not in contents
-      for (const key of Object.keys(prev)) {
-        if (!(key in next)) {
-          next[key] = prev[key];
-        }
-      }
-      return next;
-    });
+    setEditContents({ ...contents });
   }, [contents]);
-
-  // Sync newsList when news prop changes
-  useEffect(() => {
-    setNewsList(news);
-  }, [news]);
 
   const fetchImages = useCallback(async () => {
     try {
@@ -93,7 +82,6 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
   // Fetch images when authenticated changes
   useEffect(() => {
     if (authenticated) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchImages();
     }
   }, [authenticated, fetchImages]);
@@ -149,6 +137,14 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
     setEditContents((prev) => ({
       ...prev,
       [key]: { ...prev[key], [lang]: value },
+    }));
+  };
+
+  // For image fields: set both zh and en to the same URL
+  const handleUpdateImageField = (key: string, url: string) => {
+    setEditContents((prev) => ({
+      ...prev,
+      [key]: { zh: url, en: url },
     }));
   };
 
@@ -216,6 +212,73 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
     const data = await res.json();
     setNewsList(data.news || []);
     await onRefresh();
+  };
+
+  // Render an image field (hero_bg_image, about_image, etc.)
+  const renderImageField = (key: string) => {
+    const url = editContents[key]?.zh || '';
+    return (
+      <Card key={key} className="border shadow-none">
+        <CardHeader className="pb-1 pt-3 px-4">
+          <CardTitle className="text-[10px] font-mono text-gray-400 flex items-center gap-1.5">
+            <ImageIcon className="w-3 h-3" />
+            {key}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 space-y-3">
+          {/* Image preview */}
+          {url && (
+            <div className="relative rounded-lg overflow-hidden border bg-gray-50">
+              <img
+                src={url}
+                alt={key}
+                className="w-full h-32 object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+              <button
+                onClick={() => handleUpdateImageField(key, '')}
+                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+          {/* URL input */}
+          <div>
+            <label className="text-[10px] font-medium text-gray-400 mb-1 flex items-center gap-1">
+              <Link className="w-3 h-3" />
+              图片URL
+            </label>
+            <Input
+              value={url}
+              onChange={(e) => handleUpdateImageField(key, e.target.value)}
+              placeholder="粘贴图片URL或上传后复制链接"
+              className="text-xs bg-white border-gray-200 focus:border-teal-400 h-9"
+            />
+          </div>
+          {/* Quick paste from uploaded images */}
+          {images.length > 0 && (
+            <div>
+              <label className="text-[10px] font-medium text-gray-400 mb-1 block">或点击已上传图片快速填入</label>
+              <div className="flex gap-1.5 flex-wrap">
+                {images.slice(0, 6).map((img) => (
+                  <button
+                    key={img.id}
+                    onClick={() => handleUpdateImageField(key, img.url)}
+                    className="w-12 h-12 rounded border-2 overflow-hidden hover:border-teal-500 transition-colors"
+                    title={img.url}
+                  >
+                    <img src={img.url} alt={img.filename} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
   };
 
   return (
@@ -348,67 +411,41 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
 
                       <div className="rounded-lg border bg-teal-50/50 border-teal-100 p-3 mb-3">
                         <p className="text-xs text-teal-700">
-                          每个字段包含中文和英文两个输入框，修改后点击「保存全部」即可实时生效。
+                          每个字段包含中文和英文两个输入框，修改后点击「保存全部」即可实时生效。图片字段支持粘贴URL。
                         </p>
                       </div>
 
-                      {contentSections[activeSection]?.map((key) => {
-                        const isImage = imageKeys.has(key);
-                        const currentZh = editContents[key]?.zh || '';
-                        const currentEn = editContents[key]?.en || '';
-
-                        return (
-                          <Card key={key} className={`border shadow-none ${isImage ? 'border-teal-200 bg-teal-50/30' : ''}`}>
+                      {contentSections[activeSection]?.map((key) =>
+                        imageKeys.has(key) ? (
+                          renderImageField(key)
+                        ) : (
+                          <Card key={key} className="border shadow-none">
                             <CardHeader className="pb-1 pt-3 px-4">
-                              <CardTitle className="text-[10px] font-mono text-gray-400 flex items-center gap-1.5">
-                                {key}
-                                {isImage && <Badge variant="outline" className="text-[9px] px-1.5 py-0 text-teal-600 border-teal-300 bg-teal-100">图片URL</Badge>}
-                              </CardTitle>
+                              <CardTitle className="text-[10px] font-mono text-gray-400">{key}</CardTitle>
                             </CardHeader>
                             <CardContent className="px-4 pb-4 space-y-2">
-                              {isImage && currentZh && (
-                                <div className="mb-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
-                                  <img src={currentZh} alt="preview" className="w-full h-32 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                                </div>
-                              )}
                               <div>
-                                <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">
-                                  中文 {isImage ? '(图片URL，粘贴后保存即可)' : ''}
-                                </label>
+                                <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">中文</label>
                                 <Textarea
-                                  value={currentZh}
+                                  value={editContents[key]?.zh || ''}
                                   onChange={(e) => handleUpdateField(key, 'zh', e.target.value)}
-                                  rows={isImage ? 2 : (key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1)}
+                                  rows={key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1}
                                   className="text-xs bg-white border-gray-200 focus:border-teal-400 resize-none"
-                                  placeholder={isImage ? '粘贴图片URL，例如 /api/admin/proxy-image?file=xxx.jpg 或 https://...' : ''}
                                 />
                               </div>
                               <div>
-                                <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">
-                                  English {isImage ? '(Image URL)' : ''}
-                                </label>
+                                <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">English</label>
                                 <Textarea
-                                  value={currentEn}
+                                  value={editContents[key]?.en || ''}
                                   onChange={(e) => handleUpdateField(key, 'en', e.target.value)}
-                                  rows={isImage ? 2 : (key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1)}
+                                  rows={key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1}
                                   className="text-xs bg-white border-gray-200 focus:border-teal-400 resize-none"
-                                  placeholder={isImage ? 'Paste image URL' : ''}
                                 />
                               </div>
-                              {/* For image keys, add a sync button */}
-                              {isImage && currentZh && !currentEn && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleUpdateField(key, 'en', currentZh)}
-                                  className="text-[10px] text-teal-600 hover:text-teal-700 underline"
-                                >
-                                  同步中文URL到英文
-                                </button>
-                              )}
                             </CardContent>
                           </Card>
-                        );
-                      })}
+                        )
+                      )}
                     </div>
                   </div>
                 </TabsContent>
