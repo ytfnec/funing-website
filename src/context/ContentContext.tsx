@@ -1,118 +1,102 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { getTranslations } from '@/lib/i18n';
+import { useState, useCallback, useRef, type ReactNode } from 'react';
+import { type Language, translations, type TranslationKey } from '@/lib/i18n';
 
-// Build static defaults from i18n
-const translations = getTranslations();
-const staticMap: Record<string, { zh: string; en: string }> = {};
-for (const [key, val] of Object.entries(translations.zh)) {
-  staticMap[key] = {
-    zh: typeof val === 'string' ? val : String(val),
-    en: (translations.en as any)[key] || '',
-  };
+// Content from API
+export interface SiteContentMap {
+  [key: string]: { zh: string; en: string };
+}
+
+export interface NewsArticle {
+  id: number;
+  date: string;
+  titleZh: string;
+  titleEn: string;
+  summaryZh: string;
+  summaryEn: string;
+  imageUrl: string | null;
+  order: number;
 }
 
 interface ContentContextType {
-  contents: Record<string, { zh: string; en: string }>;
-  news: any[];
-  lang: 'zh' | 'en';
-  language: 'zh' | 'en';
-  setLang: (lang: 'zh' | 'en') => void;
+  language: Language;
   toggleLanguage: () => void;
-  t: (key: string) => string;
+  t: (key: TranslationKey) => string;
+  contents: SiteContentMap;
+  news: NewsArticle[];
   refreshContent: () => Promise<void>;
 }
 
-const ContentContext = createContext<ContentContextType | null>(null);
+import { createContext, useContext } from 'react';
 
-export function useContent() {
-  const ctx = useContext(ContentContext);
-  if (!ctx) throw new Error('useContent must be used within ContentProvider');
-  return ctx;
+const ContentContext = createContext<ContentContextType | undefined>(undefined);
+
+// Build static fallback map
+function buildStaticMap(): SiteContentMap {
+  const map: SiteContentMap = {};
+  for (const key of Object.keys(translations.zh)) {
+    map[key] = {
+      zh: translations.zh[key as keyof typeof translations.zh],
+      en: translations.en[key as keyof typeof translations.en],
+    };
+  }
+  return map;
 }
 
-// For components that import useLanguage from this file (Header, Footer, etc.)
-export function useLanguage() {
-  return useContent();
-}
+const staticMap = buildStaticMap();
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [contents, setContents] = useState<Record<string, { zh: string; en: string }>>(staticMap);
-  const [news, setNews] = useState<any[]>([]);
-  const [lang, setLang] = useState<'zh' | 'en'>('zh');
-  const [fetched, setFetched] = useState(false);
+  const [language, setLanguage] = useState<Language>('zh');
+  const [contents, setContents] = useState<SiteContentMap>(staticMap);
+  const [news, setNews] = useState<NewsArticle[]>([]);
+  const initialFetchDone = useRef(false);
 
   const toggleLanguage = useCallback(() => {
-    setLang((prev) => (prev === 'zh' ? 'en' : 'zh'));
+    setLanguage((prev) => (prev === 'zh' ? 'en' : 'zh'));
   }, []);
 
   const refreshContent = useCallback(async () => {
     try {
-      const res = await fetch(`/api/site/content?_t=${Date.now()}`);
-      if (!res.ok) {
-        console.warn('[ContentContext] Fetch failed with status:', res.status);
-        return;
-      }
+      const res = await fetch('/api/site/content', {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-store' },
+      });
       const data = await res.json();
-
-      let contentData: Record<string, { zh: string; en: string }> | null = null;
-      let newsData: any[] = [];
-
-      if (data.contents && typeof data.contents === 'object') {
-        contentData = data.contents;
-      } else if (typeof data === 'object' && !Array.isArray(data)) {
-        const firstVal = Object.values(data)[0];
-        if (firstVal && typeof firstVal === 'object' && ('zh' in firstVal || 'en' in firstVal)) {
-          contentData = data;
-        }
-      }
-
-      if (data.news && Array.isArray(data.news)) {
-        newsData = data.news;
-      }
-
-      if (contentData) {
-        setContents(contentData);
-        setFetched(true);
-      }
-
-      if (newsData.length > 0) {
-        setNews(newsData);
-      }
-    } catch (err) {
-      console.error('[ContentContext] Fetch error:', err);
-      if (!fetched) {
-        setContents(staticMap);
-      }
+      if (data.contents) setContents(data.contents);
+      if (data.news) setNews(data.news);
+    } catch {
+      // keep existing state on error
     }
-  }, [fetched]);
+  }, []);
 
-  useEffect(() => {
+  // Fetch content on first render - use ref null check pattern
+  if (initialFetchDone.current == null) {
+    initialFetchDone.current = true;
     refreshContent();
-  }, [refreshContent]);
+  }
 
   const t = useCallback(
-    (key: string): string => {
-      const entry = contents[key];
-      if (!entry) return key;
-      return (entry as any)[lang] || entry.zh || entry.en || '';
+    (key: TranslationKey): string => {
+      return contents[key]?.[language] || translations[language][key];
     },
-    [contents, lang]
+    [contents, language]
   );
 
   return (
-    <ContentContext.Provider value={{
-      contents,
-      news,
-      lang,
-      language: lang,           // alias for components that use 'language'
-      setLang,
-      toggleLanguage,           // toggle function for Header
-      t,
-      refreshContent,
-    }}>
+    <ContentContext.Provider value={{ language, toggleLanguage, t, contents, news, refreshContent }}>
       {children}
     </ContentContext.Provider>
   );
 }
+
+export function useContent() {
+  const context = useContext(ContentContext);
+  if (!context) {
+    throw new Error('useContent must be used within a ContentProvider');
+  }
+  return context;
+}
+
+// Re-export useLanguage as an alias for backward compatibility
+export { useContent as useLanguage };
