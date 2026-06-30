@@ -1,87 +1,54 @@
-import { NextResponse } from 'next/server';
-import { getCloudflareContext } from '@opennextjs/cloudflare';
-import { getTranslations } from '@/lib/i18n';
+import { NextRequest, NextResponse } from 'next/server';
+import { getDB } from '@/lib/db';
+import { translations } from '@/lib/i18n';
 
-const NO_CACHE_HEADERS = {
-  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-  'Pragma': 'no-cache',
-  'Expires': '0',
-  'Surrogate-Control': 'no-store',
-};
-
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { env } = await getCloudflareContext({ request });
+    const db = await getDB(request);
+    if (!db) throw new Error('No DB');
 
-    // 1. Get all content from D1
-    const dbRows = await env.DB.prepare(
-      'SELECT key, zh, en FROM site_content'
-    ).all();
+    const contentResult = await db.prepare('SELECT * FROM site_content').all();
+    const newsResult = await db.prepare('SELECT * FROM news_article ORDER BY "order" ASC').all();
 
-    // Build D1 map: key -> { zh, en }
     const dbMap: Record<string, { zh: string; en: string }> = {};
-    if (dbRows.results) {
-      for (const row of dbRows.results as any[]) {
-        dbMap[row.key] = {
-          zh: row.zh || '',
-          en: row.en || '',
-        };
+    for (const c of contentResult.results || []) {
+      dbMap[c.key] = { zh: c.zh, en: c.en };
+    }
+
+    const merged: Record<string, { zh: string; en: string }> = {};
+
+    // 1. First, include ALL i18n translation keys with D1 overrides
+    for (const key of Object.keys(translations.zh)) {
+      merged[key] = dbMap[key] || {
+        zh: translations.zh[key as keyof typeof translations.zh],
+        en: translations.en[key as keyof typeof translations.en],
+      };
+    }
+
+    // 2. Then, include ALL D1 keys that are NOT in i18n (e.g. hero_bg_image, about_image, etc.)
+    for (const key of Object.keys(dbMap)) {
+      if (!(key in merged)) {
+        merged[key] = dbMap[key];
       }
     }
 
-    // 2. Get i18n defaults
-    const translations = getTranslations();
-    const staticMap: Record<string, { zh: string; en: string }> = {};
-
-    // Build from zh translations
-    for (const [key, val] of Object.entries(translations.zh)) {
-      staticMap[key] = {
-        zh: typeof val === 'string' ? val : String(val),
-        en: (translations.en as any)[key] || '',
-      };
-    }
-
-    // 3. Merge: D1 values OVERRIDE static defaults (D1 is source of truth)
-    const merged: Record<string, { zh: string; en: string }> = {};
-    // Start with static defaults
-    for (const [key, val] of Object.entries(staticMap)) {
-      merged[key] = { ...val };
-    }
-    // Overlay D1 values (this overwrites static defaults with DB values)
-    for (const [key, val] of Object.entries(dbMap)) {
-      merged[key] = { ...val };
-    }
-
-    // 4. Get news articles from D1
-    const newsRows = await env.DB.prepare(
-      'SELECT * FROM news_article ORDER BY created_at DESC'
-    ).all();
-    const news = newsRows.results || [];
-
-    // 5. Return with consistent structure - wrapped in { contents: ..., news: ... }
-    const response = {
-      contents: merged,
-      news: news,
-    };
-
-    console.log('[site/content] Returning', Object.keys(merged).length, 'content keys, including:', 
-      Object.keys(merged).filter(k => k.includes('image')).join(', ') || 'no image keys');
-
-    return NextResponse.json(response, { headers: NO_CACHE_HEADERS });
-  } catch (error) {
-    console.error('[site/content] Error:', error);
-    // Even on error, return static defaults wrapped in contents
-    const translations = getTranslations();
-    const staticMap: Record<string, { zh: string; en: string }> = {};
-    for (const [key, val] of Object.entries(translations.zh)) {
-      staticMap[key] = {
-        zh: typeof val === 'string' ? val : String(val),
-        en: (translations.en as any)[key] || '',
-      };
-    }
     return NextResponse.json(
-      { contents: staticMap, news: [] },
-      { headers: NO_CACHE_HEADERS }
+      { contents: merged, news: newsResult.results || [] },
+      { headers: { 'Cache-Control': 'no-store' } }
+    );
+  } catch {
+    return NextResponse.json(
+      {
+        contents: Object.keys(translations.zh).reduce((acc, key) => {
+          acc[key] = {
+            zh: translations.zh[key as keyof typeof translations.zh],
+            en: translations.en[key as keyof typeof translations.en],
+          };
+          return acc;
+        }, {} as Record<string, { zh: string; en: string }>),
+        news: [],
+      },
+      { headers: { 'Cache-Control': 'no-store' } }
     );
   }
 }
