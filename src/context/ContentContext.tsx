@@ -17,7 +17,9 @@ interface ContentContextType {
   contents: Record<string, { zh: string; en: string }>;
   news: any[];
   lang: 'zh' | 'en';
+  language: 'zh' | 'en';
   setLang: (lang: 'zh' | 'en') => void;
+  toggleLanguage: () => void;
   t: (key: string) => string;
   refreshContent: () => Promise<void>;
 }
@@ -30,10 +32,9 @@ export function useContent() {
   return ctx;
 }
 
-// Alias for components that import useLanguage
+// For components that import useLanguage from this file (Header, Footer, etc.)
 export function useLanguage() {
-  const { lang, setLang } = useContent();
-  return { lang, setLang };
+  return useContent();
 }
 
 export function ContentProvider({ children }: { children: ReactNode }) {
@@ -42,9 +43,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<'zh' | 'en'>('zh');
   const [fetched, setFetched] = useState(false);
 
+  const toggleLanguage = useCallback(() => {
+    setLang((prev) => (prev === 'zh' ? 'en' : 'zh'));
+  }, []);
+
   const refreshContent = useCallback(async () => {
     try {
-      // Cache-bust with timestamp
       const res = await fetch(`/api/site/content?_t=${Date.now()}`);
       if (!res.ok) {
         console.warn('[ContentContext] Fetch failed with status:', res.status);
@@ -52,17 +56,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
       const data = await res.json();
 
-      // IMPORTANT: Handle both response formats:
-      // Format A: { contents: {...}, news: [...] }
-      // Format B: { key1: {...}, key2: {...}, ... } (flat, no wrapper)
       let contentData: Record<string, { zh: string; en: string }> | null = null;
       let newsData: any[] = [];
 
       if (data.contents && typeof data.contents === 'object') {
-        // Format A: wrapped in contents key
         contentData = data.contents;
       } else if (typeof data === 'object' && !Array.isArray(data)) {
-        // Format B: flat response - check if it looks like content (has zh/en objects)
         const firstVal = Object.values(data)[0];
         if (firstVal && typeof firstVal === 'object' && ('zh' in firstVal || 'en' in firstVal)) {
           contentData = data;
@@ -74,18 +73,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
 
       if (contentData) {
-        console.log('[ContentContext] Received', Object.keys(contentData).length, 'keys from API');
-        // Log image-related keys for debugging
-        const imageKeys = Object.keys(contentData).filter(k => k.includes('image'));
-        if (imageKeys.length > 0) {
-          console.log('[ContentContext] Image keys:', imageKeys.map(k => 
-            `${k}=${JSON.stringify(contentData[k])}`
-          ).join(' | '));
-        }
         setContents(contentData);
         setFetched(true);
-      } else {
-        console.warn('[ContentContext] No valid content data in response');
       }
 
       if (newsData.length > 0) {
@@ -93,8 +82,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       console.error('[ContentContext] Fetch error:', err);
-      // Do NOT fall back to staticMap here - keep existing state
-      // Only use staticMap if we've never successfully fetched
       if (!fetched) {
         setContents(staticMap);
       }
@@ -115,7 +102,16 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <ContentContext.Provider value={{ contents, news, lang, setLang, t, refreshContent }}>
+    <ContentContext.Provider value={{
+      contents,
+      news,
+      lang,
+      language: lang,           // alias for components that use 'language'
+      setLang,
+      toggleLanguage,           // toggle function for Header
+      t,
+      refreshContent,
+    }}>
       {children}
     </ContentContext.Provider>
   );
