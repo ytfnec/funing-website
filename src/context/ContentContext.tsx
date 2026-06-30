@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, type ReactNode } from 'react';
 import { type Language, translations, type TranslationKey } from '@/lib/i18n';
 
+// Content from API
 export interface SiteContentMap {
   [key: string]: { zh: string; en: string };
 }
@@ -31,6 +32,7 @@ import { createContext, useContext } from 'react';
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
+// Build static fallback map
 function buildStaticMap(): SiteContentMap {
   const map: SiteContentMap = {};
   for (const key of Object.keys(translations.zh)) {
@@ -56,18 +58,21 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const refreshContent = useCallback(async () => {
     try {
-      const res = await fetch('/api/site/content', {
+      const res = await fetch('/api/site/content?_t=' + Date.now(), {
         cache: 'no-store',
-        headers: { 'Cache-Control': 'no-store' },
+        headers: {
+          'Cache-Control': 'no-store, no-cache',
+        },
       });
       const data = await res.json();
       if (data.contents) setContents(data.contents);
       if (data.news) setNews(data.news);
     } catch {
-      // keep existing state on error
+      setContents(staticMap);
     }
   }, []);
 
+  // Fetch content on first render - use ref null check pattern
   if (initialFetchDone.current == null) {
     initialFetchDone.current = true;
     refreshContent();
@@ -95,4 +100,5 @@ export function useContent() {
   return context;
 }
 
+// Re-export useLanguage as an alias for backward compatibility
 export { useContent as useLanguage };
