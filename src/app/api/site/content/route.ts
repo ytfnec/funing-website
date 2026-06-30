@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     const merged: Record<string, { zh: string; en: string }> = {};
 
-    // 1. First, include ALL i18n translation keys with D1 overrides
+    // 1. Include ALL i18n translation keys with D1 overrides
     for (const key of Object.keys(translations.zh)) {
       merged[key] = dbMap[key] || {
         zh: translations.zh[key as keyof typeof translations.zh],
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // 2. Then, include ALL D1 keys that are NOT in i18n (e.g. hero_bg_image, about_image, etc.)
+    // 2. CRITICAL FIX: Include ALL D1 keys NOT in i18n (e.g. hero_bg_image)
     for (const key of Object.keys(dbMap)) {
       if (!(key in merged)) {
         merged[key] = dbMap[key];

@@ -1,41 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    const file = new URL(request.url).searchParams.get('file');
+    if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 });
+
+    // Security: prevent path traversal
+    if (file.includes('..') || file.includes('/') || file.includes('\\')) {
+      return NextResponse.json({ error: 'Invalid file' }, { status: 400 });
+    }
+
     const { env } = await getCloudflareContext({ request });
-    const { searchParams } = new URL(request.url);
-    const file = searchParams.get('file');
+    if (!env.STORAGE) return NextResponse.json({ error: 'No storage' }, { status: 500 });
 
-    if (!file) {
-      return NextResponse.json({ error: 'Missing file parameter' }, { status: 400 });
-    }
-
-    // Path traversal protection
-    const decodedFile = decodeURIComponent(file);
-    if (decodedFile.includes('..') || decodedFile.includes('/') || decodedFile.includes('\\')) {
-      return NextResponse.json({ error: 'Invalid filename' }, { status: 400 });
-    }
-
-    // Only allow safe characters
-    if (!/^[\w.-]+$/.test(decodedFile)) {
-      return NextResponse.json({ error: 'Invalid filename' }, { status: 400 });
-    }
-
-    const object = await env.STORAGE.get(decodedFile);
-    if (!object) {
-      console.warn('[proxy-image] File not found:', decodedFile);
-      return NextResponse.json({ error: 'File not found' }, { status: 404 });
-    }
+    const object = await env.STORAGE.get(file);
+    if (!object) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
     const headers = new Headers();
-    headers.set('Content-Type', object.httpMetadata?.contentType || 'application/octet-stream');
-    headers.set('Cache-Control', 'public, max-age=86400'); // Cache images for 1 day
-    headers.set('ETag', `"${decodedFile}"`);
+    object.writeHttpMetadata(headers);
+    headers.set('Cache-Control', 'public, max-age=86400');
+    headers.set('Access-Control-Allow-Origin', '*');
 
-    return new NextResponse(object.body, { headers });
-  } catch (error) {
-    console.error('[proxy-image] Error:', error);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return new Response(object.body, { headers });
+  } catch {
+    return NextResponse.json({ error: 'Failed' }, { status: 500 });
   }
 }

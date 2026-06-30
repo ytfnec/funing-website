@@ -31,20 +31,18 @@ export default function HeroSection() {
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />
-            {/* Dark overlay - lighter (40%) when image is present so image shows through */}
+            {/* Dark overlay 40% when image present */}
             <div className="absolute inset-0 bg-black/40" />
           </>
         ) : (
           <>
             <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-teal-900/90 to-gray-900" />
-            {/* Circuit pattern overlay - only when no image */}
             <div className="absolute inset-0 opacity-[0.07]" style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0v20M30 40v20M0 30h20M40 30h20' stroke='%2300d4aa' stroke-width='1' fill='none'/%3E%3Ccircle cx='30' cy='30' r='3' fill='%2300d4aa'/%3E%3Ccircle cx='30' cy='0' r='2' fill='%2300d4aa'/%3E%3Ccircle cx='30' cy='60' r='2' fill='%2300d4aa'/%3E%3Ccircle cx='0' cy='30' r='2' fill='%2300d4aa'/%3E%3Ccircle cx='60' cy='30' r='2' fill='%2300d4aa'/%3E%3C/svg%3E")`,
               backgroundSize: '60px 60px',
             }} />
           </>
         )}
-        {/* Animated glow orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
@@ -57,7 +55,6 @@ export default function HeroSection() {
           transition={{ duration: 0.8 }}
           className="space-y-6"
         >
-          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -69,7 +66,6 @@ export default function HeroSection() {
             </span>
           </motion.div>
 
-          {/* Title */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -79,7 +75,6 @@ export default function HeroSection() {
             {t('hero_title')}
           </motion.h1>
 
-          {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -89,7 +84,6 @@ export default function HeroSection() {
             {t('hero_description')}
           </motion.p>
 
-          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,7 +110,6 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
