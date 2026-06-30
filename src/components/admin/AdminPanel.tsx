@@ -1,554 +1,400 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  X, Save, Image as ImageIcon, FileText, Newspaper, LogOut,
-  Loader2, Check, Upload, Trash2, Plus, Languages, Lock, Copy, Link
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import type { SiteContentMap, NewsArticle } from '@/context/ContentContext';
+import React, { useState, useEffect, useCallback } from 'react';
 
-// Content section groups
-const contentSections: Record<string, string[]> = {
-  'hero': ['hero_bg_image', 'hero_title', 'hero_subtitle', 'hero_description', 'hero_cta', 'hero_cta2'],
-  'about': ['about_image', 'about_tag', 'about_title', 'about_p1', 'about_p2', 'about_p3', 'stat_years', 'stat_area', 'stat_pcb', 'stat_smt', 'stat_clients', 'stat_countries'],
-  'products': ['products_tag', 'products_title', 'products_subtitle', 'prod_pcb_image', 'prod_pcb_title', 'prod_pcb_desc', 'prod_smt_image', 'prod_smt_title', 'prod_smt_desc', 'prod_pca_image', 'prod_pca_title', 'prod_pca_desc', 'prod_oem_image', 'prod_oem_title', 'prod_oem_desc', 'prod_box_image', 'prod_box_title', 'prod_box_desc', 'prod_test_image', 'prod_test_title', 'prod_test_desc', 'prod_view'],
-  'capabilities': ['cap_tag', 'cap_title', 'cap_subtitle', 'cap_equip_title', 'cap_equip_1', 'cap_equip_2', 'cap_equip_3', 'cap_equip_4', 'cap_equip_5', 'cap_equip_6', 'cap_equip_7', 'cap_equip_8', 'cap_line_title', 'cap_line_1', 'cap_line_2', 'cap_line_3', 'cap_line_4', 'cap_line_5', 'cap_adv_title', 'cap_adv_1', 'cap_adv_2', 'cap_adv_3', 'cap_adv_4', 'cap_adv_5'],
-  'quality': ['quality_tag', 'quality_title', 'quality_subtitle', 'q_iso', 'q_iso_desc', 'q_iso14001', 'q_iso14001_desc', 'q_iatf', 'q_iatf_desc', 'q_ul', 'q_ul_desc', 'quality_p1', 'quality_p2', 'quality_process', 'quality_step1', 'quality_step2', 'quality_step3', 'quality_step4', 'quality_step5', 'quality_step6', 'quality_step7'],
-  'news_section': ['news_tag', 'news_title', 'news_subtitle', 'news_read', 'news_more'],
-  'contact': ['contact_tag', 'contact_title', 'contact_subtitle', 'contact_address_label', 'contact_address', 'contact_phone_label', 'contact_phone', 'contact_email_label', 'contact_email', 'contact_hours_label', 'contact_hours', 'contact_form_name', 'contact_form_email', 'contact_form_phone', 'contact_form_msg', 'contact_form_submit', 'contact_form_success'],
-  'nav': ['nav_home', 'nav_about', 'nav_products', 'nav_capabilities', 'nav_quality', 'nav_news', 'nav_contact', 'nav_lang'],
-  'footer': ['footer_desc', 'footer_links', 'footer_contact', 'footer_copyright', 'footer_icp'],
-};
+// Image URL keys that should sync zh/en automatically
+const IMAGE_KEYS = [
+  'hero_bg_image',
+  'about_image',
+  'prod_pcb_image',
+  'prod_pcba_image',
+  'prod_odm_image',
+  'news_placeholder_image',
+];
 
-// Fields that contain image URLs (rendered with preview in admin)
-const imageFields = new Set([
-  'hero_bg_image', 'about_image',
-  'prod_pcb_image', 'prod_smt_image', 'prod_pca_image',
-  'prod_oem_image', 'prod_box_image', 'prod_test_image',
-]);
+// Fields to show in the admin panel (grouped)
+const FIELD_GROUPS = [
+  {
+    label: '导航 Navigation',
+    keys: ['nav_home', 'nav_about', 'nav_products', 'nav_news', 'nav_contact'],
+  },
+  {
+    label: '横幅图片 Hero Image',
+    keys: ['hero_bg_image'],
+    type: 'image',
+  },
+  {
+    label: '横幅 Hero',
+    keys: ['hero_title', 'hero_subtitle', 'hero_cta'],
+  },
+  {
+    label: '关于我们图片 About Image',
+    keys: ['about_image'],
+    type: 'image',
+  },
+  {
+    label: '关于我们 About',
+    keys: ['about_title', 'about_subtitle', 'about_desc', 'about_desc2'],
+  },
+  {
+    label: '产品图片 Product Images',
+    keys: ['prod_pcb_image', 'prod_pcba_image', 'prod_odm_image'],
+    type: 'image',
+  },
+  {
+    label: '产品 Products',
+    keys: ['prod_pcb_title', 'prod_pcb_desc', 'prod_pcba_title', 'prod_pcba_desc', 'prod_odm_title', 'prod_odm_desc'],
+  },
+  {
+    label: '新闻 News',
+    keys: ['news_title', 'news_subtitle', 'news_readmore'],
+  },
+  {
+    label: '联系 Contact',
+    keys: ['contact_title', 'contact_subtitle', 'contact_address', 'contact_phone', 'contact_email'],
+  },
+  {
+    label: '页脚 Footer',
+    keys: ['footer_copyright'],
+  },
+];
 
-const sectionLabels: Record<string, string> = {
-  hero: 'Hero 横幅/背景图',
-  about: '关于我们/公司照片',
-  products: '产品中心',
-  capabilities: '制造能力',
-  quality: '质量认证',
-  news_section: '新闻板块',
-  contact: '联系我们',
-  nav: '导航栏',
-  footer: '页脚',
-};
-
-interface AdminPanelProps {
-  contents: SiteContentMap;
-  news: NewsArticle[];
-  onRefresh: () => Promise<void>;
-}
-
-export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProps) {
-  const [showLogin, setShowLogin] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState('');
-  const [activeTab, setActiveTab] = useState('content');
-  const [activeSection, setActiveSection] = useState('hero');
-  const [editContents, setEditContents] = useState<SiteContentMap>(contents);
+export default function AdminPanel() {
+  const [contents, setContents] = useState<Record<string, { zh: string; en: string }>>({});
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [newsList, setNewsList] = useState<NewsArticle[]>(news);
-  const [editingNews, setEditingNews] = useState<Partial<NewsArticle> | null>(null);
-  const [images, setImages] = useState<{ id: number; filename: string; url: string; category: string }[]>([]);
+  const [message, setMessage] = useState('');
+  const [activeTab, setActiveTab] = useState('content');
   const [uploading, setUploading] = useState(false);
-  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [imageList, setImageList] = useState<any[]>([]);
 
-  const fetchImages = useCallback(async () => {
+  // Fetch content from the SAME API as the frontend uses
+  const fetchContent = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/upload');
+      console.log('[AdminPanel] Fetching content...');
+      const res = await fetch(`/api/site/content?_t=${Date.now()}`);
+      if (!res.ok) {
+        console.error('[AdminPanel] Fetch failed:', res.status);
+        return;
+      }
       const data = await res.json();
-      setImages(data.images || []);
-    } catch { /* ignore */ }
+      console.log('[AdminPanel] Received keys:', Object.keys(data.contents || data).length);
+      
+      // Handle both response formats (same logic as ContentContext)
+      let contentData = data.contents;
+      if (!contentData && typeof data === 'object' && !Array.isArray(data)) {
+        const firstVal = Object.values(data)[0];
+        if (firstVal && typeof firstVal === 'object' && ('zh' in firstVal || 'en' in firstVal)) {
+          contentData = data;
+        }
+      }
+      
+      if (contentData) {
+        setContents(contentData);
+        console.log('[AdminPanel] Content loaded, image keys:',
+          Object.keys(contentData).filter(k => k.includes('image'))
+            .map(k => `${k}=${JSON.stringify(contentData[k])}`).join(' | ')
+        );
+      }
+    } catch (err) {
+      console.error('[AdminPanel] Fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Fetch images when authenticated changes
-  useEffect(() => {
-    if (authenticated) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchImages();
-    }
-  }, [authenticated, fetchImages]);
-
-  const copyUrl = async (url: string, id: number) => {
+  // Fetch uploaded image list
+  const fetchImages = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(url);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch {
-      // Fallback
-      const ta = document.createElement('textarea');
-      ta.value = url;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    }
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginError('');
-    try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setAuthenticated(true);
-        setShowLogin(false);
-        setPassword('');
-        setEditContents({ ...contents });
-        setNewsList([...news]);
-      } else {
-        setLoginError('密码错误，请重试');
+      const res = await fetch(`/api/admin/upload?_t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setImageList(data.images || []);
       }
-    } catch {
-      setLoginError('登录失败，请重试');
+    } catch (err) {
+      console.error('[AdminPanel] Fetch images error:', err);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchContent();
+    fetchImages();
+  }, [fetchContent, fetchImages]);
+
+  const updateField = (key: string, lang: 'zh' | 'en', value: string) => {
+    setContents(prev => {
+      const updated = { ...prev };
+      if (!updated[key]) updated[key] = { zh: '', en: '' };
+      updated[key] = { ...updated[key], [lang]: value };
+
+      // For image keys, auto-sync zh/en
+      if (IMAGE_KEYS.includes(key)) {
+        updated[key] = { zh: value, en: value };
+      }
+
+      return updated;
+    });
   };
 
-  const handleLogout = () => {
-    setAuthenticated(false);
-    setEditContents({ ...contents });
-  };
-
-  const handleSaveContent = async () => {
+  const handleSave = async () => {
     setSaving(true);
+    setMessage('');
     try {
-      const items = Object.entries(editContents).map(([key, val]) => ({ key, zh: val.zh, en: val.en }));
-      await fetch('/api/admin/content', {
+      const res = await fetch('/api/admin/content', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ contents }),
       });
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-      await onRefresh();
-    } catch {
-      alert('保存失败');
+      const data = await res.json();
+      if (res.ok) {
+        setMessage('保存成功！Saved successfully!');
+      } else {
+        setMessage('保存失败: ' + (data.error || 'Unknown error'));
+      }
+    } catch (err: any) {
+      setMessage('保存失败: ' + err.message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-  };
-
-  const handleUpdateField = (key: string, lang: 'zh' | 'en', value: string) => {
-    setEditContents((prev) => ({
-      ...prev,
-      [key]: { ...prev[key], [lang]: value },
-    }));
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', 'general');
     try {
-      await fetch('/api/admin/upload', { method: 'POST', body: formData });
-      await fetchImages();
-    } catch {
-      alert('上传失败');
-    }
-    setUploading(false);
-    e.target.value = '';
-  };
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('category', 'general');
 
-  const handleDeleteImage = async (id: number) => {
-    await fetch('/api/admin/upload', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    fetchImages();
-  };
-
-  const handleSaveNews = async () => {
-    if (!editingNews) return;
-    setSaving(true);
-    try {
-      if (editingNews.id) {
-        await fetch('/api/admin/news', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(editingNews),
-        });
-      } else {
-        await fetch('/api/admin/news', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...editingNews, order: newsList.length + 1 }),
-        });
-      }
-      const res = await fetch('/api/admin/news');
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
       const data = await res.json();
-      setNewsList(data.news || []);
-      setEditingNews(null);
-      await onRefresh();
-    } catch {
-      alert('保存失败');
+      if (res.ok) {
+        setMessage('上传成功！Uploaded! URL: ' + data.url);
+        fetchImages();
+      } else {
+        setMessage('上传失败: ' + (data.error || 'Unknown error'));
+      }
+    } catch (err: any) {
+      setMessage('上传失败: ' + err.message);
+    } finally {
+      setUploading(false);
+      e.target.value = '';
     }
-    setSaving(false);
   };
 
-  const handleDeleteNews = async (id: number) => {
-    await fetch('/api/admin/news', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    const res = await fetch('/api/admin/news');
-    const data = await res.json();
-    setNewsList(data.news || []);
-    await onRefresh();
+  const copyToClipboard = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setMessage('链接已复制！Link copied!');
   };
+
+  const useImage = (url: string) => {
+    // Find the first empty image field and fill it
+    for (const key of IMAGE_KEYS) {
+      const current = contents[key]?.zh || '';
+      if (!current || current.trim() === '') {
+        updateField(key, 'zh', url);
+        setMessage(`图片URL已填入 ${key}`);
+        return;
+      }
+    }
+    setMessage('所有图片字段已有值，请手动粘贴');
+  };
+
+  if (loading) {
+    return (
+      <div className="p-8 text-center text-gray-500">
+        <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
+        <p>加载中 Loading...</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {/* Floating admin button */}
-      <button
-        onClick={() => authenticated ? handleLogout() : setShowLogin(true)}
-        className="fixed bottom-6 right-6 z-[100] w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 hover:shadow-xl"
-        style={{ background: authenticated ? '#374151' : '#0d9488' }}
-        title={authenticated ? '退出管理' : '管理后台'}
-      >
-        {authenticated ? <LogOut className="w-5 h-5 text-white" /> : <span className="text-lg">⚙️</span>}
-      </button>
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b px-6 py-4">
+        <h1 className="text-2xl font-bold text-gray-800">管理面板 Admin Panel</h1>
+        <p className="text-sm text-gray-500 mt-1">fnec.net 内容管理</p>
+      </div>
 
-      {/* Login Modal */}
-      <AnimatePresence>
-        {showLogin && !authenticated && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[101] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-            onClick={() => setShowLogin(false)}
+      <div className="flex">
+        {/* Sidebar Tabs */}
+        <div className="w-48 bg-white border-r min-h-screen p-4">
+          <button
+            onClick={() => setActiveTab('content')}
+            className={`w-full text-left px-3 py-2 rounded mb-2 ${activeTab === 'content' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm"
-            >
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-8 h-8 text-teal-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900">管理后台登录</h3>
-                <p className="text-sm text-gray-500 mt-1">请输入管理密码</p>
-              </div>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <Input
-                  type="password"
-                  placeholder="请输入密码"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 text-center text-lg"
-                  autoFocus
-                />
-                {loginError && <p className="text-sm text-red-500 text-center">{loginError}</p>}
-                <Button type="submit" className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white text-base">
-                  登录
-                </Button>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            内容编辑
+          </button>
+          <button
+            onClick={() => setActiveTab('images')}
+            className={`w-full text-left px-3 py-2 rounded mb-2 ${activeTab === 'images' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+          >
+            图片上传
+          </button>
+        </div>
 
-      {/* Admin Panel Slide-in */}
-      <AnimatePresence>
-        {authenticated && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/20 z-[98]"
-            />
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed inset-y-0 right-0 z-[99] w-full max-w-2xl bg-white shadow-2xl border-l flex flex-col"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b bg-gray-50 shrink-0">
-                <h2 className="text-lg font-bold text-gray-900">网站管理后台</h2>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs bg-teal-50 text-teal-700 border-teal-200">
-                    <Languages className="w-3 h-3 mr-1" />中英双语
-                  </Badge>
-                  <Button variant="ghost" size="sm" onClick={handleLogout} className="text-gray-500 hover:text-red-600">
-                    <LogOut className="w-4 h-4 mr-1" />退出
-                  </Button>
-                </div>
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+          {activeTab === 'content' && (
+            <>
+              {/* Save Button */}
+              <div className="flex items-center gap-4 mb-6">
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2 rounded-lg font-medium"
+                >
+                  {saving ? '保存中...' : '保存所有内容 Save All'}
+                </button>
+                <button
+                  onClick={() => { fetchContent(); setMessage('已刷新 Refreshed'); }}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
+                >
+                  刷新 Reload
+                </button>
+                {message && (
+                  <span className="text-sm text-green-600">{message}</span>
+                )}
               </div>
 
-              {/* Main content */}
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
-                <TabsList className="w-full justify-start px-4 pt-3 bg-gray-50 border-b rounded-none shrink-0">
-                  <TabsTrigger value="content" className="gap-1.5">
-                    <FileText className="w-4 h-4" />文字内容
-                  </TabsTrigger>
-                  <TabsTrigger value="images" className="gap-1.5">
-                    <ImageIcon className="w-4 h-4" />图片管理
-                  </TabsTrigger>
-                  <TabsTrigger value="news" className="gap-1.5">
-                    <Newspaper className="w-4 h-4" />新闻管理
-                  </TabsTrigger>
-                </TabsList>
+              {/* Debug Info */}
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6 text-sm">
+                <p className="font-medium text-yellow-800">调试信息 Debug Info:</p>
+                <p className="text-yellow-700">
+                  已加载 {Object.keys(contents).length} 个字段。
+                  图片字段: {IMAGE_KEYS.map(k => `${k}=[${contents[k]?.zh || '(空)'}]`).join(', ')}
+                </p>
+              </div>
 
-                {/* Content Editor */}
-                <TabsContent value="content" className="flex-1 min-h-0 m-0">
-                  <div className="flex h-full">
-                    <div className="w-36 shrink-0 border-r bg-gray-50 overflow-y-auto p-2 space-y-0.5">
-                      {Object.entries(sectionLabels).map(([key, label]) => (
-                        <button
-                          key={key}
-                          onClick={() => setActiveSection(key)}
-                          className={`w-full text-left px-3 py-2 text-xs rounded-lg transition-colors ${
-                            activeSection === key
-                              ? 'bg-teal-100 text-teal-700 font-medium'
-                              : 'text-gray-600 hover:bg-gray-100'
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                      <div className="flex items-center justify-between mb-1 sticky top-0 bg-white py-2 z-10">
-                        <h3 className="font-bold text-gray-900 text-sm">{sectionLabels[activeSection]}</h3>
-                        <Button size="sm" onClick={handleSaveContent} disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white h-8 text-xs">
-                          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : saved ? <Check className="w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />}
-                          {saving ? '保存中...' : saved ? '已保存' : '保存全部'}
-                        </Button>
-                      </div>
-
-                      {activeSection === 'hero' && (
-                        <div className="rounded-lg border bg-blue-50 border-blue-200 p-3 mb-3">
-                          <p className="text-xs text-blue-700 font-medium mb-1">如何设置背景图？</p>
-                          <p className="text-[11px] text-blue-600">1. 先去「图片管理」上传图片 → 2. 点击图片的「复制链接」 → 3. 粘贴到下方 hero_bg_image 字段 → 4. 点击「保存全部」</p>
-                        </div>
-                      )}
-
-                      <div className="rounded-lg border bg-teal-50/50 border-teal-100 p-3 mb-3">
-                        <p className="text-xs text-teal-700">
-                          每个字段包含中文和英文两个输入框，修改后点击「保存全部」即可实时生效。
-                        </p>
-                      </div>
-
-                      {contentSections[activeSection]?.map((key) => {
-                        const isImage = imageFields.has(key);
-                        const imgPreview = isImage ? (editContents[key]?.zh || '') : '';
-                        return (
-                        <Card key={key} className="border shadow-none">
-                          <CardHeader className="pb-1 pt-3 px-4">
-                            <CardTitle className="text-[10px] font-mono text-gray-400">{key}{isImage ? ' (图片URL)' : ''}</CardTitle>
-                          </CardHeader>
-                          <CardContent className="px-4 pb-4 space-y-2">
-                            {isImage && imgPreview && (
-                              <div className="mb-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                                <img src={imgPreview} alt={key} className="w-full h-32 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                              </div>
-                            )}
-                            <div>
-                              <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">{isImage ? '图片URL (中英文共用，保存时自动同步)' : '中文'}</label>
-                              <Textarea
-                                value={isImage ? (editContents[key]?.zh || '') : (editContents[key]?.zh || '')}
-                                onChange={(e) => {
-                                  const val = e.target.value;
-                                  if (isImage) {
-                                    setEditContents(prev => ({ ...prev, [key]: { zh: val, en: val } }));
-                                  } else {
-                                    handleUpdateField(key, 'zh', val);
-                                  }
-                                }}
-                                rows={isImage ? 1 : (key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1)}
-                                className="text-xs bg-white border-gray-200 focus:border-teal-400 resize-none"
-                                placeholder={isImage ? '/api/admin/proxy-image?file=xxx.jpg 或外部图片链接' : ''}
+              {/* Field Groups */}
+              {FIELD_GROUPS.map((group, gi) => (
+                <div key={gi} className="bg-white rounded-lg shadow-sm mb-6 overflow-hidden">
+                  <div className="bg-gray-50 px-4 py-3 border-b font-medium text-gray-700">
+                    {group.label}
+                  </div>
+                  <div className="p-4 space-y-4">
+                    {group.keys.map(key => {
+                      const isImage = group.type === 'image' || IMAGE_KEYS.includes(key);
+                      const zhVal = contents[key]?.zh || '';
+                      const enVal = contents[key]?.en || '';
+                      return (
+                        <div key={key} className={isImage ? 'border border-blue-200 rounded-lg p-3 bg-blue-50/30' : ''}>
+                          <label className="block text-sm font-medium text-gray-600 mb-1">
+                            {key} {isImage && '🖼️'}
+                          </label>
+                          {isImage && zhVal && (
+                            <div className="mb-2">
+                              <img
+                                src={zhVal}
+                                alt={key}
+                                className="h-24 w-auto rounded border"
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                               />
                             </div>
-                            {!isImage && (
-                              <div>
-                                <label className="text-[10px] font-medium text-gray-400 mb-0.5 block">English</label>
-                                <Textarea
-                                  value={editContents[key]?.en || ''}
-                                  onChange={(e) => handleUpdateField(key, 'en', e.target.value)}
-                                  rows={key.includes('_p') || key.includes('desc') || key.includes('summary') ? 3 : 1}
-                                  className="text-xs bg-white border-gray-200 focus:border-teal-400 resize-none"
-                                />
-                              </div>
-                            )}
-                          </CardContent>
-                        </Card>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* Image Manager */}
-                <TabsContent value="images" className="flex-1 overflow-y-auto p-6 m-0">
-                  <div className="space-y-6">
-                    <div className="rounded-lg border bg-blue-50 border-blue-200 p-3">
-                      <p className="text-xs text-blue-700 font-medium">使用说明</p>
-                      <p className="text-[11px] text-blue-600 mt-1">上传图片后，点击图片下方的「复制链接」按钮，然后到「文字内容」对应板块粘贴到图片URL字段中。</p>
-                    </div>
-
-                    <Card>
-                      <CardContent className="p-6">
-                        <h3 className="font-bold text-gray-900 mb-3 text-sm">上传图片</h3>
-                        <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-8 cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition-colors">
-                          {uploading ? <Loader2 className="w-8 h-8 text-teal-500 animate-spin" /> : <Upload className="w-8 h-8 text-gray-400 mb-2" />}
-                          <span className="text-sm text-gray-500">{uploading ? '上传中...' : '点击选择图片上传'}</span>
-                          <span className="text-xs text-gray-400 mt-1">支持 JPG, PNG, SVG, WebP</span>
-                          <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
-                        </label>
-                      </CardContent>
-                    </Card>
-
-                    <div>
-                      <h3 className="font-bold text-gray-900 mb-3 text-sm">已上传图片 ({images.length})</h3>
-                      {images.length === 0 ? (
-                        <p className="text-sm text-gray-400 text-center py-8">暂无图片</p>
-                      ) : (
-                        <div className="grid grid-cols-3 gap-3">
-                          {images.map((img) => (
-                            <Card key={img.id} className="overflow-hidden group relative">
-                              <div className="aspect-square bg-gray-100">
-                                <img src={img.url} alt={img.filename} className="w-full h-full object-cover" />
-                              </div>
-                              <div className="p-2 space-y-1">
-                                <p className="text-[10px] text-gray-500 truncate">{img.filename}</p>
-                                <button
-                                  onClick={() => copyUrl(img.url, img.id)}
-                                  className="flex items-center gap-1 text-[10px] text-teal-600 hover:text-teal-800 transition-colors w-full"
-                                >
-                                  {copiedId === img.id ? (
-                                    <><Check className="w-3 h-3" />已复制</>
-                                  ) : (
-                                    <><Copy className="w-3 h-3" />复制链接</>
-                                  )}
-                                </button>
-                              </div>
-                              <button
-                                onClick={() => handleDeleteImage(img.id)}
-                                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
-                            </Card>
-                          ))}
+                          )}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <span className="text-xs text-gray-400">中文</span>
+                              <input
+                                type={isImage ? 'url' : 'text'}
+                                value={zhVal}
+                                onChange={e => updateField(key, 'zh', e.target.value)}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                                placeholder={isImage ? '粘贴图片URL或上传图片' : ''}
+                              />
+                            </div>
+                            <div>
+                              <span className="text-xs text-gray-400">English</span>
+                              <input
+                                type={isImage ? 'url' : 'text'}
+                                value={enVal}
+                                onChange={e => updateField(key, 'en', e.target.value)}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                                placeholder={isImage ? 'Paste image URL or upload' : ''}
+                              />
+                            </div>
+                          </div>
+                          {isImage && (
+                            <p className="text-xs text-gray-400 mt-1">
+                              提示：图片URL会自动同步中英文。可在&quot;图片上传&quot;标签页上传图片后复制链接。
+                            </p>
+                          )}
                         </div>
-                      )}
-                    </div>
+                      );
+                    })}
                   </div>
-                </TabsContent>
+                </div>
+              ))}
+            </>
+          )}
 
-                {/* News Manager */}
-                <TabsContent value="news" className="flex-1 overflow-y-auto p-6 m-0">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-gray-900 text-sm">新闻列表 ({newsList.length})</h3>
-                      <Button size="sm" onClick={() => setEditingNews({ date: new Date().toISOString().slice(0, 10), titleZh: '', titleEn: '', summaryZh: '', summaryEn: '' })} className="bg-teal-600 hover:bg-teal-700 text-white h-8 text-xs">
-                        <Plus className="w-3.5 h-3.5 mr-1" />新增
-                      </Button>
+          {activeTab === 'images' && (
+            <>
+              {/* Upload Area */}
+              <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h3 className="font-medium text-gray-700 mb-4">上传图片 Upload Image</h3>
+                <div className="flex items-center gap-4">
+                  <label className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer">
+                    {uploading ? '上传中...' : '选择文件 Select File'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleUpload}
+                      className="hidden"
+                      disabled={uploading}
+                    />
+                  </label>
+                  {message && <span className="text-sm text-green-600">{message}</span>}
+                </div>
+              </div>
+
+              {/* Image List */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="font-medium text-gray-700 mb-4">
+                  已上传图片 ({imageList.length})
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {imageList.map((img: any) => (
+                    <div key={img.id} className="border rounded-lg overflow-hidden">
+                      <img
+                        src={img.url}
+                        alt={img.filename}
+                        className="w-full h-32 object-cover"
+                      />
+                      <div className="p-2">
+                        <p className="text-xs text-gray-500 truncate">{img.filename}</p>
+                        <div className="flex gap-1 mt-1">
+                          <button
+                            onClick={() => copyToClipboard(img.url)}
+                            className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                          >
+                            复制链接
+                          </button>
+                          <button
+                            onClick={() => useImage(img.url)}
+                            className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded"
+                          >
+                            使用
+                          </button>
+                        </div>
+                      </div>
                     </div>
-
-                    {newsList.map((item) => (
-                      <Card key={item.id} className="hover:shadow-sm transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[10px] text-gray-400">{item.date}</span>
-                              </div>
-                              <p className="text-sm font-medium text-gray-900 truncate">{item.titleZh}</p>
-                              <p className="text-xs text-gray-500 truncate mt-0.5">{item.titleEn}</p>
-                            </div>
-                            <div className="flex gap-1 shrink-0">
-                              <Button size="sm" variant="outline" onClick={() => setEditingNews(item)} className="h-7 text-xs px-2">编辑</Button>
-                              <Button size="sm" variant="outline" onClick={() => handleDeleteNews(item.id)} className="h-7 text-xs px-2 text-red-600 hover:bg-red-50">删除</Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-
-                    {editingNews && (
-                      <Card className="border-2 border-teal-200">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <CardTitle className="text-sm">{editingNews.id ? '编辑新闻' : '新增新闻'}</CardTitle>
-                            <Button variant="ghost" size="sm" onClick={() => setEditingNews(null)}><X className="w-4 h-4" /></Button>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div>
-                            <label className="text-xs text-gray-500">日期</label>
-                            <Input value={editingNews.date || ''} onChange={(e) => setEditingNews({ ...editingNews, date: e.target.value })} className="h-9 text-sm" />
-                          </div>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div>
-                              <label className="text-xs text-gray-500">中文标题</label>
-                              <Input value={editingNews.titleZh || ''} onChange={(e) => setEditingNews({ ...editingNews, titleZh: e.target.value })} className="h-9 text-sm" />
-                            </div>
-                            <div>
-                              <label className="text-xs text-gray-500">English Title</label>
-                              <Input value={editingNews.titleEn || ''} onChange={(e) => setEditingNews({ ...editingNews, titleEn: e.target.value })} className="h-9 text-sm" />
-                            </div>
-                          </div>
-                          <div>
-                            <label className="text-xs text-gray-500">中文摘要</label>
-                            <Textarea value={editingNews.summaryZh || ''} onChange={(e) => setEditingNews({ ...editingNews, summaryZh: e.target.value })} rows={3} className="text-sm resize-none" />
-                          </div>
-                          <div>
-                            <label className="text-xs text-gray-500">English Summary</label>
-                            <Textarea value={editingNews.summaryEn || ''} onChange={(e) => setEditingNews({ ...editingNews, summaryEn: e.target.value })} rows={3} className="text-sm resize-none" />
-                          </div>
-                          <div className="flex justify-end gap-2 pt-2">
-                            <Button variant="outline" size="sm" onClick={() => setEditingNews(null)}>取消</Button>
-                            <Button size="sm" onClick={handleSaveNews} disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white">
-                              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                              保存
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+                  ))}
+                  {imageList.length === 0 && (
+                    <p className="text-gray-400 text-sm col-span-4">暂无已上传图片</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
