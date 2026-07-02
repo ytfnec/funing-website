@@ -1,17 +1,25 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { translations } from '@/lib/i18n';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // Fetch all content from database
-    const contents = await db.siteContent.findMany();
-    const news = await db.newsArticle.findMany({ orderBy: { order: 'asc' } });
+    const { env } = await getCloudflareContext({ request });
 
-    // Build content map from DB
+    // Fetch all content from D1
+    const contentResult = await env.DB.prepare(
+      'SELECT key, zh, en FROM site_content'
+    ).all();
+
+    // Fetch news from D1
+    const newsResult = await env.DB.prepare(
+      'SELECT * FROM NewsArticle ORDER BY "order" ASC'
+    ).all();
+
+    // Build content map from D1
     const dbMap: Record<string, { zh: string; en: string }> = {};
-    for (const c of contents) {
-      dbMap[c.key] = { zh: c.zh, en: c.en };
+    for (const row of (contentResult.results || []) as Array<{ key: string; zh: string; en: string }>) {
+      dbMap[row.key] = { zh: row.zh, en: row.en };
     }
 
     // Merge: start with i18n defaults, let DB override
@@ -23,7 +31,7 @@ export async function GET() {
       };
     }
 
-    // CRITICAL FIX: Also include ALL DB keys that are NOT in i18n translations
+    // CRITICAL: Also include ALL D1 keys that are NOT in i18n translations
     // (e.g. hero_bg_image, about_image, product_image_*, etc.)
     for (const key of Object.keys(dbMap)) {
       if (!(key in merged)) {
@@ -31,14 +39,18 @@ export async function GET() {
       }
     }
 
-    return new NextResponse(JSON.stringify({ contents: merged, news }), {
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-      },
-    });
-  } catch {
+    return NextResponse.json(
+      { contents: merged, news: newsResult.results || [] },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
+  } catch (err) {
+    console.error('[site/content] Error:', err);
     // Fallback to static translations
     return NextResponse.json({
       contents: Object.keys(translations.zh).reduce((acc, key) => {
