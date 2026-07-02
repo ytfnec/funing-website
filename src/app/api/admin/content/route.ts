@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCloudflareContext } from '@opennextjs/cloudflare';
+import { translations } from '@/lib/i18n';
 
 const NO_CACHE_HEADERS = {
   'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
@@ -11,11 +12,6 @@ const NO_CACHE_HEADERS = {
 export async function PATCH(request: Request) {
   try {
     const { env } = await getCloudflareContext({ request });
-
-    if (!env?.DB) {
-      return NextResponse.json({ error: 'D1 binding DB not available — check Cloudflare Dashboard bindings' }, { status: 500, headers: NO_CACHE_HEADERS });
-    }
-
     const body = await request.json();
     const contents = body.contents;
 
@@ -23,33 +19,20 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'contents object required' }, { status: 400 });
     }
 
-    // Save each key with UPSERT
     const keys = Object.keys(contents);
-    console.log('[admin/content] Saving', keys.length, 'keys:', keys.join(', '));
 
     for (const key of keys) {
       const val = contents[key];
       const zh = (val && typeof val === 'object' && 'zh' in val) ? String(val.zh) : String(val || '');
       const en = (val && typeof val === 'object' && 'en' in val) ? String(val.en) : String(val || '');
 
-      console.log(`[admin/content] Writing key="${key}" zh="${zh.slice(0, 50)}" en="${en.slice(0, 50)}"`);
-
       await env.DB.prepare(
         'INSERT INTO site_content (key, zh, en) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET zh = ?, en = ?'
       ).bind(key, zh, en, zh, en).run();
     }
 
-    console.log('[admin/content] Saved', keys.length, 'keys successfully');
-
-    // Verify: read back the keys we just saved
-    const verifyResult = await env.DB.prepare(
-      'SELECT key, zh, en FROM site_content WHERE key IN (' + keys.map(() => '?').join(',') + ')'
-    ).bind(...keys).all();
-
-    console.log('[admin/content] Verify read-back:', JSON.stringify(verifyResult.results));
-
     return NextResponse.json(
-      { success: true, saved: keys.length, verify: verifyResult.results },
+      { success: true, saved: keys.length },
       { headers: NO_CACHE_HEADERS }
     );
   } catch (error) {
@@ -58,25 +41,55 @@ export async function PATCH(request: Request) {
   }
 }
 
-// NEW: GET handler to read content directly from D1 (for diagnostics)
+// GET: Read all content from D1, returning the SAME format as site/content was supposed to
 export async function GET(request: Request) {
   try {
     const { env } = await getCloudflareContext({ request });
 
-    if (!env?.DB) {
-      return NextResponse.json({ error: 'D1 binding DB not available' }, { status: 500 });
-    }
-
-    const result = await env.DB.prepare(
-      'SELECT key, zh, en FROM site_content ORDER BY key'
+    // Read site_content from D1
+    const contentRows = await env.DB.prepare(
+      'SELECT key, zh, en FROM site_content'
     ).all();
 
-    return NextResponse.json({
-      count: (result.results || []).length,
-      rows: result.results || [],
-    }, { headers: NO_CACHE_HEADERS });
+    // Build content map from D1
+    const dbMap: Record<string, { zh: string; en: string }> = {};
+    for (const row of (contentRows.results || []) as Array<{ key: string; zh: string; en: string }>) {
+      dbMap[row.key] = { zh: row.zh, en: row.en };
+    }
+
+    // Merge: start with i18n defaults, let D1 override
+    const merged: Record<string, { zh: string; en: string }> = {};
+    for (const key of Object.keys(translations.zh)) {
+      merged[key] = dbMap[key] || {
+        zh: (translations.zh as Record<string, string>)[key] || '',
+        en: (translations.en as Record<string, string>)[key] || '',
+      };
+    }
+
+    // Add D1-only keys (image URLs from admin panel)
+    for (const key of Object.keys(dbMap)) {
+      if (!(key in merged)) {
+        merged[key] = dbMap[key];
+      }
+    }
+
+    return NextResponse.json(
+      { contents: merged },
+      { headers: NO_CACHE_HEADERS }
+    );
   } catch (error) {
     console.error('[admin/content] GET Error:', error);
-    return NextResponse.json({ error: String(error), rows: [] }, { status: 500, headers: NO_CACHE_HEADERS });
+    return NextResponse.json(
+      {
+        contents: Object.keys(translations.zh).reduce((acc, key) => {
+          acc[key] = {
+            zh: (translations.zh as Record<string, string>)[key] || '',
+            en: (translations.en as Record<string, string>)[key] || '',
+          };
+          return acc;
+        }, {} as Record<string, { zh: string; en: string }>),
+      },
+      { headers: NO_CACHE_HEADERS }
+    );
   }
 }
