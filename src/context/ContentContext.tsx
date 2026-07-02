@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, type ReactNode } from 'react';
+import { useState, useCallback, useEffect, type ReactNode } from 'react';
 import { type Language, translations, type TranslationKey } from '@/lib/i18n';
 
 // Content from API
@@ -50,7 +50,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>('zh');
   const [contents, setContents] = useState<SiteContentMap>(staticMap);
   const [news, setNews] = useState<NewsArticle[]>([]);
-  const initialFetchDone = useRef(false);
 
   const toggleLanguage = useCallback(() => {
     setLanguage((prev) => (prev === 'zh' ? 'en' : 'zh'));
@@ -58,7 +57,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const refreshContent = useCallback(async () => {
     try {
-      // Use the working admin/content endpoint instead of the broken site/content
       const res = await fetch('/api/admin/content?_t=' + Date.now(), {
         cache: 'no-store',
         headers: {
@@ -73,11 +71,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Fetch content on first render - use ref null check pattern
-  if (initialFetchDone.current == null) {
-    initialFetchDone.current = true;
+  // FIXED: use useEffect to fetch on mount instead of broken ref check
+  useEffect(() => {
     refreshContent();
-  }
+  }, [refreshContent]);
 
   const t = useCallback(
     (key: TranslationKey): string => {
