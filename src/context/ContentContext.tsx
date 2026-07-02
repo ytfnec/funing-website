@@ -58,7 +58,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const refreshContent = useCallback(async () => {
     try {
-      const res = await fetch('/api/site/content?_t=' + Date.now(), {
+      // Use the working admin/content endpoint instead of the broken site/content
+      const res = await fetch('/api/admin/content?_t=' + Date.now(), {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-store, no-cache',
