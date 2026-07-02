@@ -115,14 +115,19 @@ export default function AdminPanel({ contents, news, onRefresh }: AdminPanelProp
     setEditContents({ ...contents });
   };
 
+  // ====== FIXED: handleSaveContent now sends { contents: {...} } matching API format ======
   const handleSaveContent = async () => {
     setSaving(true);
     try {
-      const items = Object.entries(editContents).map(([key, val]) => ({ key, zh: val.zh, en: val.en }));
+      // Build contents object matching API format: { contents: { key: {zh, en}, ... } }
+      const contentsObj: Record<string, { zh: string; en: string }> = {};
+      for (const [key, val] of Object.entries(editContents)) {
+        contentsObj[key] = { zh: val.zh, en: val.en };
+      }
       await fetch('/api/admin/content', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ contents: contentsObj }),
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
