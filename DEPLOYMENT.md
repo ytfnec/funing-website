@@ -102,6 +102,24 @@ npm run deploy          # npx @opennextjs/cloudflare deploy
 
 如果您已经在 Dashboard 里创建了名为 `funing-website` 的 **Pages** 项目，请改在 **Workers & Pages → Workers** 下创建一个同名 Worker（或直接删除 Pages 项目），再用上面的命令部署到 Worker。
 
+### 从 Pages 迁移到 Workers（免费套餐可用）
+
+Cloudflare 免费套餐支持 Workers（每天 100K 请求）、D1（5GB）、R2（10GB），对企业展示站足够，无需付费。
+
+1. **删除 Pages 项目**：Dashboard → Workers & Pages → 选择 `funing-website` Pages 项目 → Settings → Delete project。否则与要创建的 Worker 重名冲突。
+   > 若域名 `fnec.net` 绑定在 Pages 上，删除前记录域名配置，稍后重新绑到 Worker。
+2. **登录 wrangler**（若未登录）：`npx wrangler login`
+3. **重新设置 Secrets**（Workers 的 secret 与 Pages 是分开的）：
+   ```bash
+   npx wrangler secret put JWT_SECRET
+   ```
+   以及邮件 SMTP_*（可选）。
+4. **构建并部署**：`npm run deploy`（自动 build + wrangler deploy 创建 Worker）
+5. **绑定自定义域名**：Dashboard → Worker `funing-website` → Settings → Domains → 添加 `fnec.net`（并按提示在 DNS 配置 CNAME）。
+6. **验证**：访问 `fnec.net` 首页、admin 登录、提交联系表单。
+
+> D1/R2 是独立资源，schema 已建好，迁移时无需重跑 `db:deploy`。
+
 ---
 
 ## 四、部署后验证
