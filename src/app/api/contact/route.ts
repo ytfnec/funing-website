@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { queryFirst, execute, generateId, nowISO } from '@/lib/db';
+import { execute, generateId, nowISO } from '@/lib/db';
+import { sendContactNotification } from '@/lib/mailer';
 import { z } from 'zod';
 
 const contactSchema = z.object({
@@ -50,12 +51,20 @@ export async function POST(request: NextRequest) {
       nowISO(),
     ]);
     
-    // TODO: Send email notification to admin
-    // await sendNotificationEmail(data);
-    
-    // TODO: If newsletter opt-in, add to newsletter
-    // if (data.newsletter) await subscribeToNewsletter(data.email);
-    
+    // Send email notification to admin (fire-and-forget, never blocks the response)
+    await sendContactNotification({
+      type: data.type,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      company: data.company,
+      location: data.location,
+      productInterest: data.productInterest,
+      preferredContact: data.preferredContact,
+      bestTime: data.bestTime,
+      message: data.message,
+    });
+
     return NextResponse.json({ success: true, id });
   } catch (error) {
     console.error('Contact form error:', error);

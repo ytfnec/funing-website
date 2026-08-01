@@ -1,4 +1,4 @@
-name = "axissaunas-clone"
+name = "funing-website"
 main = ".open-next/worker.js"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
@@ -9,12 +9,12 @@ binding = "ASSETS"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "axissaunas-db"
-database_id = "local"
+database_name = "funing-db"
+database_id = "e34f35c7-46c0-4547-a366-ada19c09af48"
 
 [[r2_buckets]]
 binding = "R2"
-bucket_name = "axissaunas-assets"
+bucket_name = "funing-storage"
 
 [vars]
 NODE_ENV = "development"
