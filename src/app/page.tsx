@@ -180,7 +180,7 @@ export default function Home() {
                   type="button"
                   className="btn btn-secondary product-cta"
                   style={{ marginTop: "24px", alignSelf: "flex-start" }}
-                  onClick={() => window.location.href = `/products`}
+                  onClick={() => window.location.href = `/products/${p.key}`}
                 >
                   {t('home.products.learnMore')}
                 </button>

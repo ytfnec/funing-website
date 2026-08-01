@@ -198,9 +198,9 @@ export default function ContactPage() {
                 className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)]"
               >
                 <option value="">{t('contact.form.interest0')}</option>
-                <option value="sauna-controller">{t('contact.form.interest1')}</option>
-                <option value="jacquard-driver">{t('contact.form.interest2')}</option>
-                <option value="branded-unit">{t('contact.form.interest3')}</option>
+                <option value="sauna-controllers">{t('contact.form.interest1')}</option>
+                <option value="jacquard-drivers">{t('contact.form.interest2')}</option>
+                <option value="branded-units">{t('contact.form.interest3')}</option>
                 <option value="accessories">{t('contact.form.interest4')}</option>
                 <option value="oem-odm">{t('contact.form.interest5')}</option>
                 <option value="other">{t('contact.form.interest6')}</option>

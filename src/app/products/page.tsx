@@ -101,7 +101,9 @@ export default function ProductsPage() {
                   {s.tagline}
                 </p>
                 <h2 className="text-[clamp(28px,3.5vw,48px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-4">
-                  {s.name}
+                  <Link href={`/products/${s.slug}`} className="hover:text-[var(--amber)] transition-colors">
+                    {s.name}
+                  </Link>
                 </h2>
                 <p className="text-[var(--soft-white)] text-[clamp(16px,1.2vw,20px)] leading-relaxed mb-6 max-w-[500px]">
                   {s.description}
@@ -124,7 +126,7 @@ export default function ProductsPage() {
                   <span className="text-[18px] font-medium" style={{ color: 'var(--wood)' }}>
                     {s.price}
                   </span>
-                  <Link href="/quote" className="btn btn-primary text-sm">
+                  <Link href={`/products/${s.slug}`} className="btn btn-primary text-sm">
                     {t('prod.cta.btn')}
                   </Link>
                 </div>

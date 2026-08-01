@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckCircle, Loader2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useLang } from '@/lib/i18n';
@@ -26,12 +26,22 @@ export default function QuotePage() {
   const STEPS = [t('quote.step1'), t('quote.step2'), t('quote.step3'), t('quote.step4')];
 
   const products = [
-    { slug: 'sauna-controller', name: t('quote.prod1'), sub: t('quote.prod1sub') },
-    { slug: 'jacquard-driver', name: t('quote.prod2'), sub: t('quote.prod2sub') },
-    { slug: 'branded-unit', name: t('quote.prod3'), sub: t('quote.prod3sub') },
+    { slug: 'sauna-controllers', name: t('quote.prod1'), sub: t('quote.prod1sub') },
+    { slug: 'jacquard-drivers', name: t('quote.prod2'), sub: t('quote.prod2sub') },
+    { slug: 'branded-units', name: t('quote.prod3'), sub: t('quote.prod3sub') },
     { slug: 'accessories', name: t('quote.prod4'), sub: t('quote.prod4sub') },
     { slug: 'oem-odm', name: t('quote.prod5'), sub: t('quote.prod5sub') },
   ];
+
+  // Pre-fill product from ?product= query param (e.g. from product detail page CTA)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const preset = params.get('product');
+    if (preset && products.some((p) => p.slug === preset)) {
+      setForm((prev) => ({ ...prev, product: preset }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const updateForm = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
