@@ -10,6 +10,7 @@ export default function QuotePage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string }>({});
   const [form, setForm] = useState({
     product: '',
     quantity: '',
@@ -67,7 +68,23 @@ export default function QuotePage() {
     }, 180);
   };
 
+  const validateStep2 = (): boolean => {
+    const errors: { name?: string; email?: string } = {};
+    if (!form.name.trim()) errors.name = 'Please enter your name';
+    if (!form.email.trim()) {
+      errors.email = 'Please enter your email';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validateStep2()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -244,20 +261,20 @@ export default function QuotePage() {
                     <input
                       type="text"
                       value={form.name}
-                      onChange={(e) => updateForm('name', e.target.value)}
-                      required
-                      className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)]"
+                      onChange={(e) => { updateForm('name', e.target.value); if (fieldErrors.name) setFieldErrors(prev => ({ ...prev, name: undefined })); }}
+                      className={`w-full px-4 py-3 bg-[#050505] border rounded-md text-white focus:outline-none focus:border-[var(--amber)] ${fieldErrors.name ? 'border-red-400/60' : 'border-[rgba(255,255,255,0.1)]'}`}
                     />
+                    {fieldErrors.name && <p className="text-red-400 text-xs mt-1">{fieldErrors.name}</p>}
                   </div>
                   <div>
                     <label className="block text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{t('contact.form.email')} <span className="text-[var(--amber)]">*</span></label>
                     <input
                       type="email"
                       value={form.email}
-                      onChange={(e) => updateForm('email', e.target.value)}
-                      required
-                      className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)]"
+                      onChange={(e) => { updateForm('email', e.target.value); if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined })); }}
+                      className={`w-full px-4 py-3 bg-[#050505] border rounded-md text-white focus:outline-none focus:border-[var(--amber)] ${fieldErrors.email ? 'border-red-400/60' : 'border-[rgba(255,255,255,0.1)]'}`}
                     />
+                    {fieldErrors.email && <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -328,7 +345,7 @@ export default function QuotePage() {
             {step === 2 ? (
               <button
                 onClick={handleSubmit}
-                disabled={loading || !form.name || !form.email}
+                disabled={loading}
                 className="btn btn-primary text-sm disabled:opacity-50"
               >
                 {loading ? (
