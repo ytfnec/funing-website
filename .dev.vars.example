@@ -1,0 +1,12 @@
+# Copy to .dev.vars for local `wrangler dev` / `npm run db:init`
+# These are local-only; never commit real secrets.
+
+JWT_SECRET=change-me-to-a-long-random-string-min-32-chars
+
+# SMTP (optional — omit to skip email notifications locally)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=465
+SMTP_USER=you@example.com
+SMTP_PASS=your-smtp-password
+# SMTP_FROM=no-reply@fnec.net
+# CONTACT_NOTIFY_TO=info@fnec.net

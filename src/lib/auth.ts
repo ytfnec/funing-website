@@ -3,9 +3,22 @@ import { cookies } from 'next/headers';
 import { getDB, generateId, nowISO, execute, queryFirst } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production-min-32-chars-long!!'
-);
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    // Fail loudly in production instead of silently using an insecure default.
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'JWT_SECRET is not set. Set it via `npx wrangler secret put JWT_SECRET` before deploying.'
+      );
+    }
+    // Development-only fallback (never used in production).
+    return new TextEncoder().encode('dev-only-insecure-secret-do-not-use-in-production!!');
+  }
+  return new TextEncoder().encode(secret);
+}
+
+const JWT_SECRET = getJwtSecret();
 const JWT_EXPIRY = '7d';
 
 export interface AdminUser {

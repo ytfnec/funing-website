@@ -17,5 +17,5 @@ binding = "R2"
 bucket_name = "funing-storage"
 
 [vars]
-NODE_ENV = "development"
+NODE_ENV = "production"
 NEXT_TELEMETRY_DISABLED = "1"
