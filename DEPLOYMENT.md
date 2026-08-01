@@ -83,28 +83,26 @@ D1 中需要先有一条 `admin_users` 记录才能登录后台。可用以下�
 
 ## 三、部署到 Cloudflare
 
-### 方式 A：通过 GitHub + Cloudflare Pages（推荐，自动部署）
+> **注意**：本项目使用 OpenNext Cloudflare 适配器，官方推荐部署到 **Cloudflare Workers**（不是 Cloudflare Pages 的 Git 集成）。`wrangler.toml` 是 Workers 模式配置（`main` + `[assets]` + D1/R2 绑定）。
 
-1. 将代码推送到 GitHub：`git push -u origin master`
-2. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-3. 选择仓库 `ytfnec/funing-website`，分支 `master`
-4. 构建设置：
-   - **Build command**: `npm run build:cf`
-   - **Build output directory**: `.open-next`
-5. 添加环境变量/Secret（同上方第三节第 3 步）
-6. 绑定 D1（`funing-db`，binding 名 `DB`）和 R2（`funing-storage`，binding 名 `R2`）
-7. 点击 **Save and Deploy**
-
-之后每次 push 到 master 会自动重新构建部署。
-
-### 方式 B：命令行直接部署（Wrangler）
+### 方式：命令行部署（推荐）
 
 ```bash
-npm run build:cf        # 生成 .open-next 产物
-npm run deploy          # npx wrangler deploy
+npm run build:cf        # 生成 .open-next 产物（worker.js + assets）
+npm run deploy          # npx @opennextjs/cloudflare deploy
 ```
 
-> 需要已登录：`npx wrangler login`
+> 首次需要登录：`npx wrangler login`
+>
+> 之后重复部署只需 `npm run deploy`（会自动先 build）。
+
+### 关于 Cloudflare Pages
+
+不要用 **Cloudflare Pages → Connect to Git** 的方式部署本项目：
+- Pages 读取 `wrangler.toml` 时要求 `pages_build_output_dir`，且 `ASSETS` 是 Pages 保留绑定名，与 Workers 模式配置冲突
+- OpenNext Cloudflare 不输出 Pages 需要的 `_worker.js` 结构
+
+如果您已经在 Dashboard 里创建了名为 `funing-website` 的 **Pages** 项目，请改在 **Workers & Pages → Workers** 下创建一个同名 Worker（或直接删除 Pages 项目），再用上面的命令部署到 Worker。
 
 ---
 

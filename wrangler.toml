@@ -1,14 +1,9 @@
-# Cloudflare Pages project — this config is read by Pages during builds
-# to wire up D1/R2 bindings. `pages_build_output_dir` tells Pages where the
-# static assets live (OpenNext output).
+# Cloudflare Workers deploy (via @opennextjs/cloudflare).
+# Build with `npm run build:cf`, deploy with `npm run deploy` (wrangler deploy).
 name = "funing-website"
-pages_build_output_dir = ".open-next"
+main = ".open-next/worker.js"
 compatibility_date = "2025-06-01"
 compatibility_flags = ["nodejs_compat"]
-
-# Used by `wrangler deploy` (Workers mode) as an alternative deploy path.
-# Ignored by Pages.
-main = ".open-next/worker.js"
 
 [assets]
 directory = ".open-next/assets"

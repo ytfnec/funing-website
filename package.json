@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:cf": "npx @opennextjs/cloudflare build",
-    "deploy": "npx wrangler deploy",
+    "deploy": "npx @opennextjs/cloudflare deploy",
     "start": "next start",
     "lint": "eslint",
     "db:init": "npx wrangler d1 execute funing-db --local --file=./schema.sql",
