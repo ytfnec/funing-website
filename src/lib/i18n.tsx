@@ -901,6 +901,7 @@ const LanguageContext = createContext<{
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<Lang>('zh');
+  const [overrides, setOverrides] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const saved = localStorage.getItem('fnec-lang') as Lang | null;
@@ -915,13 +916,35 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Fetch content-block overrides (managed via /admin/content) so edits
+  // to copy take effect on the live site without redeploying.
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/content')
+      .then((res) => (res.ok ? res.json() : { overrides: {} }))
+      .then((data) => {
+        if (!cancelled) setOverrides(data.overrides || {});
+      })
+      .catch(() => {
+        // Fail soft — site renders default translations.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const changeLang = (l: Lang) => {
     setLang(l);
     localStorage.setItem('fnec-lang', l);
     document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
   };
 
-  const t = (k: TKey) => translations[lang][k] ?? translations.en[k] ?? String(k);
+  // Look up overrides first (`<lang>__<key>`), then default translations.
+  const t = (k: TKey) => {
+    const overrideKey = `${lang}__${k}`;
+    if (overrides[overrideKey]) return overrides[overrideKey];
+    return translations[lang][k] ?? translations.en[k] ?? String(k);
+  };
 
   return (
     <LanguageContext.Provider value={{ lang, setLang: changeLang, t }}>
