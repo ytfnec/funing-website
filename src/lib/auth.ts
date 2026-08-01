@@ -5,20 +5,19 @@ import bcrypt from 'bcryptjs';
 
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    // Fail loudly in production instead of silently using an insecure default.
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(
-        'JWT_SECRET is not set. Set it via `npx wrangler secret put JWT_SECRET` before deploying.'
-      );
-    }
-    // Development-only fallback (never used in production).
-    return new TextEncoder().encode('dev-only-insecure-secret-do-not-use-in-production!!');
+  if (secret) return new TextEncoder().encode(secret);
+  // Fail loudly in production instead of silently using an insecure default.
+  // NOTE: this is resolved lazily (inside createToken/verifyToken), not at
+  // module load, so that `next build` page-data collection (which imports
+  // route handlers in NODE_ENV=production with no secrets set) does not crash.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'JWT_SECRET is not set. Set it via `npx wrangler secret put JWT_SECRET` before deploying.'
+    );
   }
-  return new TextEncoder().encode(secret);
+  // Development-only fallback (never used in production).
+  return new TextEncoder().encode('dev-only-insecure-secret-do-not-use-in-production!!');
 }
-
-const JWT_SECRET = getJwtSecret();
 const JWT_EXPIRY = '7d';
 
 export interface AdminUser {
@@ -41,12 +40,12 @@ export async function createToken(user: AdminUser): Promise<string> {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(JWT_EXPIRY)
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifyToken(token: string): Promise<AdminUser | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as unknown as AdminUser;
   } catch {
     return null;
