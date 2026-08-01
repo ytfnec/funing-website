@@ -71,6 +71,20 @@ npx wrangler pages project list
 npx wrangler pages secret list --project-name funing-website
 ```
 
-> ⚠️ 本仓库 `wrangler.toml` 是 **Workers 模式**（`main=.open-next/worker.js`），
-> 与线上实际的 **Pages 部署**不一致。`wrangler secret put`（无 pages 前缀）会去找同名
-> Worker 并提示创建——**不要选 Y**，用 `wrangler pages secret put` 才是正确的。
+> ⚠️ **部署模式已从 Pages 迁移到 Workers**（OpenNext 官方唯一支持的部署方式）。
+> 本项目用 `wrangler.toml`（Workers 模式），部署命令：`npm run deploy`
+> （内部执行 `wrangler deploy`）。**不要再使用** `wrangler pages ...` 命令。
+
+## 六、从 Pages 迁移到 Workers（2026-08-02）
+
+之前线上是 Pages 项目，但 OpenNext 输出的是 Workers 产物，Pages 不运行 worker，
+导致动态功能（admin/联系表单/SSR）500。已决定切到 Workers：
+
+1. **删除 Pages 项目** `funing-website`（Workers & Pages → Pages → Delete）
+2. **重设 Worker Secrets**（Workers 与 Pages 的 secret 独立）：
+   ```bash
+   npx wrangler secret put JWT_SECRET
+   ```
+3. **构建并部署**：`npm run deploy`（自动 build + wrangler deploy）
+4. **重绑域名** `fnec.net`：Worker → Settings → Domains → Add 域名，DNS 配 CNAME
+5. **验证**：访问 `fnec.net` 首页、admin 登录、提交联系表单
