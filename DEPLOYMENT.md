@@ -64,20 +64,18 @@ npx wrangler secret put SMTP_PASS
 
 ### 4. 创建管理员账号
 
-D1 中需要先有一条 `admin_users` 记录才能登录后台。可用以下方式之一：
+D1 中需要先有一条 `admin_users` 记录才能登录后台。在项目根目录执行以下命令：
 
-- 在 Cloudflare Dashboard → D1 → `funing-db` → Console 中执行 SQL：
-  ```sql
-  -- 先算好 bcrypt hash（例如在本地 node 里执行）
-  -- node -e "console.log(require('bcryptjs').hashSync('你的密码', 12))"
-  INSERT INTO admin_users (id, email, password_hash, name, role)
-  VALUES ('admin-1', 'admin@fnec.net', '<bcrypt-hash>', 'Admin', 'admin');
-  ```
+```bash
+# 1) 本地生成 bcrypt hash（把 <你的密码> 换成真实密码）
+node -e "console.log(require('bcryptjs').hashSync('<你的密码>', 12))"
+#    复制输出到下一步
 
-- 或在本地通过 wrangler 对远程 D1 执行（若已登录 Cloudflare CLI）：
-  ```bash
-  npx wrangler d1 execute funing-db --remote --command "INSERT INTO ..."
-  ```
+# 2) 插入管理员到线上 D1
+npx wrangler d1 execute funing-db --remote --command "INSERT INTO admin_users (id, email, password_hash, name, role) VALUES ('admin-1', 'admin@fnec.net', '<上一步的hash>', 'Admin', 'admin');"
+```
+
+> 也可以在 Cloudflare Dashboard → D1 → `funing-db` → **Console** 中直接执行上面第 2 步的 SQL。
 
 ---
 
