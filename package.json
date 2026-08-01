@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:init": "npx wrangler d1 execute funing-db --local --file=./schema.sql",
-    "db:deploy": "npx wrangler d1 execute funing-db --file=./schema.sql"
+    "db:deploy": "npx wrangler d1 execute funing-db --remote --file=./schema.sql"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
