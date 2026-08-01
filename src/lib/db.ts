@@ -14,10 +14,28 @@ export function setR2(r2: any) {
   r2Instance = r2;
 }
 
+// On Cloudflare Workers (via @opennextjs/cloudflare), bindings are exposed
+// through getCloudflareContext().env, not globalThis.env. We resolve lazily
+// so that `next dev` (no CF context) still works via setDB/setR2 overrides.
+function resolveCloudflareEnv(): { DB?: any; R2?: any } | null {
+  try {
+    // Lazy require to avoid bundling the module in non-CF environments.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getCloudflareContext } = require('@opennextjs/cloudflare') as {
+      getCloudflareContext: (opts?: { async?: boolean }) => { env: any };
+    };
+    return getCloudflareContext().env;
+  } catch {
+    return null;
+  }
+}
+
 export function getDB(): any {
   if (!dbInstance) {
-    // For edge runtime, get from globalThis
-    dbInstance = (globalThis as any).env?.DB;
+    const env = resolveCloudflareEnv();
+    if (env?.DB) {
+      dbInstance = env.DB;
+    }
   }
   if (!dbInstance) {
     throw new Error('D1 database not initialized. Call setDB() or ensure env.DB is available.');
@@ -27,7 +45,10 @@ export function getDB(): any {
 
 export function getR2(): any {
   if (!r2Instance) {
-    r2Instance = (globalThis as any).env?.R2;
+    const env = resolveCloudflareEnv();
+    if (env?.R2) {
+      r2Instance = env.R2;
+    }
   }
   if (!r2Instance) {
     throw new Error('R2 bucket not initialized. Call setR2() or ensure env.R2 is available.');

@@ -26,8 +26,14 @@ function formatSize(bytes: number): string {
 }
 
 function formatDate(iso: string): string {
+  if (!iso) return '—';
   try {
-    return new Date(iso).toLocaleDateString();
+    // SQLite CURRENT_TIMESTAMP produces "YYYY-MM-DD HH:MM:SS" (space separator),
+    // which Safari parses as Invalid Date. Normalize to ISO with a "T".
+    const normalized = iso.replace(' ', 'T');
+    const date = new Date(normalized);
+    if (Number.isNaN(date.getTime())) return iso;
+    return date.toLocaleDateString();
   } catch {
     return iso;
   }

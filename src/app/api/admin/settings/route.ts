@@ -11,6 +11,8 @@ const ALLOWED_KEYS = [
   'gtm_id',
 ];
 
+const MAX_VALUE_LENGTH = 500;
+
 export async function GET() {
   try {
     const user = await getSession();
@@ -45,6 +47,12 @@ export async function POST(request: NextRequest) {
     for (const [key, value] of Object.entries(body)) {
       if (!ALLOWED_KEYS.includes(key)) continue;
       if (typeof value !== 'string') continue;
+      if (value.length > MAX_VALUE_LENGTH) {
+        return NextResponse.json(
+          { error: `Value for "${key}" exceeds ${MAX_VALUE_LENGTH} characters.` },
+          { status: 400 }
+        );
+      }
 
       const existing = await queryFirst(
         'SELECT key FROM site_settings WHERE key = ?',

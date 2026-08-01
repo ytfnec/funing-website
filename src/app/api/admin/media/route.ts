@@ -7,10 +7,42 @@ const ALLOWED_MIME = new Set([
   'image/png',
   'image/webp',
   'image/gif',
-  'image/svg+xml',
   'image/avif',
 ]);
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+// Lightweight magic-byte sniffing for the allowed image types.
+// Guards against files whose declared type doesn't match their content.
+function sniffImageType(bytes: Uint8Array): string | null {
+  // JPEG: FF D8 FF
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return 'image/jpeg';
+  }
+  // PNG: 89 50 4E 47
+  if (bytes.length >= 4 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+    return 'image/png';
+  }
+  // GIF: "GIF8"
+  if (bytes.length >= 4 && bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38) {
+    return 'image/gif';
+  }
+  // WEBP: "RIFF" .... "WEBP"
+  if (
+    bytes.length >= 12 &&
+    bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
+    bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50
+  ) {
+    return 'image/webp';
+  }
+  // AVIF: starts with ISO BMFF ("ftyp") — box size + "ftyp" + brand
+  if (
+    bytes.length >= 12 &&
+    bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70
+  ) {
+    return 'image/avif';
+  }
+  return null;
+}
 
 export async function GET() {
   try {
@@ -45,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     if (!ALLOWED_MIME.has(file.type)) {
       return NextResponse.json(
-        { error: `Unsupported file type: ${file.type}. Allowed: jpeg, png, webp, gif, svg, avif` },
+        { error: `Unsupported file type: ${file.type}. Allowed: jpeg, png, webp, gif, avif` },
         { status: 400 }
       );
     }
@@ -57,23 +89,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+    const arrayBuffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(arrayBuffer);
+    const sniffed = sniffImageType(bytes);
+    if (!sniffed) {
+      return NextResponse.json(
+        { error: 'File content does not match a supported image format.' },
+        { status: 400 }
+      );
+    }
+
+    // Use the sniffed type (more trustworthy than the client-declared one)
+    const mimeType = sniffed;
+    const ext = (mimeType.split('/')[1] === 'jpeg' ? 'jpg' : mimeType.split('/')[1]);
     const id = generateId('media');
     const r2Key = `media/${id}.${ext}`;
 
     // Upload to R2
     const r2 = getR2();
-    const arrayBuffer = await file.arrayBuffer();
     await r2.put(r2Key, arrayBuffer, {
-      httpMetadata: { contentType: file.type },
+      httpMetadata: { contentType: mimeType },
     });
 
-    // Record metadata in D1
-    await execute(
-      `INSERT INTO media_library (id, filename, original_name, mime_type, size, r2_key, alt_text, uploaded_by, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, r2Key, file.name, file.type, file.size, r2Key, altText, user.id, nowISO()]
-    );
+    const createdAt = nowISO();
+
+    // Record metadata in D1; if this fails, roll back the R2 object
+    try {
+      await execute(
+        `INSERT INTO media_library (id, filename, original_name, mime_type, size, r2_key, alt_text, uploaded_by, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, r2Key, file.name, mimeType, file.size, r2Key, altText, user.id, createdAt]
+      );
+    } catch (dbError) {
+      // Roll back the orphaned R2 object so we don't leak storage.
+      try {
+        await r2.delete(r2Key);
+      } catch {
+        // best-effort cleanup
+      }
+      throw dbError;
+    }
 
     return NextResponse.json({
       success: true,
@@ -81,10 +136,11 @@ export async function POST(request: NextRequest) {
         id,
         filename: r2Key,
         original_name: file.name,
-        mime_type: file.type,
+        mime_type: mimeType,
         size: file.size,
         r2_key: r2Key,
         alt_text: altText,
+        created_at: createdAt,
       },
     });
   } catch (error) {
