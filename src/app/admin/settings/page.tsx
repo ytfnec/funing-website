@@ -1,32 +1,84 @@
 'use client';
 
-import { useState } from 'react';
-import { Save, Loader2, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Save, Loader2, Check, AlertCircle } from 'lucide-react';
+
+interface Settings {
+  site_name: string;
+  site_tagline: string;
+  contact_email: string;
+  contact_phone: string;
+  ga_measurement_id: string;
+  gtm_id: string;
+}
+
+const DEFAULT_SETTINGS: Settings = {
+  site_name: 'Funing Electronics',
+  site_tagline: 'Precision Electronic Control Systems. Engineered in Yantai, China.',
+  contact_email: 'info@fnec.net',
+  contact_phone: '+86 535-6778069',
+  ga_measurement_id: '',
+  gtm_id: '',
+};
 
 export default function AdminSettings() {
-  const [settings, setSettings] = useState({
-    site_name: 'Funing Electronics',
-    site_tagline: 'Precision Electronic Control Systems. Engineered in Yantai, China.',
-    contact_email: 'info@fnec.net',
-    contact_phone: '+86 535-6778069',
-    ga_measurement_id: '',
-    gtm_id: '',
-  });
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
 
-  const update = (key: string, value: string) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch('/api/admin/settings');
+        if (res.ok) {
+          const data = await res.json();
+          setSettings((prev) => ({ ...prev, ...data.settings }));
+        }
+      } catch {}
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  const update = (key: keyof Settings, value: string) => {
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSave = async () => {
     setSaving(true);
-    // Mock save
-    await new Promise(r => setTimeout(r, 800));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setError('');
+    setSaved(false);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Save failed');
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e: any) {
+      setError(e.message || 'Failed to save settings');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 animate-spin text-[var(--amber)]" />
+      </div>
+    );
+  }
+
+  const inputClass = "w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.2)] focus:outline-none focus:border-[var(--amber)] transition-colors";
+  const labelClass = "block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2";
 
   return (
     <div>
@@ -47,6 +99,13 @@ export default function AdminSettings() {
         </button>
       </div>
 
+      {error && (
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
       <div className="max-w-[600px] space-y-6">
         {/* Site Info */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
@@ -55,14 +114,14 @@ export default function AdminSettings() {
             {[
               { key: 'site_name', label: 'Site Name' },
               { key: 'site_tagline', label: 'Tagline' },
-            ].map(field => (
+            ].map((field) => (
               <div key={field.key}>
-                <label className="block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{field.label}</label>
+                <label className={labelClass}>{field.label}</label>
                 <input
                   type="text"
-                  value={(settings as any)[field.key]}
-                  onChange={(e) => update(field.key, e.target.value)}
-                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)]"
+                  value={settings[field.key as keyof Settings]}
+                  onChange={(e) => update(field.key as keyof Settings, e.target.value)}
+                  className={inputClass}
                 />
               </div>
             ))}
@@ -76,14 +135,14 @@ export default function AdminSettings() {
             {[
               { key: 'contact_email', label: 'Email', type: 'email' },
               { key: 'contact_phone', label: 'Phone', type: 'tel' },
-            ].map(field => (
+            ].map((field) => (
               <div key={field.key}>
-                <label className="block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{field.label}</label>
+                <label className={labelClass}>{field.label}</label>
                 <input
                   type={field.type}
-                  value={(settings as any)[field.key]}
-                  onChange={(e) => update(field.key, e.target.value)}
-                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)]"
+                  value={settings[field.key as keyof Settings]}
+                  onChange={(e) => update(field.key as keyof Settings, e.target.value)}
+                  className={inputClass}
                 />
               </div>
             ))}
@@ -97,15 +156,15 @@ export default function AdminSettings() {
             {[
               { key: 'ga_measurement_id', label: 'Google Analytics ID', placeholder: 'G-XXXXXXXXXX' },
               { key: 'gtm_id', label: 'Google Tag Manager ID', placeholder: 'GTM-XXXXXXX' },
-            ].map(field => (
+            ].map((field) => (
               <div key={field.key}>
-                <label className="block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{field.label}</label>
+                <label className={labelClass}>{field.label}</label>
                 <input
                   type="text"
-                  value={(settings as any)[field.key]}
-                  onChange={(e) => update(field.key, e.target.value)}
+                  value={settings[field.key as keyof Settings]}
+                  onChange={(e) => update(field.key as keyof Settings, e.target.value)}
                   placeholder={field.placeholder}
-                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.2)] focus:outline-none focus:border-[var(--amber)]"
+                  className={inputClass}
                 />
               </div>
             ))}
