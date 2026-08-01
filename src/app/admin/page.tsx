@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Package, Mail, FileText, TrendingUp, Activity, Users, ArrowUpRight } from 'lucide-react';
+import { Package, Mail, FileText, ArrowUpRight } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
-    products: 4,
-    contacts: 12,
+    products: 0,
+    contacts: 0,
     pages: 9,
-    views: 1234,
   });
   const [recentContacts, setRecentContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,11 +16,25 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/admin/contacts?limit=5');
-        if (res.ok) {
-          const data = await res.json();
-          setRecentContacts(data.contacts || []);
-        }
+        const [productsRes, contactsRes] = await Promise.all([
+          fetch('/api/admin/products'),
+          fetch('/api/admin/contacts?limit=5'),
+        ]);
+
+        const [productsData, contactsData] = await Promise.all([
+          productsRes.ok ? productsRes.json() : { products: [] },
+          contactsRes.ok ? contactsRes.json() : { contacts: [] },
+        ]);
+
+        const products = productsData.products || [];
+        const contacts = contactsData.contacts || [];
+
+        setStats((prev) => ({
+          ...prev,
+          products: products.length,
+          contacts: contacts.length,
+        }));
+        setRecentContacts(contacts);
       } catch {}
       setLoading(false);
     }

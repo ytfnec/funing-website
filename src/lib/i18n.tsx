@@ -28,6 +28,7 @@ const translations = {
     'footer.techSupport': 'Technical Support',
     'footer.productInquiry': 'Product Inquiry',
     'footer.aboutUs': 'About Us',
+    'footer.partner': 'Partner Program',
     'footer.resources': 'Resources',
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
@@ -431,6 +432,18 @@ const translations = {
     'elevate.desc': "We're looking for distribution partners in key markets. If you sell sauna equipment, textile machinery, or electronic components — let's talk about a partnership.",
     'elevate.btn1': 'Apply Now →',
     'elevate.btn2': 'Learn About Us',
+
+    // ─── Not Found ───
+    'notfound.eyebrow': '404',
+    'notfound.title': 'Page Not Found',
+    'notfound.desc': "The page you're looking for doesn't exist or has been moved.",
+    'notfound.home': 'Back to Home',
+    'notfound.contact': 'Contact Us',
+
+    // ─── Thank You ───
+    'thankyou.title': 'Thank You!',
+    'thankyou.desc': "We've received your request. Our team will be in touch shortly.",
+    'thankyou.home': 'Back to Home',
   },
   zh: {
     // ─── Nav / Shared ───
@@ -455,6 +468,7 @@ const translations = {
     'footer.techSupport': '技术支持',
     'footer.productInquiry': '产品咨询',
     'footer.aboutUs': '关于我们',
+    'footer.partner': '合作伙伴计划',
     'footer.resources': '技术资源',
     'footer.privacy': '隐私政策',
     'footer.terms': '服务条款',
@@ -858,6 +872,18 @@ const translations = {
     'elevate.desc': '我们正在重点市场寻找经销合作伙伴。如果您销售桑拿设备、纺织机械或电子元器件——欢迎洽谈合作。',
     'elevate.btn1': '立即申请 →',
     'elevate.btn2': '了解我们',
+
+    // ─── Not Found ───
+    'notfound.eyebrow': '404',
+    'notfound.title': '页面未找到',
+    'notfound.desc': '您访问的页面不存在或已被移动。',
+    'notfound.home': '返回首页',
+    'notfound.contact': '联系我们',
+
+    // ─── Thank You ───
+    'thankyou.title': '谢谢您！',
+    'thankyou.desc': '我们已收到您的请求，团队将尽快与您联系。',
+    'thankyou.home': '返回首页',
   },
 } as const;
 

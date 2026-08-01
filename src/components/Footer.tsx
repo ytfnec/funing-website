@@ -19,6 +19,7 @@ export function Footer() {
     ],
     [t('footer.company')]: [
       { label: t('footer.aboutUs'), href: '/about' },
+      { label: t('footer.partner'), href: '/elevate' },
       { label: t('nav.contact'), href: '/contact' },
       { label: t('footer.resources'), href: '/resources' },
     ],

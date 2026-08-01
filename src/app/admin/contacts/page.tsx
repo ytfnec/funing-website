@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Clock, Loader2, ChevronDown, ExternalLink } from 'lucide-react';
+import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2 } from 'lucide-react';
 
 interface Contact {
   id: string;
@@ -9,6 +9,7 @@ interface Contact {
   name: string;
   email: string;
   phone: string | null;
+  company: string | null;
   location: string | null;
   message: string | null;
   product_interest: string | null;
@@ -102,6 +103,11 @@ export default function AdminContacts() {
               {expanded === c.id && (
                 <div className="px-5 pb-5 border-t border-[rgba(255,255,255,0.06)] pt-4 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
+                    {c.company && (
+                      <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
+                        <Building2 className="w-4 h-4" /> {c.company}
+                      </div>
+                    )}
                     {c.phone && (
                       <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
                         <Phone className="w-4 h-4" /> {c.phone}
