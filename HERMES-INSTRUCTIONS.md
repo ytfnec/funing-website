@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 更新: 2026-08-02（第七批）· 来源: Claude Code
+> 更新: 2026-08-02（第八批）· 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 1 个未推送提交：`d879aec`（admin 联系表单 notes 编辑）。
+本地有 1 个未推送提交：`43412b5`（联系表单补全偏好字段）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -31,10 +31,12 @@ npm run deploy
 for u in "/" "/admin/login" "/products" "/contact" "/quote" "/api/content"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
+
+# 联系页应含首选联系方式下拉
+curl -s "https://fnec.net/contact" | grep -o "preferred\|Best Time\|bestTime" | head -2
 ```
 
-预期：全部 200。此改动主要在后台（admin contacts 展开后有 Internal Notes 编辑区），浏览器验证更直观：
-- 登录 https://fnec.net/admin → Contacts → 展开任一联系 → 应看到 Internal Notes 区（可点击添加/编辑）
+预期：全部 200；联系页含首选联系方式/最佳时间字段。
 
 ---
 
@@ -42,6 +44,6 @@ done
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ 已完成 | 50bb95d..d6efa7e 推送成功 |
-| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `58f7ee09-011b-49a7-84aa-9f5687714f7f` |
-| 3 验证 | ✅ 通过 | 6 路由全 200；浏览器实测：Contacts 展开 → Update status 4 态 + INTERNAL NOTES 编辑区（"No notes yet — click to add" → 输入保存 → 显示备注）全流程正常；测试数据已清理 |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
