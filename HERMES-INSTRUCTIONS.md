@@ -62,7 +62,7 @@ npx wrangler d1 execute funing-db --remote --command "DELETE FROM newsletter_sub
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 API 测试 | 待执行 | |
+|| 1 推代码 | ✅ 已完成 | 远程 origin/master = 25615dc（与本地一致，运营功能已推送） |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf 成功 → deploy Version `d0a87257-84a8-4fe0-8669-f2fc4e2f596c` |
+| 3 验证 | ✅ 通过 | 7 路由全 200；首页含 newsletter；联系页含 name="website" honeypot |
+| 4 API 测试 | ✅ 通过 | newsletter 订阅成功且测试记录已删；contact honeypot 返回 spam-filtered（静默拦截）；正常提交落库后已清理 |
