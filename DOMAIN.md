@@ -59,32 +59,39 @@
 # 登录
 npx wrangler login
 
-# Pages secret（注意：本项目实际部署在 Pages，不是 Workers！）
-npx wrangler pages secret put JWT_SECRET --project-name funing-website
+# Worker secret（项目已部署到 Workers，不是 Pages！）
+npx wrangler secret put JWT_SECRET
 
 # 线上 D1 执行 SQL
 npx wrangler d1 execute funing-db --file=./schema.sql --remote
 npx wrangler d1 execute funing-db --remote --command "SELECT * FROM admin_users;"
-
-# 查看 Pages 项目
-npx wrangler pages project list
-npx wrangler pages secret list --project-name funing-website
 ```
 
-> ⚠️ **部署模式已从 Pages 迁移到 Workers**（OpenNext 官方唯一支持的部署方式）。
-> 本项目用 `wrangler.toml`（Workers 模式），部署命令：`npm run deploy`
-> （内部执行 `wrangler deploy`）。**不要再使用** `wrangler pages ...` 命令。
+> ✅ **部署模式：Workers**（2026-08-02 已从 Pages 迁移）。本项目用 `wrangler.toml`
+> （Workers 模式），部署命令见下节。**不要再使用** `wrangler pages ...` 命令。
 
 ## 六、从 Pages 迁移到 Workers（2026-08-02）
 
-之前线上是 Pages 项目，但 OpenNext 输出的是 Workers 产物，Pages 不运行 worker，
-导致动态功能（admin/联系表单/SSR）500。已决定切到 Workers：
+之前线上是 Pages 项目，首页 500。**最初误判**为"Pages 不运行 worker"，实际根因是
+**Next.js 16 Turbopack 构建 + OpenNext 在 Windows 上的补丁 bug**（opennextjs-cloudflare
+issue #1305，症状 `ComponentMod.handler is not a function`；issue #1286 证实 Webpack 可绕开）。
 
-1. **删除 Pages 项目** `funing-website`（Workers & Pages → Pages → Delete）
-2. **重设 Worker Secrets**（Workers 与 Pages 的 secret 独立）：
-   ```bash
-   npx wrangler secret put JWT_SECRET
-   ```
-3. **构建并部署**：`npm run deploy`（自动 build + wrangler deploy）
-4. **重绑域名** `fnec.net`：Worker → Settings → Domains → Add 域名，DNS 配 CNAME
-5. **验证**：访问 `fnec.net` 首页、admin 登录、提交联系表单
+**真正的修复**：`build` 脚本用 Webpack 替代 Turbopack：
+```json
+"build": "next build --webpack"
+```
+
+已完成的迁移步骤：
+1. **删除 Pages 项目** `funing-website`（已删）
+2. **Worker `funing-website`** 已创建，`JWT_SECRET` 已设（64字符）
+3. **部署**：`npm run build:cf && npm run deploy`（Webpack 产物，Version `8e135127`）
+4. **绑域名** `fnec.net`：已完成（HTTP 200）
+5. **验证**：首页/admin/API/联系表单全部通过
+
+**后续部署命令**（每次改代码）：
+```bash
+npm run build:cf   # 必须先 build（OpenNext 1.20 的 deploy 不自动 build）
+npm run deploy
+```
+> Windows 排障陷阱：改 build 脚本后必须 `rm -rf .next .open-next` 再重建，
+> 否则复用旧 Turbopack 产物；构建前清理残留 `next dev`/`wrangler dev` 进程避免锁文件。
