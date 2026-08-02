@@ -71,6 +71,6 @@ npx wrangler tail --format pretty
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 确认无未推送 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 确认无未推送 | ✅ | 加固提交 `8373bff` 已在 origin/master；本地未推送仅指令提交本身（随本回报推送） |
+| 2 构建部署 | ✅ | 清缓存后 `npm run build:cf` 成功（webpack/OpenNext，产物 6.8MB gzip 1.38MB，远小于异常版本 32MB）；`npm run deploy` 成功，Version ID `4788d816-eaf9-4da3-b710-380d418eddbd`，deployments list 确认 100% 接管 |
+| 3 验证 | ✅ | 3.1 八条公开路由全部 200；3.2 `/api/products` `/api/news` `/api/products/sauna-controllers` 均返回 `cache-control: public, s-maxage=60, stale-while-revalidate=300`；3.3 wrangler tail 连续请求全部 `Ok`，无 CPU time limit / exceeded |
