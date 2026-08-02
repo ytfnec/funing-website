@@ -47,6 +47,8 @@ export default function AdminMedia() {
   const [uploaded, setUploaded] = useState('');
   const [editingAlt, setEditingAlt] = useState<string | null>(null);
   const [altDraft, setAltDraft] = useState('');
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -101,8 +103,54 @@ export default function AdminMedia() {
         throw new Error(data.error || 'Delete failed');
       }
       setMedia((prev) => prev.filter((m) => m.id !== item.id));
+      setSelected((prev) => {
+        if (!prev.has(item.id)) return prev;
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
     } catch (err: any) {
       setError(err.message || 'Delete failed');
+    }
+  };
+
+  const allSelected = media.length > 0 && media.every((m) => selected.has(m.id));
+
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    setSelected(allSelected ? new Set() : new Set(media.map((m) => m.id)));
+  };
+
+  const runBulkDelete = async () => {
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    if (!confirm(`Delete ${ids.length} selected file(s)? This cannot be undone.`)) return;
+    setBusy(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/media/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', ids }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Bulk action failed');
+      setUploaded(`${ids.length} file(s) deleted`);
+      setTimeout(() => setUploaded(''), 2500);
+      setSelected(new Set());
+      setMedia((prev) => prev.filter((m) => !ids.includes(m.id)));
+    } catch (err: any) {
+      setError(err.message || 'Bulk action failed');
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -189,12 +237,48 @@ export default function AdminMedia() {
           </label>
         </div>
       ) : (
+        <>
+        {/* Bulk action toolbar */}
+        <div className="mb-4 bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 accent-[var(--amber)]"
+            />
+            <span className="text-sm text-[var(--soft-white)]">
+              {selected.size > 0 ? `${selected.size} selected` : 'Select all'}
+            </span>
+          </label>
+          <div className="flex items-center gap-2 sm:ml-auto">
+            <button
+              onClick={runBulkDelete}
+              disabled={selected.size === 0 || busy}
+              className="btn btn-secondary text-xs py-1.5 px-3 text-red-400 hover:border-red-400/50 disabled:opacity-40"
+              title="Delete selected files"
+            >
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />} Delete Selected
+            </button>
+          </div>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {media.map((item) => (
             <div
               key={item.id}
-              className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg overflow-hidden group"
+              className={`relative bg-[#0a0a0a] border rounded-lg overflow-hidden group transition-colors ${
+                selected.has(item.id) ? 'border-[rgba(216,163,90,0.55)]' : 'border-[rgba(255,255,255,0.06)]'
+              }`}
             >
+              <div className="absolute top-2 left-2 z-10">
+                <input
+                  type="checkbox"
+                  checked={selected.has(item.id)}
+                  onChange={() => toggleSelect(item.id)}
+                  className="w-4 h-4 accent-[var(--amber)] cursor-pointer"
+                  title={`Select ${item.original_name}`}
+                />
+              </div>
               <div className="aspect-square bg-[#050505] flex items-center justify-center overflow-hidden">
                 {item.mime_type.startsWith('image/') && hasPublicUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -268,6 +352,7 @@ export default function AdminMedia() {
             </div>
           ))}
         </div>
+        </>
       )}
 
       <div className="mt-6 p-6 bg-[rgba(216,163,90,0.05)] border border-[rgba(216,163,90,0.15)] rounded-lg">
