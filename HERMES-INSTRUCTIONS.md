@@ -51,6 +51,6 @@ curl -s "https://fnec.net/products/sauna-controllers" | grep -o 'aria-label="Bre
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ 已完成 | 33db552..a292c04 推送成功 |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf 成功 → deploy 成功（6 assets 更新） |
+| 3 验证 | ✅ 通过 | 6 路由全 200（含 /thank-you）；登录页含 "Funing" 品牌标记；产品页含 aria-label="Breadcrumb" |
