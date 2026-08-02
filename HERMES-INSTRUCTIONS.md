@@ -13,8 +13,7 @@
 
 ## 任务 1：推代码（终端）
 
-本地有 3 个未推送提交：
-- `9b79bf3`（新闻详情页补 NewsArticle JSON-LD）
+本地有 2 个未推送提交（`9b79bf3` JSON-LD 修复已被推送到 origin/master，但尚未部署上线——本批部署将包含它）：
 - `3e0309a`（HANDOFF-LOG 批次记录更新）
 - `XXXXXXX`（本指令文件，Hermes 推代码前由你 `git rev-parse --short HEAD` 核对实际哈希即可，无需修改本文）
 
