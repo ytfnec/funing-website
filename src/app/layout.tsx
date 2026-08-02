@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     siteName: "Funing Electronics",
     type: "website",
     locale: "en_US",
-    images: [{ url: "/opengraph.jpg", width: 1200, height: 630 }],
+    images: [{ url: "/opengraph.png", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
@@ -35,7 +35,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  name: 'Funing Electronics',
+                  alternateName: '烟台富宁电子有限公司',
+                  url: 'https://fnec.net',
+                  email: 'info@fnec.net',
+                  telephone: '+86-535-6778069',
+                  address: {
+                    '@type': 'PostalAddress',
+                    addressCountry: 'CN',
+                    addressRegion: 'Shandong',
+                    addressLocality: 'Yantai',
+                  },
+                  description: 'Infrared sauna controllers, jacquard machine driver cards, and electronic control OEM/ODM. 红外桑拿控制器、提花机电控、OEM/ODM定制。',
+                },
+                {
+                  '@type': 'WebSite',
+                  name: 'Funing Electronics',
+                  url: 'https://fnec.net',
+                  inLanguage: ['en', 'zh-CN'],
+                },
+              ],
+            }),
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col bg-[#050505] text-[#f7f5ef]">
         <LanguageProvider>

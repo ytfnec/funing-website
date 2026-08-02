@@ -180,10 +180,29 @@ export default function ProductDetailPage() {
     };
   }, [slug, fallback]);
 
+  // Dynamic SEO metadata + Product JSON-LD (client-side since page uses useLang).
   useEffect(() => {
-    if (product?.name) {
-      document.title = `${product.name} | Funing Electronics`;
-    }
+    if (!product?.name) return;
+    const desc = product.long_description || product.short_description || 'Funing Electronics product.';
+
+    document.title = `${product.name} | Funing Electronics`;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+
+    // Open Graph / Twitter
+    const setMeta = (selector: string, attr: string, value: string) => {
+      let el = document.head.querySelector(selector);
+      if (!el) {
+        el = document.createElement('meta');
+        const parts = selector.replace('meta[', '').replace(']', '').split('=');
+        el.setAttribute(parts[0], parts[1].replace(/"/g, ''));
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attr, value);
+    };
+    setMeta('meta[property="og:title"]', 'content', `${product.name} | Funing Electronics`);
+    setMeta('meta[property="og:description"]', 'content', desc);
+    setMeta('meta[name="twitter:title"]', 'content', `${product.name} | Funing Electronics`);
+    setMeta('meta[name="twitter:description"]', 'content', desc);
   }, [product]);
 
   if (loading) {
@@ -224,6 +243,37 @@ export default function ProductDetailPage() {
     <>
       {/* Hero */}
       <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505]">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Product',
+              name: product.name,
+              description: product.long_description || product.short_description || undefined,
+              image: product.hero_image || undefined,
+              brand: { '@type': 'Brand', name: 'Funing Electronics' },
+              manufacturer: {
+                '@type': 'Organization',
+                name: 'Yantai Funing Electronics Co., Ltd.',
+              },
+              // Omit the offers block entirely when price_range is prose
+              // (no parseable numeric price), to avoid invalid Offer markup.
+              ...(product.price_range
+                ? {
+                    offers: {
+                      '@type': 'Offer',
+                      priceCurrency: 'USD',
+                      price: '0', // contact for pricing
+                      availability: product.in_stock === 1
+                        ? 'https://schema.org/InStock'
+                        : 'https://schema.org/OutOfStock',
+                    },
+                  }
+                : {}),
+            }),
+          }}
+        />
         <div className="max-w-[1280px] mx-auto">
           <Link href="/products" className="text-[var(--amber)] text-sm tracking-[0.14em] uppercase mb-8 inline-block hover:underline">
             ← All Products
