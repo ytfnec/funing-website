@@ -42,6 +42,6 @@ done
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ 已完成 | 50bb95d..d6efa7e 推送成功 |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `58f7ee09-011b-49a7-84aa-9f5687714f7f` |
+| 3 验证 | ✅ 通过 | 6 路由全 200；浏览器实测：Contacts 展开 → Update status 4 态 + INTERNAL NOTES 编辑区（"No notes yet — click to add" → 输入保存 → 显示备注）全流程正常；测试数据已清理 |
