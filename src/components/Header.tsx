@@ -22,6 +22,7 @@ export function Header() {
     { href: '/oem', label: t('nav.oem') },
     { href: '/accessories', label: t('nav.accessories') },
     { href: '/about', label: t('nav.about') },
+    { href: '/news', label: t('nav.news') },
     { href: '/contact', label: t('nav.contact') },
   ];
 

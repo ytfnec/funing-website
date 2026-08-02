@@ -16,12 +16,28 @@ export async function GET() {
       ),
     ]);
 
+    // News count may 0 out if the table predates the schema and is empty —
+    // never let it break the whole stats endpoint.
+    let news = 0;
+    try {
+      const newsCount = await queryFirst<{ n: number }>(
+        "SELECT COUNT(*) as n FROM news_article WHERE status = 'published'"
+      );
+      news = newsCount?.n ?? 0;
+    } catch {
+      try {
+        const newsCount = await queryFirst<{ n: number }>('SELECT COUNT(*) as n FROM news_article');
+        news = newsCount?.n ?? 0;
+      } catch {}
+    }
+
     return NextResponse.json({
       stats: {
         products: products?.n ?? 0,
         contacts: contacts?.n ?? 0,
         views: views?.n ?? 0,
         viewsToday: viewsToday?.n ?? 0,
+        news,
       },
     });
   } catch (error) {

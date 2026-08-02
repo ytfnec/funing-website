@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-  LayoutDashboard, Package, FileText, Mail, Settings, LogOut, ChevronRight, Menu, X, Image as ImageIcon
+  LayoutDashboard, Package, FileText, Mail, Settings, LogOut, ChevronRight, Menu, X, Image as ImageIcon, Newspaper
 } from 'lucide-react';
 
 const sidebarLinks = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard', exact: true },
   { href: '/admin/products', icon: Package, label: 'Products' },
   { href: '/admin/content', icon: FileText, label: 'Content' },
+  { href: '/admin/news', icon: Newspaper, label: 'News' },
   { href: '/admin/contacts', icon: Mail, label: 'Contacts' },
   { href: '/admin/media', icon: ImageIcon, label: 'Media' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },

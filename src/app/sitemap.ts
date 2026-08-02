@@ -11,6 +11,7 @@ const STATIC_ROUTES = [
   '/contact',
   '/cookies',
   '/elevate',
+  '/news',
   '/oem',
   '/privacy',
   '/products',
@@ -50,5 +51,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...staticEntries, ...productEntries];
+  // News articles — read published slugs from D1 (status column may be absent
+  // on a pre-existing table, so fall back to listing everything).
+  let newsSlugs: string[] = [];
+  try {
+    const rows = await query<{ slug: string }>(
+      "SELECT slug FROM news_article WHERE status = 'published' ORDER BY published_at DESC"
+    );
+    newsSlugs = rows.map((r) => r.slug);
+  } catch {
+    try {
+      const rows = await query<{ slug: string }>(
+        'SELECT slug FROM news_article ORDER BY created_at DESC'
+      );
+      newsSlugs = rows.map((r) => r.slug);
+    } catch {
+      newsSlugs = [];
+    }
+  }
+
+  const newsEntries: MetadataRoute.Sitemap = newsSlugs.map((slug) => ({
+    url: `${BASE_URL}/news/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }));
+
+  return [...staticEntries, ...productEntries, ...newsEntries];
 }

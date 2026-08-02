@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Package, Mail, Eye, ArrowUpRight } from 'lucide-react';
+import { Package, Mail, Eye, Newspaper, ArrowUpRight } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -10,6 +10,7 @@ export default function AdminDashboard() {
     contacts: 0,
     views: 0,
     viewsToday: 0,
+    news: 0,
   });
   const [recentContacts, setRecentContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +41,7 @@ export default function AdminDashboard() {
 
   const statCards = [
     { label: 'Products', value: stats.products, icon: Package, href: '/admin/products', color: 'var(--amber)' },
+    { label: 'News Articles', value: stats.news, icon: Newspaper, href: '/admin/news', color: '#c084fc' },
     { label: 'New Contacts', value: stats.contacts, icon: Mail, href: '/admin/contacts', color: '#60a5fa' },
     { label: 'Page Views', value: stats.views, icon: Eye, href: '#', color: '#34d399', sub: `${stats.viewsToday} in 24h` },
   ];
@@ -49,7 +51,7 @@ export default function AdminDashboard() {
       <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">Dashboard</h1>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {statCards.map((stat) => (
           <Link
             key={stat.label}
@@ -114,7 +116,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
         <Link
           href="/"
           target="_blank"
@@ -135,6 +137,13 @@ export default function AdminDashboard() {
           className="flex items-center justify-between p-5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg hover:border-[rgba(255,255,255,0.15)] transition-colors"
         >
           <span className="text-white text-sm">Manage Products</span>
+          <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
+        </Link>
+        <Link
+          href="/admin/news"
+          className="flex items-center justify-between p-5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg hover:border-[rgba(255,255,255,0.15)] transition-colors"
+        >
+          <span className="text-white text-sm">Manage News</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
       </div>

@@ -118,6 +118,20 @@ CREATE TABLE IF NOT EXISTS page_views (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS news_article (
+  id TEXT PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  excerpt TEXT,
+  content TEXT,
+  cover_image TEXT,
+  author TEXT,
+  status TEXT DEFAULT 'draft',
+  published_at DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_in_stock ON products(in_stock);
@@ -130,6 +144,9 @@ CREATE INDEX IF NOT EXISTS idx_newsletter_email ON newsletter_subscriptions(emai
 CREATE INDEX IF NOT EXISTS idx_media_r2_key ON media_library(r2_key);
 CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
 CREATE INDEX IF NOT EXISTS idx_page_views_created ON page_views(created_at);
+CREATE INDEX IF NOT EXISTS idx_news_article_status ON news_article(status);
+CREATE INDEX IF NOT EXISTS idx_news_article_published ON news_article(published_at);
+CREATE INDEX IF NOT EXISTS idx_news_article_slug ON news_article(slug);
 
 -- Triggers
 CREATE TRIGGER IF NOT EXISTS trigger_products_updated
@@ -148,6 +165,12 @@ CREATE TRIGGER IF NOT EXISTS trigger_contact_submissions_updated
 AFTER UPDATE ON contact_submissions
 BEGIN
   UPDATE contact_submissions SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS trigger_news_article_updated
+AFTER UPDATE ON news_article
+BEGIN
+  UPDATE news_article SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
 -- Seed: site settings

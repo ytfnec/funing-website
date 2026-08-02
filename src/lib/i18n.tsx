@@ -11,6 +11,7 @@ const translations = {
     'nav.oem': 'OEM/ODM',
     'nav.accessories': 'Accessories',
     'nav.about': 'About',
+    'nav.news': 'News',
     'nav.contact': 'Contact',
     'nav.quote': 'Get Quote',
     'nav.contactUs': 'Contact Us',
@@ -452,6 +453,19 @@ const translations = {
     'elevate.btn1': 'Apply Now →',
     'elevate.btn2': 'Learn About Us',
 
+    // ─── News Page ───
+    'news.hero.eyebrow': 'Company News',
+    'news.hero.title': 'News & Updates',
+    'news.hero.desc': 'Product launches, company announcements, and industry insights from Yantai Funing Electronics.',
+    'news.list.empty': 'No articles published yet. Check back soon.',
+    'news.readMore': 'Read More →',
+    'news.back': '← Back to News',
+    'news.published': 'Published',
+    'news.author': 'By',
+    'news.notFound.title': 'Article Not Found',
+    'news.notFound.desc': "The article you're looking for doesn't exist or has been removed.",
+    'news.notFound.back': 'Back to News',
+
     // ─── Not Found ───
     'notfound.eyebrow': '404',
     'notfound.title': 'Page Not Found',
@@ -470,6 +484,7 @@ const translations = {
     'nav.oem': 'OEM/ODM定制',
     'nav.accessories': '配件销售',
     'nav.about': '关于我们',
+    'nav.news': '资讯',
     'nav.contact': '联系我们',
     'nav.quote': '获取报价',
     'nav.contactUs': '联系我们',
@@ -910,6 +925,19 @@ const translations = {
     'elevate.desc': '我们正在重点市场寻找经销合作伙伴。如果您销售桑拿设备、纺织机械或电子元器件——欢迎洽谈合作。',
     'elevate.btn1': '立即申请 →',
     'elevate.btn2': '了解我们',
+
+    // ─── News Page ───
+    'news.hero.eyebrow': '公司资讯',
+    'news.hero.title': '新闻动态',
+    'news.hero.desc': '烟台富宁电子的新品发布、公司公告与行业洞察。',
+    'news.list.empty': '暂无已发布文章，敬请期待。',
+    'news.readMore': '阅读全文 →',
+    'news.back': '← 返回资讯列表',
+    'news.published': '发布于',
+    'news.author': '作者',
+    'news.notFound.title': '文章未找到',
+    'news.notFound.desc': '您访问的文章不存在或已被移除。',
+    'news.notFound.back': '返回资讯列表',
 
     // ─── Not Found ───
     'notfound.eyebrow': '404',
