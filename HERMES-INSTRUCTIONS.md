@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 更新: 2026-08-02（第六批）· 来源: Claude Code
+> 更新: 2026-08-02（第七批）· 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 1 个未推送提交：`3711a48`（产品列表类别筛选）。
+本地有 1 个未推送提交：`d879aec`（admin 联系表单 notes 编辑）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -28,15 +28,13 @@ npm run deploy
 ## 任务 3：验证
 
 ```bash
-for u in "/" "/products" "/contact" "/quote" "/thank-you" "/api/content"; do
+for u in "/" "/admin/login" "/products" "/contact" "/quote" "/api/content"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
-
-# 产品列表页应含筛选按钮（英文 "ALL" / "SAUNA CONTROL" 等）
-curl -s "https://fnec.net/products" | grep -o "SAUNA CONTROL\|Sauna Control\|filter" | head -1
 ```
 
-预期：全部 200；产品页含筛选标签。
+预期：全部 200。此改动主要在后台（admin contacts 展开后有 Internal Notes 编辑区），浏览器验证更直观：
+- 登录 https://fnec.net/admin → Contacts → 展开任一联系 → 应看到 Internal Notes 区（可点击添加/编辑）
 
 ---
 
@@ -44,6 +42,6 @@ curl -s "https://fnec.net/products" | grep -o "SAUNA CONTROL\|Sauna Control\|fil
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ 已完成 | 4310815..77e6c33 推送成功 |
-| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `c71604cb-8ccf-4553-9483-43590cc7b312` |
-| 3 验证 | ✅ 通过 | 6 路由全 200；产品页含 "sauna control" 筛选标签 |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
