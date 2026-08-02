@@ -55,5 +55,5 @@ curl -s -D - -o /dev/null "https://fnec.net/api/products" | grep -i "cache-contr
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 确认无未推送 | 待执行 | |
-| 2 线上状态确认 | 待执行 | |
+| 1 确认无未推送 | ✅ | 初始有 2 条未推送（Batch20 指令 ad80988 + 9ec9687），已 git push e758bdc..3c17581 同步 origin；推送后 `git log origin/master..HEAD` 为空，本地未推 0 条 |
+| 2 线上状态确认 | ✅ | 8 条公开/admin 路由（/、/products、/news、/contact、/quote、/admin/login、/sitemap.xml、/robots.txt）全部 HTTP 200；`/api/products` 返回 `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`（batch 19 perf 硬化生效）；部署列表确认当前线上 Version = **4788d816-eaf9-4da3-b710-380d418eddbd**（batch 19，100% 流量）；本批未构建未部署 |
