@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第十批 · 更新: 2026-08-02 · 来源: Claude Code
+> 批次: 第十一批 · 更新: 2026-08-02 · 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 1 个未推送开发提交：`9e83791`（首页 CTA PCB 纹理增强）。
+本地有 1 个未推送开发提交：`24dbba9`（性能优化：字体自托管 + favicon 内联 + 图片加载优化）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -16,7 +16,7 @@ git push
 
 ## 任务 2：清缓存 + 构建 + 部署
 
-> ⚠️ 必须清缓存（`rm -rf .next .open-next`），构建前确认无残留 node 进程。
+> ⚠️ 必须清缓存（`rm -rf .next .open-next`），构建前确认无残留 node 进程（`tasklist | grep node`）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -33,7 +33,23 @@ for u in "/" "/admin/login" "/products" "/contact" "/quote" "/api/content" "/sit
 done
 ```
 
-预期：全部 200。此改动为视觉增强（首页底部 CTA 加了 PCB 纹理叠加），浏览器查看 `https://fnec.net` 滚动到底部 CTA 区确认正常渲染、无报错即可。
+预期：全部 200。
+
+**性能改动专项验证**（本批核心，抓首页 HTML 检查 3 个点）：
+
+```bash
+curl -s https://fnec.net > /tmp/home.html
+echo "1. 字体为自托管 woff2（应输出 _next/static/media 路径，且不含 fonts.googleapis.com）:"
+grep -o '/_next/static/media/[^"]*\.woff2' /tmp/home.html | head -2
+grep -c 'fonts.googleapis.com' /tmp/home.html   # 预期 0
+echo "2. favicon 为内联 data URI（应含 data:image/svg+xml;base64）:"
+grep -o 'rel="icon" href="data:image/svg+xml;base64[^"]*' /tmp/home.html | head -1
+echo "3. hero 图片 priority / CTA 图片 lazy（应各命中 1 次）:"
+grep -o 'hero-1920\.webp[^>]*' /tmp/home.html | head -1
+grep -o 'loading="lazy"' /tmp/home.html | wc -l
+```
+
+预期：① 出现 `/_next/static/media/*.woff2` 且 googleapis 计数为 0；② 出现 `data:image/svg+xml;base64`；③ hero 为 priority 图、lazy 命中 ≥1。浏览器打开 `https://fnec.net` 确认首页 hero 图正常显示、控制台 0 报错、Network 面板无 Google Fonts 外部请求。
 
 ---
 
@@ -41,6 +57,6 @@ done
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ 已完成 | cef17e9..bb2539a 推送成功（含 9e83791 代码 + bb2539a 指令） |
-| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `9b023d4d-4ec0-4043-bf45-1d48471dc416` |
-| 3 验证 | ✅ 通过 | 8 路由全 200；浏览器实测首页 CTA 区：纹理叠加层正常（`/assets/cta-bg.webp` → 200 image/webp 103KB，absolute inset-0 z-0 + object-cover），控制台 0 错误 |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |

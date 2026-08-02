@@ -98,3 +98,14 @@ for u in "/" "/admin/login" "/api/products" "/products" "/contact"; do
 done
 curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(sys.stdin);print('products:',len(d))"
 ```
+
+## 八、功能队列进度（Claude Code 自动开发循环，2026-08-02 起）
+
+> 每次完成一批在此更新，供后续轮次对照。
+
+| 批 | 功能 | 状态 | 提交/说明 |
+|----|------|------|-----------|
+| 1 | 首页 CTA 区块真实图片（PCB 纹理 `cta-bg.webp` 叠加） | ✅ 已部署 | `9e83791` |
+| 2 | 性能优化：next/image sizes/lazy、字体自托管(preload)、关键资源内联 | ✅ 已部署 | `24dbba9`，详见第十一批指令 |
+
+剩余队列：3) admin Content 批量操作  4) 新闻 /news 列表页 + admin 管理  5) 全量回归验证  6) 骨架屏 + 错误边界  7) 产品详情 hero_image  8) 后台 Media 批量操作
