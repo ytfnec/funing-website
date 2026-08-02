@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Calendar, User, ArrowLeft } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
+import { NewsArticleSkeleton } from '@/components/Skeleton';
 import type { NewsArticle } from '@/lib/news';
 
 export default function NewsArticlePage() {
@@ -56,11 +57,7 @@ export default function NewsArticlePage() {
   };
 
   if (loading) {
-    return (
-      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(60px,8vw,100px)] bg-[#050505] min-h-[70vh] flex items-start justify-center">
-        <div className="w-6 h-6 border-2 border-[var(--amber)] border-t-transparent rounded-full animate-spin" />
-      </section>
-    );
+    return <NewsArticleSkeleton />;
   }
 
   if (notFound || !article) {

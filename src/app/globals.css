@@ -198,6 +198,32 @@
     background-size: 32px 32px;
   }
 
+  /* Skeleton loading primitives (route loading.tsx + client fetch states).
+     A muted dark block with a slow amber shimmer. The global
+     prefers-reduced-motion rule above freezes the animation for
+     reduced-motion users — the base block remains visible. */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(216, 163, 90, 0.10), transparent);
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
   /* Smooth FAQ accordion expansion */
   details.faq-item > .faq-panel {
     display: grid;

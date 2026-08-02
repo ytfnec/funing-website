@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLang } from '@/lib/i18n';
-import { ArrowRight, Check, Shield, Clock, Zap, Package, Loader2 } from 'lucide-react';
+import { ArrowRight, Check, Shield, Clock, Zap, Package } from 'lucide-react';
+import { ProductDetailSkeleton } from '@/components/Skeleton';
 
 interface Product {
   id: string;
@@ -206,11 +207,7 @@ export default function ProductDetailPage() {
   }, [product]);
 
   if (loading) {
-    return (
-      <section className="px-page py-32 flex items-center justify-center bg-[#050505] min-h-[60vh]">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--amber)]" />
-      </section>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (notFound || !product) {

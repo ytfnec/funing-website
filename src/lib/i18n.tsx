@@ -466,6 +466,13 @@ const translations = {
     'news.notFound.desc': "The article you're looking for doesn't exist or has been removed.",
     'news.notFound.back': 'Back to News',
 
+    // ─── Error Boundary ───
+    'error.eyebrow': 'Something Went Wrong',
+    'error.title': 'Page Could Not Be Loaded',
+    'error.desc': 'An unexpected error occurred while rendering this page. Please try again.',
+    'error.retry': 'Try Again',
+    'error.home': 'Back to Home',
+
     // ─── Not Found ───
     'notfound.eyebrow': '404',
     'notfound.title': 'Page Not Found',
@@ -938,6 +945,13 @@ const translations = {
     'news.notFound.title': '文章未找到',
     'news.notFound.desc': '您访问的文章不存在或已被移除。',
     'news.notFound.back': '返回资讯列表',
+
+    // ─── Error Boundary ───
+    'error.eyebrow': '出错了',
+    'error.title': '页面加载失败',
+    'error.desc': '页面渲染时发生意外错误，请稍后重试。',
+    'error.retry': '重试',
+    'error.home': '返回首页',
 
     // ─── Not Found ───
     'notfound.eyebrow': '404',

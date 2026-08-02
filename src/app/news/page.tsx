@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Calendar, ArrowUpRight, FileText } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
+import { NewsListSkeleton } from '@/components/Skeleton';
 import type { NewsArticle } from '@/lib/news';
 
 export default function NewsPage() {
@@ -53,9 +54,7 @@ export default function NewsPage() {
       <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808] min-h-[40vh]">
         <div className="max-w-[1100px] mx-auto">
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="w-6 h-6 border-2 border-[var(--amber)] border-t-transparent rounded-full animate-spin" />
-            </div>
+            <NewsListSkeleton />
           ) : articles.length === 0 ? (
             <div className="text-center py-20">
               <FileText className="w-10 h-10 text-[var(--gray)] mx-auto mb-4" />
