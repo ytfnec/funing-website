@@ -34,6 +34,43 @@ curl -s -D - -o /dev/null "https://fnec.net/api/products" | grep -i "cache-contr
 
 > 注: 本批**无需**清缓存/构建/部署，也不修改任何代码或 schema。
 
+## 任务 3：验收清单 — 可自动化项（只读 curl，无人工参与）
+
+> 对应 `MANUAL-ACCEPTANCE-CHECKLIST.md`。以下条目 cron 可用 curl 自动验证，请逐项跑并回报结果。**浏览器人工项见下文清单，不在此执行。**
+
+```bash
+# ① 全部公开路由 200（覆盖清单 0/7）
+for u in "/" "/about" "/accessories" "/contact" "/cookies" "/elevate" "/news" "/oem" "/privacy" "/products" "/quote" "/resources" "/terms" "/thank-you" "/admin/login" "/sitemap.xml" "/robots.txt"; do
+  curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
+done
+
+# ② 缓存头专项（清单第 7 项）
+for u in "/api/products" "/api/news" "/api/products/sauna-controllers"; do
+  echo "--- $u ---"
+  curl -s -D - -o /dev/null "https://fnec.net$u" | grep -i "cache-control"
+done
+
+# ③ 结构化数据存在性（清单第 1 项，若线上有已发布文章可验证 NewsArticle）
+echo "--- 首页 JSON-LD 类型 ---"
+curl -s https://fnec.net/ | grep -o '"@type":"[^"]*"' | sort -u
+echo "--- 产品详情 JSON-LD 类型 ---"
+curl -s https://fnec.net/products/sauna-controllers | grep -o '"@type":"[^"]*"' | sort -u
+echo "--- 新闻列表 API（有文章时后续可验证详情 NewsArticle）---"
+curl -s https://fnec.net/api/news
+
+# ④ sitemap / robots
+curl -s https://fnec.net/sitemap.xml | grep -o "<loc>[^<]*</loc>" | head -20
+curl -s https://fnec.net/robots.txt
+```
+
+预期:
+- ① 全部 **HTTP 200**
+- ② 三条均返回 `cache-control: public, s-maxage=60, stale-while-revalidate=300`
+- ③ 首页含 `Organization`、`WebSite`；产品详情含 `Product`；`/api/news` 返回 `{"articles":[...]}` 或空数组
+- ④ sitemap 含首页/`/news`/产品详情 URL；robots.txt 含 `Disallow: /admin/`、`Disallow: /api/`、`Sitemap: https://fnec.net/sitemap.xml`
+
+> 若 ③ 中 `/api/news` 返回空数组（线上暂无已发布文章），则新闻详情 NewsArticle 属人工项，转清单第 1 项，由人工发布文章后验证。
+
 ## 建议人工审查项（cron 环境无法覆盖）
 
 1. 新闻详情页 NewsArticle JSON-LD：发布一篇已发布文章后 view-source 确认（第十四批）。
