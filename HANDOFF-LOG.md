@@ -76,16 +76,19 @@ npm run deploy     # 部署到 Worker funing-website
 
 ## 六、注意事项 / 待办
 
-1. **www.fnec.net 未绑定**（HTTP 000）——需 Dashboard → Worker → Domains 添加
-2. **清理 main 分支**: GitHub 仓库 `main` 分支是 Pages 时代遗留，用户建议清理（需确认）
-3. **DOMAIN.md 需更新**: 旧记录"500 根因 = Pages 不运行 worker"是错误结论，应改为
-   Turbopack/Windows bug + webpack 修复（commit `908e11b` 里的描述不准确）
+> 更新: 2026-08-02（第 1、2 项已完成）
+
+1. ✅ **www.fnec.net 已绑定**（用户 Dashboard 完成，实测 200）
+2. ✅ **main 分支已清理**（默认分支改为 master，`git push origin --delete main` 成功，远程仅剩 master）
+3. ✅ **DOMAIN.md 已更新**（500 根因 = Turbopack/Windows bug + webpack 修复）
 4. `wrangler.toml` 无 `account_id` 字段，账号 `fnecyt@gmail.com`（OAuth token 存于
    `C:\Users\xxq\AppData\Roaming\xdg.config\.wrangler\config\default.toml`）
 5. OAuth token scope 仅 `zone:read`——**DNS 记录删除/zone 编辑需 Dashboard 手动操作**，
    API 调用 zones 接口会 `Authentication error`；但 `workers/domains` 接口可用
 6. OpenNext 在 Windows 上有 WARN（官方推荐 WSL 构建），当前 Webpack 方案可用但
    若遇莫名运行时不稳定，备选方案是在 WSL 里构建
+
+> 最新部署: Version `a1e99af1`（2026-08-02，Webpack，含 Content 编辑器）
 
 ## 七、验证清单（后续每次部署可复用）
 
