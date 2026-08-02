@@ -80,8 +80,34 @@ export default function NewsArticlePage() {
     );
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.title,
+    description: article.excerpt || undefined,
+    image: article.cover_image || undefined,
+    author: article.author
+      ? { '@type': 'Person', name: article.author }
+      : { '@type': 'Organization', name: 'Funing Electronics' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Funing Electronics',
+      url: 'https://fnec.net',
+    },
+    datePublished: article.published_at || article.created_at || undefined,
+    dateModified: article.updated_at || article.published_at || article.created_at || undefined,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://fnec.net/news/${article.slug}`,
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(40px,5vw,72px)] bg-[#050505]">
         <div className="max-w-[860px] mx-auto">
           <Link
