@@ -80,6 +80,6 @@ curl -s https://fnec.net/_next/static/css/$(curl -s https://fnec.net/ | grep -o 
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ | 已推送 d8f1a8f（骨架屏+错误边界）与 030d187（指令文件）2 个提交至 origin/master |
+| 2 构建部署 | ✅ | npm run clean 清缓存（无残留 node 进程）→ build:cf 成功 → deploy 成功，Version ID: dbaa554a-8935-41d8-9ea3-46ae5b085241 |
+| 3 验证 | ✅ | 10 条公开路由全部 HTTP 200；根 HTML 含 skeleton 引用，CSS 命中 skeleton-shimmer 关键帧；3.4 浏览器人工项（Slow 3G 骨架屏/手动触发 error.tsx）需人工确认 |
