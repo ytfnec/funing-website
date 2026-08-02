@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 更新: 2026-08-02（第四批）· 来源: Claude Code
+> 更新: 2026-08-02（第五批）· 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 1 个未推送提交：`f054d07`（体验优化：登录页视觉 + 联系跳转 + 面包屑）。
+本地有 1 个未推送提交：`580d40d`（浏览统计 + media alt 编辑 + quote 跳转统一）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -29,21 +29,33 @@ npm run deploy
 
 ```bash
 # 基础路由 200
-for u in "/" "/admin/login" "/products" "/contact" "/thank-you" "/api/content"; do
+for u in "/" "/admin/login" "/products" "/contact" "/quote" "/thank-you" "/api/content" "/api/views"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
-
-# 登录页含品牌 logo 块（ShieldCheck 图标类）
-curl -s "https://fnec.net/admin/login" | grep -o "shield-check\|ShieldCheck\|Funing" | head -2
-
-# 产品详情页含面包屑
-curl -s "https://fnec.net/products/sauna-controllers" | grep -o 'aria-label="Breadcrumb"' | head -1
 ```
 
-预期：
-- 全部路由 200（含 /thank-you）
-- 登录页含 "Funing" 品牌标记
-- 产品详情页含 `aria-label="Breadcrumb"`
+预期：全部 200（含新 /api/views）。
+
+## 任务 4（测试，可选）：验证浏览统计
+
+```bash
+# 触发一个浏览上报（会真实写入 D1 page_views）
+curl -s -X POST "https://fnec.net/api/views" -H "Content-Type: application/json" -d '{"path":"/verify-test"}'
+# 预期: {"ok":true}
+
+# 确认写入（可选）
+npx wrangler d1 execute funing-db --remote --command "SELECT COUNT(*) as n FROM page_views WHERE path='/verify-test';"
+
+# 清理测试记录
+npx wrangler d1 execute funing-db --remote --command "DELETE FROM page_views WHERE path='/verify-test';"
+```
+
+## 任务 5（验证，可选）：admin stats API
+
+```bash
+# 需要登录态，浏览器验证更方便：
+# 访问 https://fnec.net/admin → Dashboard 应显示 Page Views 卡片（总数 + 24h）
+```
 
 ---
 
@@ -51,6 +63,7 @@ curl -s "https://fnec.net/products/sauna-controllers" | grep -o 'aria-label="Bre
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ 已完成 | 33db552..a292c04 推送成功 |
-| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf 成功 → deploy 成功（6 assets 更新） |
-| 3 验证 | ✅ 通过 | 6 路由全 200（含 /thank-you）；登录页含 "Funing" 品牌标记；产品页含 aria-label="Breadcrumb" |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
+| 4 统计测试 | 待执行 | |
