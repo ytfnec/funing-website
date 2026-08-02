@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check } from 'lucide-react';
+import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check, Mail, Clock } from 'lucide-react';
 
 interface Contact {
   id: string;
@@ -13,6 +13,8 @@ interface Contact {
   location: string | null;
   message: string | null;
   product_interest: string | null;
+  preferred_contact: string | null;
+  best_time: string | null;
   status: string;
   notes: string | null;
   submitted_at: string;
@@ -146,6 +148,16 @@ export default function AdminContacts() {
                     {c.product_interest && (
                       <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
                         <ExternalLink className="w-4 h-4" /> {c.product_interest}
+                      </div>
+                    )}
+                    {c.preferred_contact && (
+                      <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
+                        <Mail className="w-4 h-4" /> Prefers: {c.preferred_contact}
+                      </div>
+                    )}
+                    {c.best_time && (
+                      <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
+                        <Clock className="w-4 h-4" /> Best: {c.best_time}
                       </div>
                     )}
                   </div>

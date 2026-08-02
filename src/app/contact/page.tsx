@@ -16,6 +16,8 @@ export default function ContactPage() {
     company: '',
     message: '',
     productInterest: '',
+    preferredContact: '',
+    bestTime: '',
     website: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
@@ -203,6 +205,34 @@ export default function ContactPage() {
                 <option value="oem-odm">{t('contact.form.interest5')}</option>
                 <option value="other">{t('contact.form.interest6')}</option>
               </select>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{t('contact.form.preferred')}</label>
+                <select
+                  name="preferredContact"
+                  value={form.preferredContact}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)]"
+                >
+                  <option value="">{t('contact.form.preferred0')}</option>
+                  <option value="email">{t('contact.form.preferredEmail')}</option>
+                  <option value="phone">{t('contact.form.preferredPhone')}</option>
+                  <option value="either">{t('contact.form.preferredEither')}</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{t('contact.form.bestTime')}</label>
+                <input
+                  type="text"
+                  name="bestTime"
+                  value={form.bestTime}
+                  onChange={handleChange}
+                  placeholder={t('contact.form.bestTimePh')}
+                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                />
+              </div>
             </div>
 
             <div>
