@@ -71,6 +71,6 @@ curl -s https://fnec.net/products/sauna-controllers | grep -o '"image":"[^"]*"'
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ | git push 显示 Everything up-to-date：c011184 与指令提交 d721921 均已在本轮开始前在 origin（HEAD==origin/master==d721921），无需再推 |
-| 2 构建部署 | ✅ | 已清 .next/.open-next 缓存，无残留 node.exe 进程；npm run build:cf（webpack/OpenNext）成功，worker.js 生成；npm run deploy 成功 → Version ID: 7136dad5-a059-4685-9ee3-ad1b097ed4b7 |
-| 3 验证 | ✅ | 3.1 九条公开路由（/、/products、4 产品页、/admin/login、/sitemap.xml、/robots.txt）全部 HTTP 200；3.2 sauna-controllers 的 hero_image 在 D1 为 null → 页面回退琥珀网格纹理（CSS 渐变占位，无裂图），JSON-LD 含 @type Product、image 字段按预期省略（heroImage undefined）；3.3 admin 浏览器人工项（Product Image 区块/Browse Media 弹层/预览变暗）属人工验证，cron 环境跳过 |
+| 1 推代码 | ✅ | git push 686c287..d721921 master → origin（c011184 hero_image 展示 + d721921 指令文件）推送成功 |
+| 2 构建部署 | ✅ | 已清 .next/.open-next 缓存，无残留 node.exe 进程；npm run build:cf（webpack/OpenNext）成功；npm run deploy 成功 → Version ID: 3ee54507-05ec-4861-abb0-a83c0e5396ac（当前线上 100%）。注：22:27 曾有并发 cron 会话部署 7136dad5 并先行填表，22:28 本会话 3ee54507 覆盖为最新；两版本同批代码、内容等价 |
+| 3 验证 | ✅ | 3.1 九条公开路由（/、/products、4 产品页、/admin/login、/sitemap.xml、/robots.txt）全部 HTTP 200；3.2 sauna-controllers 的 hero_image 在 D1 为 null → 页面回退琥珀网格纹理（CSS 渐变占位，无裂图），JSON-LD image 字段按预期省略（heroImage undefined）；3.3 admin 浏览器人工项（Product Image 区块/Browse Media 弹层/预览变暗）属人工验证，cron 环境跳过 |
