@@ -47,6 +47,6 @@ Content 预览需浏览器验证（可选）：
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ 已完成 | 7b11fc3..a82afe5 推送成功 |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `4a8446d9-c5c0-42ee-a272-4688317678d3` |
+| 3 验证 | ✅ 通过 | 6 路由全 200；联系页含 Country 字段；浏览器实测 Content 预览：新建块输入 slug `en__home.hero.title1` → Preview 面板显示 DEFAULT "Precision" + OVERRIDE 输入文案，SAVE 可用（未保存，测试后取消） |
