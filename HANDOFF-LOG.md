@@ -108,6 +108,7 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 | 1 | 首页 CTA 区块真实图片（PCB 纹理 `cta-bg.webp` 叠加） | ✅ 已部署 | `9e83791` |
 | 2 | 性能优化：next/image sizes/lazy、字体自托管(preload)、关键资源内联 | ✅ 已部署 | `24dbba9`，详见第十一批指令 |
 | 3 | admin Content 编辑器批量操作（多选删除/激活/暂停） | ✅ 已部署 | `10a4154`，详见第十二批指令 |
-| 4 | 新闻 /news 列表页 + admin 管理（D1 `news_article` 表，公开 /news + /news/[slug]，admin 增删改/发布切换） | ✅ 代码已提交，待部署 | `529a752`（第十三批），含 schema.sql 新增 `news_article` 表 + 需 Hermes 执行 `db:deploy` |
+| 4 | 新闻 /news 列表页 + admin 管理（D1 `news_article` 表，公开 /news + /news/[slug]，admin 增删改/发布切换） | ✅ 已部署 | `529a752`（第十三批），Hermes 已执行 db:deploy + 部署 Version `8e338b54`，全部路由 200、API 专项通过 |
+| 5 | 全量回归验证 + JSON-LD 补缺（sitemap/robots/结构化数据审查） | ✅ 代码已提交，待部署 | `（第十四批）` 审查结论：sitemap/robots 覆盖完整；layout 有 Organization/WebSite、产品详情有 Product JSON-LD；**修复**：新闻详情页缺 NewsArticle JSON-LD，已补齐。附全量 curl 验证清单见第十四批指令 |
 
-剩余队列：5) 全量回归验证  6) 骨架屏 + 错误边界  7) 产品详情 hero_image  8) 后台 Media 批量操作
+剩余队列：6) 骨架屏 + 错误边界  7) 产品详情 hero_image  8) 后台 Media 批量操作
