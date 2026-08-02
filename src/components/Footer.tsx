@@ -1,10 +1,40 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useLang } from '@/lib/i18n';
 
 export function Footer() {
   const { t } = useLang();
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subscribing, setSubscribing] = useState(false);
+  const [newsletterStatus, setNewsletterStatus] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = newsletterEmail.trim();
+    if (!email) return;
+
+    setSubscribing(true);
+    setNewsletterStatus('');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Subscription failed');
+      }
+      setNewsletterStatus(data.alreadySubscribed ? '✓ Already subscribed' : '✓ Subscribed');
+      setNewsletterEmail('');
+    } catch (e: any) {
+      setNewsletterStatus(e.message || 'Subscription failed');
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   const footerLinks = {
     [t('footer.products')]: [
@@ -65,6 +95,47 @@ export function Footer() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Newsletter */}
+        <div className="mt-14 pt-10 border-t border-[rgba(255,255,255,0.06)] max-w-[1200px]">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div>
+              <h3 className="text-[13px] tracking-[0.16em] uppercase font-bold text-white mb-2">
+                {t('footer.newsletter.title')}
+              </h3>
+              <p className="text-[var(--gray)] text-[13px] max-w-[420px]">
+                {t('footer.newsletter.desc')}
+              </p>
+            </div>
+            <form
+              className="flex gap-3 w-full lg:w-auto"
+              onSubmit={handleSubscribe}
+            >
+              <label className="sr-only" htmlFor="newsletter-email">{t('footer.newsletter.placeholder')}</label>
+              <input
+                id="newsletter-email"
+                type="email"
+                required
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                placeholder={t('footer.newsletter.placeholder')}
+                className="flex-1 lg:w-[280px] px-4 py-3 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-full text-white placeholder-[rgba(255,255,255,0.3)] text-sm focus:outline-none focus:border-[var(--amber)]"
+              />
+              <button
+                type="submit"
+                disabled={subscribing}
+                className="btn btn-primary text-xs py-3 px-6 disabled:opacity-50 whitespace-nowrap"
+              >
+                {subscribing ? t('footer.newsletter.subscribing') : t('footer.newsletter.subscribe')}
+              </button>
+            </form>
+          </div>
+          {newsletterStatus && (
+            <p className={`mt-3 text-[13px] ${newsletterStatus.includes('✓') ? 'text-green-400' : 'text-[var(--amber)]'}`}>
+              {newsletterStatus}
+            </p>
+          )}
         </div>
 
         {/* Bottom Bar */}

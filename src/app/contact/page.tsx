@@ -15,6 +15,7 @@ export default function ContactPage() {
     company: '',
     message: '',
     productInterest: '',
+    website: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');
@@ -123,6 +124,20 @@ export default function ContactPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Honeypot — hidden from humans, spam bots fill it in */}
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input
+                type="text"
+                id="website"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                value={form.website || ''}
+                onChange={handleChange}
+              />
+            </div>
+
             <div>
               <label className="block text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{t('contact.form.type')}</label>
               <select
