@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 更新: 2026-08-02（第八批）· 来源: Claude Code
+> 更新: 2026-08-02（第九批）· 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 1 个未推送提交：`43412b5`（联系表单补全偏好字段）。
+本地有 1 个未推送提交：`a81bad9`（Content 预览 + 联系表单国家字段）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -32,11 +32,14 @@ for u in "/" "/admin/login" "/products" "/contact" "/quote" "/api/content"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
 
-# 联系页应含首选联系方式下拉
-curl -s "https://fnec.net/contact" | grep -o "preferred\|Best Time\|bestTime" | head -2
+# 联系页应含国家字段
+curl -s "https://fnec.net/contact" | grep -o "country\|Country" | head -1
 ```
 
-预期：全部 200；联系页含首选联系方式/最佳时间字段。
+预期：全部 200；联系页含 Country 字段。
+
+Content 预览需浏览器验证（可选）：
+- 登录 /admin → Content → 新建/编辑块（如 slug=en__home.hero.title1）→ 应出现 Preview 面板显示 Default 和 Override 文案
 
 ---
 
@@ -44,6 +47,6 @@ curl -s "https://fnec.net/contact" | grep -o "preferred\|Best Time\|bestTime" | 
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ 已完成 | 3db6d52..dbb4d3a 推送成功 |
-| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `52c945e1-b147-49c6-bd70-49e083de90c8` |
-| 3 验证 | ✅ 通过 | 6 路由全 200；联系页含 preferredContact + bestTime 字段 |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
