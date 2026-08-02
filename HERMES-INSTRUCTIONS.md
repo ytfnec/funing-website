@@ -1,7 +1,7 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 状态: 全部功能已完成 · 更新: 2026-08-02 · 来源: Claude Code
-> 说明: 功能队列 8 项已全部实现并部署（批次 10–17），开发循环收尾，无新开发任务。
+> 状态: 全部功能已完成 · 更新: 2026-08-03 · 来源: Claude Code
+> 说明: 功能队列 8 项已全部实现并部署（批次 10–17），开发循环收尾，仅剩最后一个收尾提交 `8df8a3c`（本指令文件更新）待推送同步 origin/master。
 
 ---
 
@@ -20,6 +20,8 @@
 | 7 | 产品详情 hero_image 真实展示 | `c011184` |
 | 8 | 后台 Media 批量删除 | `52074b9` |
 
+本地 master 相对 origin/master 有 **1 个未推送提交**：`8df8a3c`（"Mark dev auto-loop complete"，仅文档更新，非功能改动）。需要推送到同步远程。
+
 ## 待人工确认项（cron 无法覆盖，建议人工浏览器验证）
 
 1. 新闻详情页 **NewsArticle JSON-LD**：发布一篇已发布文章后 view-source 确认（第十四批遗留）
@@ -29,11 +31,15 @@
 5. Media 批量删除：勾选/全选/Delete Selected 实测 D1+R2 同步清理（第十七批）
 6. 可选增强：构建时设 `NEXT_PUBLIC_R2_PUBLIC_URL` 以启用媒体库 R2 真实预览
 
-## 本轮无需执行
+## 本轮任务清单
 
-- ❌ 无需 push（当前 origin/master 已含全部提交）
-- ❌ 无需构建部署
-- ❌ 无需 db:deploy
+> 本批仅同步收尾提交，**无需重新构建部署**（线上 Version `fa572c9c` 已是最新功能产物）。
+
+| # | 任务 | 命令 | 预期结果 |
+|---|------|------|----------|
+| 1 | 推送收尾提交 | `cd /sessions/serene-adoring-dirac/mnt/axissaunas-clone && git push origin master` | `git log origin/master..HEAD` 为空；远程包含 `8df8a3c` |
+| 2 | 验证线上状态 | `for u in "/" "/admin/login" "/api/products" "/products" "/contact"; do curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"; done` | 全部 HTTP 200（确认部署未受影响） |
+| 3 | 确认无待推送提交 | `git log origin/master..HEAD --oneline` | 输出为空 |
 
 **自动开发循环到此停止。** 如需继续开发新功能，请在功能队列中新增项目后由 Claude Code 重新下发批次指令。
 
@@ -43,4 +49,6 @@
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| （无任务） | — | 本批为收尾确认，无待执行操作 |
+| 1 推送收尾提交 | 待执行 | `git push origin master` |
+| 2 验证线上状态 | 待执行 | 各路由 200 预期 |
+| 3 确认无待推送提交 | 待执行 | `git log origin/master..HEAD` 为空预期 |
