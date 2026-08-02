@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Upload, Loader2, FolderOpen, Image as ImageIcon, Check, AlertCircle, Trash2 } from 'lucide-react';
+import { Upload, Loader2, FolderOpen, Image as ImageIcon, Check, AlertCircle, Trash2, X } from 'lucide-react';
 
 interface MediaItem {
   id: string;
@@ -45,6 +45,8 @@ export default function AdminMedia() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [uploaded, setUploaded] = useState('');
+  const [editingAlt, setEditingAlt] = useState<string | null>(null);
+  const [altDraft, setAltDraft] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -101,6 +103,29 @@ export default function AdminMedia() {
       setMedia((prev) => prev.filter((m) => m.id !== item.id));
     } catch (err: any) {
       setError(err.message || 'Delete failed');
+    }
+  };
+
+  const startEditAlt = (item: MediaItem) => {
+    setEditingAlt(item.id);
+    setAltDraft(item.alt_text || '');
+  };
+
+  const saveAlt = async (item: MediaItem) => {
+    try {
+      const res = await fetch(`/api/admin/media?id=${item.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alt_text: altDraft }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Save failed');
+      }
+      setMedia((prev) => prev.map((m) => (m.id === item.id ? { ...m, alt_text: altDraft } : m)));
+      setEditingAlt(null);
+    } catch (err: any) {
+      setError(err.message || 'Save failed');
     }
   };
 
@@ -196,9 +221,46 @@ export default function AdminMedia() {
                   <span className="text-[var(--gray)] text-xs">{formatSize(item.size)}</span>
                   <span className="text-[var(--gray)] text-xs">{formatDate(item.created_at)}</span>
                 </div>
+
+                {/* Alt text */}
+                {editingAlt === item.id ? (
+                  <div className="mt-2 space-y-2">
+                    <input
+                      type="text"
+                      value={altDraft}
+                      onChange={(e) => setAltDraft(e.target.value)}
+                      placeholder="Alt text for accessibility/SEO"
+                      className="w-full px-2 py-1.5 bg-[#050505] border border-[rgba(255,255,255,0.15)] rounded text-xs text-white focus:outline-none focus:border-[var(--amber)]"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => saveAlt(item)}
+                        className="flex items-center gap-1 text-[11px] text-green-400 hover:text-white transition-colors"
+                      >
+                        <Check className="w-3 h-3" /> Save
+                      </button>
+                      <button
+                        onClick={() => setEditingAlt(null)}
+                        className="flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-white transition-colors"
+                      >
+                        <X className="w-3 h-3" /> Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => startEditAlt(item)}
+                    className="mt-2 flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-[var(--amber)] transition-colors w-full text-left truncate"
+                    title={item.alt_text || 'No alt text'}
+                  >
+                    <ImageIcon className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">{item.alt_text || 'Add alt text'}</span>
+                  </button>
+                )}
+
                 <button
                   onClick={() => handleDelete(item)}
-                  className="mt-2 flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-red-400 transition-colors"
+                  className="mt-1.5 flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-red-400 transition-colors"
                 >
                   <Trash2 className="w-3 h-3" /> Delete
                 </button>

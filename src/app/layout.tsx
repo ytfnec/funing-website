@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ViewTracker } from "@/components/ViewTracker";
 import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 

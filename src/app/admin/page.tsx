@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Package, Mail, FileText, ArrowUpRight } from 'lucide-react';
+import { Package, Mail, Eye, ArrowUpRight } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     products: 0,
     contacts: 0,
-    pages: 9,
+    views: 0,
+    viewsToday: 0,
   });
   const [recentContacts, setRecentContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,25 +17,21 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const [productsRes, contactsRes] = await Promise.all([
-          fetch('/api/admin/products'),
+        const [statsRes, contactsRes] = await Promise.all([
+          fetch('/api/admin/stats'),
           fetch('/api/admin/contacts?limit=5'),
         ]);
 
-        const [productsData, contactsData] = await Promise.all([
-          productsRes.ok ? productsRes.json() : { products: [] },
+        const [statsData, contactsData] = await Promise.all([
+          statsRes.ok ? statsRes.json() : { stats: {} },
           contactsRes.ok ? contactsRes.json() : { contacts: [] },
         ]);
 
-        const products = productsData.products || [];
-        const contacts = contactsData.contacts || [];
-
         setStats((prev) => ({
           ...prev,
-          products: products.length,
-          contacts: contacts.length,
+          ...(statsData.stats || {}),
         }));
-        setRecentContacts(contacts);
+        setRecentContacts(contactsData.contacts || []);
       } catch {}
       setLoading(false);
     }
@@ -44,7 +41,7 @@ export default function AdminDashboard() {
   const statCards = [
     { label: 'Products', value: stats.products, icon: Package, href: '/admin/products', color: 'var(--amber)' },
     { label: 'New Contacts', value: stats.contacts, icon: Mail, href: '/admin/contacts', color: '#60a5fa' },
-    { label: 'Content Pages', value: stats.pages, icon: FileText, href: '/admin/content', color: '#34d399' },
+    { label: 'Page Views', value: stats.views, icon: Eye, href: '#', color: '#34d399', sub: `${stats.viewsToday} in 24h` },
   ];
 
   return (
@@ -65,6 +62,7 @@ export default function AdminDashboard() {
             </div>
             <div className="text-[clamp(28px,3vw,40px)] font-bold text-white mb-1">{stat.value}</div>
             <div className="text-[var(--gray)] text-sm tracking-[0.04em]">{stat.label}</div>
+            {stat.sub && <div className="text-[11px] text-[var(--amber)] mt-1">{stat.sub}</div>}
           </Link>
         ))}
       </div>

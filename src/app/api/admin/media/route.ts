@@ -149,6 +149,33 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+  try {
+    const user = await getSession();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+
+    const body = await request.json();
+    const { alt_text } = body;
+    if (typeof alt_text !== 'string' || alt_text.length > 500) {
+      return NextResponse.json(
+        { error: 'alt_text must be a string under 500 chars' },
+        { status: 400 }
+      );
+    }
+
+    await execute('UPDATE media_library SET alt_text = ? WHERE id = ?', [alt_text, id]);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Media update error:', error);
+    return NextResponse.json({ error: 'Failed to update media' }, { status: 500 });
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   try {
     const user = await getSession();

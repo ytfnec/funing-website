@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CheckCircle, Loader2, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+import { Loader2, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useLang } from '@/lib/i18n';
 
 export default function QuotePage() {
   const { t } = useLang();
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -112,38 +113,14 @@ export default function QuotePage() {
         }),
       });
       if (!res.ok) throw new Error('Submission failed');
-      setStep(3);
+      // Redirect to the shared thank-you page on success.
+      router.push('/thank-you');
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
-
-  if (step === 3) {
-    return (
-      <section className="px-page py-[clamp(80px,10vw,140px)] min-h-[60vh] flex items-center justify-center bg-[#050505]">
-        <div className="max-w-[500px] text-center">
-          <div className="w-16 h-16 bg-[var(--amber)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-8 h-8 text-[#050505]" />
-          </div>
-          <h1 className="text-[clamp(28px,3.5vw,42px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-4">
-            {t('quote.success.title')}
-          </h1>
-          <p className="body-text mb-6">
-            {t('quote.success.desc')}
-          </p>
-          <p className="text-[var(--gray)] text-sm mb-8">
-            {t('quote.success.confirm')} {form.email}.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/products" className="btn btn-secondary">{t('quote.success.btn1')}</Link>
-            <Link href="/" className="btn btn-primary">{t('quote.success.btn2')}</Link>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505]">
