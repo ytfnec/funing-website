@@ -71,6 +71,6 @@ curl -s https://fnec.net/products/sauna-controllers | grep -o '"image":"[^"]*"'
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ | git push 显示 Everything up-to-date：c011184 与指令提交 d721921 均已在本轮开始前在 origin（HEAD==origin/master==d721921），无需再推 |
+| 2 构建部署 | ✅ | 已清 .next/.open-next 缓存，无残留 node.exe 进程；npm run build:cf（webpack/OpenNext）成功，worker.js 生成；npm run deploy 成功 → Version ID: 7136dad5-a059-4685-9ee3-ad1b097ed4b7 |
+| 3 验证 | ✅ | 3.1 九条公开路由（/、/products、4 产品页、/admin/login、/sitemap.xml、/robots.txt）全部 HTTP 200；3.2 sauna-controllers 的 hero_image 在 D1 为 null → 页面回退琥珀网格纹理（CSS 渐变占位，无裂图），JSON-LD 含 @type Product、image 字段按预期省略（heroImage undefined）；3.3 admin 浏览器人工项（Product Image 区块/Browse Media 弹层/预览变暗）属人工验证，cron 环境跳过 |
