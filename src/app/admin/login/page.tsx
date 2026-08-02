@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LogIn, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -41,11 +41,24 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <div className="text-[var(--amber)] text-[22px] tracking-[0.12em] uppercase font-bold">
+    <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4 relative overflow-hidden">
+      {/* PCB-style background texture */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 20% 15%, rgba(216,163,90,0.08), transparent 45%), radial-gradient(circle at 85% 85%, rgba(216,163,90,0.06), transparent 40%), linear-gradient(rgba(216,163,90,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.03) 1px, transparent 1px)",
+          backgroundSize: "100% 100%, 100% 100%, 40px 40px, 40px 40px",
+        }}
+      />
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Brand block */}
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="mx-auto w-14 h-14 rounded-2xl bg-[var(--amber)] flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(216,163,90,0.3)]">
+            <ShieldCheck className="w-7 h-7 text-[#050505]" />
+          </div>
+          <div className="text-[var(--amber)] text-[20px] tracking-[0.12em] uppercase font-bold">
             Funing
           </div>
           <div className="text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mt-1">
@@ -54,12 +67,14 @@ export default function AdminLogin() {
         </div>
 
         {/* Login Card */}
-        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-8">
-          <h1 className="text-2xl font-bold tracking-[0.06em] uppercase mb-2">Sign In</h1>
-          <p className="text-[var(--gray)] mb-8">Admin dashboard access</p>
+        <div className="bg-[#0a0a0a]/90 backdrop-blur border border-[rgba(255,255,255,0.08)] rounded-xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.5)] animate-fade-in" style={{ animationDelay: '80ms' }}>
+          <div className="mb-8">
+            <h1 className="text-xl font-bold tracking-[0.06em] uppercase mb-1">Sign In</h1>
+            <p className="text-[var(--gray)] text-sm">Admin dashboard access</p>
+          </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-3 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded">
+            <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-3 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -75,7 +90,7 @@ export default function AdminLogin() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-colors"
+                className="w-full px-4 py-3 bg-[#050505]/70 border border-[rgba(255,255,255,0.12)] rounded-lg text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all"
                 placeholder="admin@fnec.net"
                 required
                 autoComplete="email"
@@ -93,7 +108,7 @@ export default function AdminLogin() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-colors pr-12"
+                  className="w-full px-4 py-3 bg-[#050505]/70 border border-[rgba(255,255,255,0.12)] rounded-lg text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all pr-12"
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"

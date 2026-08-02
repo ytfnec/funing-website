@@ -275,9 +275,22 @@ export default function ProductDetailPage() {
           }}
         />
         <div className="max-w-[1280px] mx-auto">
-          <Link href="/products" className="text-[var(--amber)] text-sm tracking-[0.14em] uppercase mb-8 inline-block hover:underline">
-            ← All Products
-          </Link>
+          {/* Breadcrumb */}
+          <nav aria-label="Breadcrumb" className="mb-8 text-[12px] tracking-[0.12em] uppercase text-[var(--gray)]">
+            <ol className="flex items-center gap-2 flex-wrap">
+              <li>
+                <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              </li>
+              <li aria-hidden="true" className="text-[var(--gray)]/50">/</li>
+              <li>
+                <Link href="/products" className="hover:text-white transition-colors">
+                  {t('nav.products')}
+                </Link>
+              </li>
+              <li aria-hidden="true" className="text-[var(--gray)]/50">/</li>
+              <li aria-current="page" className="text-[var(--amber)]">{product.name}</li>
+            </ol>
+          </nav>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-[clamp(40px,6vw,80px)] items-center">
             <div>

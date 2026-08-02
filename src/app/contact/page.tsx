@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, CheckCircle, Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Phone, Mail, MapPin, Clock, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useLang } from '@/lib/i18n';
 
 export default function ContactPage() {
   const { t } = useLang();
+  const router = useRouter();
   const [form, setForm] = useState({
     type: 'quote',
     name: '',
@@ -17,7 +18,7 @@ export default function ContactPage() {
     productInterest: '',
     website: '',
   });
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -41,31 +42,13 @@ export default function ContactPage() {
         throw new Error(data.error || 'Submission failed');
       }
 
-      setStatus('success');
+      // Redirect to the shared thank-you page on success.
+      router.push('/thank-you');
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
       setStatus('error');
     }
   };
-
-  if (status === 'success') {
-    return (
-      <section className="px-page py-[clamp(80px,10vw,140px)] min-h-[60vh] flex items-center justify-center bg-[#050505]">
-        <div className="max-w-[500px] text-center">
-          <div className="w-16 h-16 bg-[var(--amber)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-8 h-8 text-[#050505]" />
-          </div>
-          <h1 className="text-[clamp(28px,3.5vw,42px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-4">
-            {t('contact.success.title')}
-          </h1>
-          <p className="body-text mb-8">
-            {t('contact.success.desc')}
-          </p>
-          <Link href="/" className="btn btn-primary">{t('contact.success.back')}</Link>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505]">
