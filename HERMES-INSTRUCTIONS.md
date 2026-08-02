@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 更新: 2026-08-02（第九批）· 来源: Claude Code
+> 批次: 第十批 · 更新: 2026-08-02 · 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 1 个未推送提交：`a81bad9`（Content 预览 + 联系表单国家字段）。
+本地有 1 个未推送开发提交：`9e83791`（首页 CTA PCB 纹理增强）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -28,18 +28,12 @@ npm run deploy
 ## 任务 3：验证
 
 ```bash
-for u in "/" "/admin/login" "/products" "/contact" "/quote" "/api/content"; do
+for u in "/" "/admin/login" "/products" "/contact" "/quote" "/api/content" "/sitemap.xml" "/robots.txt"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
-
-# 联系页应含国家字段
-curl -s "https://fnec.net/contact" | grep -o "country\|Country" | head -1
 ```
 
-预期：全部 200；联系页含 Country 字段。
-
-Content 预览需浏览器验证（可选）：
-- 登录 /admin → Content → 新建/编辑块（如 slug=en__home.hero.title1）→ 应出现 Preview 面板显示 Default 和 Override 文案
+预期：全部 200。此改动为视觉增强（首页底部 CTA 加了 PCB 纹理叠加），浏览器查看 `https://fnec.net` 滚动到底部 CTA 区确认正常渲染、无报错即可。
 
 ---
 
@@ -47,6 +41,6 @@ Content 预览需浏览器验证（可选）：
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ 已完成 | 7b11fc3..a82afe5 推送成功 |
-| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `4a8446d9-c5c0-42ee-a272-4688317678d3` |
-| 3 验证 | ✅ 通过 | 6 路由全 200；联系页含 Country 字段；浏览器实测 Content 预览：新建块输入 slug `en__home.hero.title1` → Preview 面板显示 DEFAULT "Precision" + OVERRIDE 输入文案，SAVE 可用（未保存，测试后取消） |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
