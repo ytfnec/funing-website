@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 更新: 2026-08-02（第三批）· 来源: Claude Code
+> 更新: 2026-08-02（第四批）· 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 1 个未推送提交：`d8f4fb8`（运营功能：newsletter + 防spam + 登录限流）。
+本地有 1 个未推送提交：`f054d07`（体验优化：登录页视觉 + 联系跳转 + 面包屑）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -29,32 +29,21 @@ npm run deploy
 
 ```bash
 # 基础路由 200
-for u in "/" "/admin/login" "/products" "/contact" "/api/content" "/sitemap.xml" "/robots.txt"; do
+for u in "/" "/admin/login" "/products" "/contact" "/thank-you" "/api/content"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
 
-# 页脚 Newsletter 入口存在
-curl -s "https://fnec.net" | grep -o "newsletter" | head -1
+# 登录页含品牌 logo 块（ShieldCheck 图标类）
+curl -s "https://fnec.net/admin/login" | grep -o "shield-check\|ShieldCheck\|Funing" | head -2
 
-# 联系表单 honeypot 字段存在
-curl -s "https://fnec.net/contact" | grep -o 'name="website"' | head -1
+# 产品详情页含面包屑
+curl -s "https://fnec.net/products/sauna-controllers" | grep -o 'aria-label="Breadcrumb"' | head -1
 ```
 
 预期：
-- 全部路由 200
-- 首页 HTML 含 "newsletter"
-- 联系页含 `name="website"`（honeypot）
-
-## 任务 4（测试，可选）：验证 API
-
-```bash
-# Newsletter 订阅 API（会真实写入 D1！测试后请删除）
-curl -s -X POST "https://fnec.net/api/newsletter" -H "Content-Type: application/json" -d '{"email":"test-verify@example.com"}'
-# 预期: {"success":true}
-
-# 删除测试记录（如成功写入）
-npx wrangler d1 execute funing-db --remote --command "DELETE FROM newsletter_subscriptions WHERE email='test-verify@example.com';"
-```
+- 全部路由 200（含 /thank-you）
+- 登录页含 "Funing" 品牌标记
+- 产品详情页含 `aria-label="Breadcrumb"`
 
 ---
 
@@ -62,7 +51,6 @@ npx wrangler d1 execute funing-db --remote --command "DELETE FROM newsletter_sub
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-|| 1 推代码 | ✅ 已完成 | 远程 origin/master = 25615dc（与本地一致，运营功能已推送） |
-| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf 成功 → deploy Version `d0a87257-84a8-4fe0-8669-f2fc4e2f596c` |
-| 3 验证 | ✅ 通过 | 7 路由全 200；首页含 newsletter；联系页含 name="website" honeypot |
-| 4 API 测试 | ✅ 通过 | newsletter 订阅成功且测试记录已删；contact honeypot 返回 spam-filtered（静默拦截）；正常提交落库后已清理 |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
