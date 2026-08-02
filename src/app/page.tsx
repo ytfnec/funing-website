@@ -338,8 +338,18 @@ export default function Home() {
             fill
             className="object-cover object-center"
             priority={false}
+            sizes="100vw"
           />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(rgba(5,5,5,0.72), rgba(5,5,5,0.86))" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(rgba(5,5,5,0.78), rgba(5,5,5,0.9))" }} />
+          {/* PCB-style texture overlay to match the electronics brand */}
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 120%, rgba(216,163,90,0.12), transparent 55%), linear-gradient(rgba(216,163,90,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.04) 1px, transparent 1px)",
+              backgroundSize: "100% 100%, 44px 44px, 44px 44px",
+            }}
+          />
         </div>
 
         <div className="relative z-10">
