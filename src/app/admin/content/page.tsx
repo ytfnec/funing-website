@@ -50,10 +50,17 @@ export default function AdminContent() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [saved, setSaved] = useState('');
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     load();
   }, []);
+
+  // Drop the selection whenever filters change so hidden rows can't be bulk-deleted.
+  useEffect(() => {
+    setSelected(new Set());
+  }, [search, pageFilter]);
 
   const load = async () => {
     try {
@@ -157,6 +164,47 @@ export default function AdminContent() {
     const matchesPage = !pageFilter || b.page === pageFilter;
     return matchesSearch && matchesPage;
   });
+
+  const allFilteredSelected = filtered.length > 0 && filtered.every((b) => selected.has(b.id));
+
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    setSelected(allFilteredSelected ? new Set() : new Set(filtered.map((b) => b.id)));
+  };
+
+  const runBulkAction = async (action: 'activate' | 'deactivate' | 'delete') => {
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    if (action === 'delete' && !confirm(`Delete ${ids.length} selected block(s)? This reverts their copy to its default.`)) return;
+    setBusy(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/content/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ids }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Bulk action failed');
+      const label = action === 'delete' ? 'deleted' : action === 'activate' ? 'activated' : 'paused';
+      setSaved(`${ids.length} block(s) ${label}`);
+      setTimeout(() => setSaved(''), 2500);
+      setSelected(new Set());
+      await load();
+    } catch (e: any) {
+      setError(e.message || 'Bulk action failed');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   // Derive live preview from the slug `<lang>__<i18n-key>`.
   const previewDefault = useMemo(() => {
@@ -349,11 +397,62 @@ export default function AdminContent() {
           </button>
         </div>
       ) : (
+        <>
+        {/* Bulk action toolbar */}
+        <div className="mb-4 bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={allFilteredSelected}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 accent-[var(--amber)]"
+            />
+            <span className="text-sm text-[var(--soft-white)]">
+              {selected.size > 0 ? `${selected.size} selected` : 'Select all'}
+            </span>
+          </label>
+          <div className="flex items-center gap-2 sm:ml-auto">
+            <button
+              onClick={() => runBulkAction('activate')}
+              disabled={selected.size === 0 || busy}
+              className="btn btn-secondary text-xs py-1.5 px-3 disabled:opacity-40"
+              title="Activate selected blocks"
+            >
+              <Power className="w-3.5 h-3.5" /> Activate
+            </button>
+            <button
+              onClick={() => runBulkAction('deactivate')}
+              disabled={selected.size === 0 || busy}
+              className="btn btn-secondary text-xs py-1.5 px-3 disabled:opacity-40"
+              title="Pause selected blocks"
+            >
+              <Power className="w-3.5 h-3.5 opacity-50" /> Pause
+            </button>
+            <button
+              onClick={() => runBulkAction('delete')}
+              disabled={selected.size === 0 || busy}
+              className="btn btn-secondary text-xs py-1.5 px-3 text-red-400 hover:border-red-400/50 disabled:opacity-40"
+              title="Delete selected blocks"
+            >
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />} Delete
+            </button>
+          </div>
+        </div>
         <div className="space-y-3">
           {filtered.map((block) => (
-            <div key={block.id} className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg overflow-hidden">
-              <div className="p-4 flex items-center justify-between gap-4">
-                <div className="min-w-0">
+            <div key={block.id} className={`bg-[#0a0a0a] border rounded-lg overflow-hidden transition-colors ${
+              selected.has(block.id) ? 'border-[rgba(216,163,90,0.5)]' : 'border-[rgba(255,255,255,0.06)]'
+            }`}>
+              <div className="p-4 flex items-center gap-4">
+                <input
+                  type="checkbox"
+                  checked={selected.has(block.id)}
+                  onChange={() => toggleSelect(block.id)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-4 h-4 accent-[var(--amber)] flex-shrink-0"
+                  title={`Select ${block.slug}`}
+                />
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <code className="text-[13px] text-[var(--amber)]">{block.slug}</code>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] tracking-[0.12em] uppercase ${
@@ -393,6 +492,7 @@ export default function AdminContent() {
             </div>
           ))}
         </div>
+        </>
       )}
     </div>
   );
