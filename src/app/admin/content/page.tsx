@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Globe, Plus, Pencil, Trash2,
   Loader2, Save, Check, AlertCircle, Search, X, Power,
 } from 'lucide-react';
+import { defaultTranslations } from '@/lib/i18n';
 
 interface ContentBlock {
   id: string;
@@ -157,6 +158,17 @@ export default function AdminContent() {
     return matchesSearch && matchesPage;
   });
 
+  // Derive live preview from the slug `<lang>__<i18n-key>`.
+  const previewDefault = useMemo(() => {
+    const parts = form.slug.split('__');
+    if (parts.length !== 2) return null;
+    const [lang, key] = parts;
+    if (lang !== 'en' && lang !== 'zh') return null;
+    const dict = defaultTranslations[lang] as Record<string, string> | undefined;
+    return dict?.[key] ?? null;
+  }, [form.slug]);
+  const previewLang = form.slug.startsWith('zh__') ? '中文' : form.slug.startsWith('en__') ? 'English' : '';
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -271,6 +283,28 @@ export default function AdminContent() {
                 className={inputClass + " resize-none"}
               />
             </div>
+
+            {/* Live preview */}
+            {previewDefault !== null && (
+              <div className="rounded-lg border border-[rgba(255,255,255,0.08)] overflow-hidden">
+                <div className="px-4 py-2 bg-[#050505] border-b border-[rgba(255,255,255,0.06)] text-[10px] tracking-[0.18em] uppercase text-[var(--gray)] flex items-center justify-between">
+                  <span>Preview</span>
+                  <span className="text-[var(--amber)]">{previewLang}</span>
+                </div>
+                <div className="px-4 py-3 space-y-3">
+                  <div>
+                    <div className="text-[9px] tracking-[0.16em] uppercase text-[var(--gray)]/60 mb-1">Default</div>
+                    <div className="text-sm text-[var(--gray)] leading-relaxed">{previewDefault || '—'}</div>
+                  </div>
+                  <div>
+                    <div className="text-[9px] tracking-[0.16em] uppercase text-[var(--amber)]/70 mb-1">Override (live)</div>
+                    <div className="text-sm text-[var(--soft-white)] leading-relaxed font-medium">
+                      {form.content.trim() || '—'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <label className="flex items-center gap-3 cursor-pointer">
               <input

@@ -9,7 +9,10 @@ const contactSchema = z.object({
   email: z.string().email(),
   phone: z.string().optional(),
   company: z.string().optional(),
+  // "location" is accepted for backward compat; "country" is the new field
+  // used by the contact form and mapped to the location column.
   location: z.string().optional(),
+  country: z.string().optional(),
   message: z.string().optional(),
   productInterest: z.string().optional(),
   preferredContact: z.enum(['email', 'phone', 'either']).optional(),
@@ -80,7 +83,8 @@ export async function POST(request: NextRequest) {
       data.email,
       data.phone || null,
       data.company || null,
-      data.location || null,
+      // country is the primary source; location retained for backward compat
+      data.country || data.location || null,
       data.message || null,
       data.productInterest || null,
       data.preferredContact || null,
@@ -95,7 +99,7 @@ export async function POST(request: NextRequest) {
       email: data.email,
       phone: data.phone,
       company: data.company,
-      location: data.location,
+      location: data.country || data.location,
       productInterest: data.productInterest,
       preferredContact: data.preferredContact,
       bestTime: data.bestTime,

@@ -344,6 +344,8 @@ const translations = {
     'contact.form.email': 'Email *',
     'contact.form.company': 'Company',
     'contact.form.phone': 'Phone (optional)',
+    'contact.form.country': 'Country / Region',
+    'contact.form.countryPh': 'e.g., Indonesia, USA',
     'contact.form.interest': 'Product Interest',
     'contact.form.interest0': 'Select product (optional)',
     'contact.form.interest1': 'IR Sauna Control System',
@@ -801,6 +803,8 @@ const translations = {
     'contact.form.email': '邮箱 *',
     'contact.form.company': '公司名称',
     'contact.form.phone': '电话（选填）',
+    'contact.form.country': '国家/地区',
+    'contact.form.countryPh': '例如：印尼、美国',
     'contact.form.interest': '感兴趣的产品',
     'contact.form.interest0': '请选择产品（选填）',
     'contact.form.interest1': '红外桑拿控制系统',
@@ -922,6 +926,9 @@ const translations = {
 } as const;
 
 export type TKey = keyof typeof translations['en'];
+
+// Exposed for admin tools (e.g. content-block preview) to read default copy.
+export const defaultTranslations = translations;
 
 const LanguageContext = createContext<{
   lang: Lang;

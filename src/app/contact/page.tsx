@@ -14,6 +14,7 @@ export default function ContactPage() {
     email: '',
     phone: '',
     company: '',
+    country: '',
     message: '',
     productInterest: '',
     preferredContact: '',
@@ -177,16 +178,29 @@ export default function ContactPage() {
               />
             </div>
 
-            <div>
-              <label className="block text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{t('contact.form.phone')}</label>
-              <input
-                type="tel"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="+86 138 XXXX XXXX"
-                className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)]"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{t('contact.form.phone')}</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="+86 138 XXXX XXXX"
+                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2">{t('contact.form.country')}</label>
+                <input
+                  type="text"
+                  name="country"
+                  value={form.country}
+                  onChange={handleChange}
+                  placeholder={t('contact.form.countryPh')}
+                  className="w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                />
+              </div>
             </div>
 
             <div>
