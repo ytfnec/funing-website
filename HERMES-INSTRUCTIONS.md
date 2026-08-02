@@ -1,78 +1,62 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 生成时间: 2026-08-02 · 来源: Claude Code
-> 说明: 以下操作请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行。
-> 完成后请把每条的执行结果/日志写回本文件末尾"执行回报"区。
+> 更新: 2026-08-02（第二批）· 来源: Claude Code
+> 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
-## 任务 1：推代码到远程（终端操作）
+## 任务 1：推代码（终端）
 
-本地有 1 个未推送提交 `3e26fe7`（交接文档）。
+本地有 2 个未推送提交：`d182d8f`（交接日志状态）、`bfe8482`（SEO 优化）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
 git push
 ```
 
-预期输出: `3e26fe7..<新提交> master -> master` 或类似。
+## 任务 2：清缓存 + 构建 + 部署
 
-## 任务 2：重新构建并部署（让 Content 编辑器上线）
-
-> ⚠️ **关键警告**（来自 HANDOFF-LOG.md 排障陷阱）：
-> 因为构建器从 Turbopack 改成了 Webpack，**必须先清空缓存**再构建，
-> 否则会复用旧的 Turbopack 产物（导致 500 复现）。
-> 构建前确认没有残留的 `next dev`/`wrangler dev`/`wrangler tail` 进程。
+> ⚠️ 必须清缓存（`rm -rf .next .open-next`），否则复用旧产物。
+> 构建前确认无残留 `next dev`/`wrangler dev`/`wrangler tail` 进程。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
-
-# 1) 清理残留进程（Windows）
-tasklist | findstr node
-
-# 2) 清空旧构建缓存（必做！）
 rm -rf .next .open-next
-
-# 3) 构建（Webpack）
 npm run build:cf
-
-# 4) 部署到 Worker funing-website
 npm run deploy
 ```
 
-预期: 构建成功（含 TypeScript 通过），部署输出新的 Worker version。
-
-## 任务 3：部署后验证（终端操作）
-
-验证线上 Content 编辑器和新代码是否生效：
+## 任务 3：验证 SEO 功能上线
 
 ```bash
-# 基础页面 200
-for u in "/" "/admin/login" "/api/products" "/products" "/contact" "/api/content"; do
+# 基础路由 200
+for u in "/" "/admin/login" "/products" "/contact" "/api/content" "/sitemap.xml" "/robots.txt"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
 
-# Content blocks API 应返回 overrides（可为空 {}）
-curl -s "https://fnec.net/api/content"
+# sitemap.xml 应包含产品详情页
+curl -s "https://fnec.net/sitemap.xml" | head -c 600
+echo ""
 
-# 产品数应为 4
-curl -s "https://fnec.net/api/products" | head -c 200
+# robots.txt
+curl -s "https://fnec.net/robots.txt"
+
+# opengraph 图
+curl -s -o /dev/null -w "opengraph.png -> HTTP %{http_code}\n" "https://fnec.net/opengraph.png"
+
+# 产品详情页应含 Product JSON-LD
+curl -s "https://fnec.net/products/sauna-controllers" | grep -o "application/ld+json" | head -1
 ```
 
-预期: 所有路由 200；`/api/content` 返回 `{"overrides":{}}`；products 4 个。
+预期：
+- 全部路由 200（含 sitemap.xml、robots.txt、opengraph.png）
+- sitemap.xml 含 `/products/sauna-controllers` 等产品 URL
+- robots.txt 含 `Disallow: /admin/` 和 `Sitemap: https://fnec.net/sitemap.xml`
+- 产品详情页 HTML 含 `application/ld+json`
 
-## 任务 4（可选，需用户操作）：绑定 www.fnec.net
+## 任务 4（无，可选）：其他
 
-> ⚠️ 标注"需用户操作"：OAuth token 只有 `zone:read`，DNS 编辑需 Dashboard 手动。
-> 请转告用户在 Cloudflare Dashboard → Worker `funing-website` → Settings → Domains
-> 添加 `www.fnec.net`。
-
-## 任务 5（可选）：清理 GitHub main 分支
-
-> 需用户确认。仓库 `main` 分支是 Pages 时代遗留。若确认可删:
-> ```bash
-> git push origin --delete main
-> ```
+无新 Dashboard 操作。
 
 ---
 
@@ -80,11 +64,6 @@ curl -s "https://fnec.net/api/products" | head -c 200
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ 完成 | `b4f1867..5540c15 master -> master` |
-| 2 构建部署 | ✅ 完成 | 清理 3 个残留 tail 进程 → rm -rf 缓存 → build:cf（35页+8 API，TS 通过）→ deploy 成功，Version `a1e99af1` |
-| 3 验证 | ✅ 通过 | 全部路由最终 200（含 /admin/content、/api/content）；/api/content 返回 `{"overrides":{}}`；products 4 个 |
-| 4 www 绑定 | ✅ 完成 | 用户 Dashboard 绑定成功；www.fnec.net 首页/admin/products 实测 200 |
-| 5 main 清理 | ✅ 完成 | 默认分支改为 master 后 `git push origin --delete main` 成功；远程仅剩 master (`7336d40`) |
-
-> 回报时间: 2026-08-02 · Hermes Agent
-> 备注: 部署后首次 curl 旧版本缓存 500 → 版本全球传播后恢复 200；308 为 trailing-slash 重定向（正常）。
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
