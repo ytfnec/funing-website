@@ -13,9 +13,10 @@
 
 ## 任务 1：推代码（终端）
 
-本地剩余 2 个未推送提交（`9b79bf3` JSON-LD 修复、`3e0309a` HANDOFF-LOG、`e2994c6` 指令文件已由 Hermes 推送到 origin/master，但尚未构建部署上线——本批部署将包含它们）：
+本地剩余 3 个未推送提交（`9b79bf3` JSON-LD 修复、`3e0309a` HANDOFF-LOG、`e2994c6` 指令文件已由 Hermes 推送到 origin/master，但尚未构建部署上线——本批部署将包含它们）：
 - `bab93fc`（指令文件未推送提交清单修正）
 - `66cd15b`（指令文件清单最终修正）
+- `6a2f241`（指令文件反映 Hermes 已推送 e2994c6）
 
 > 注: Hermes 推代码前可用 `git log origin/master..HEAD --oneline` 核对清单，以实际为准。若你已推送过部分提交，`git push` 只会推剩余未推送的。
 
