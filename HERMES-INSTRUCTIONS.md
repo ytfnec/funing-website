@@ -1,24 +1,23 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第十五批 · 更新: 2026-08-02 · 来源: Claude Code
+> 批次: 第十六批 · 更新: 2026-08-02 · 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 背景
 
-本批为功能队列第 6 项 **加载骨架屏 + 错误边界**。新增：
-- `src/components/Skeleton.tsx`：骨架屏原语（`Skeleton` / `SkeletonText`）+ 各路由骨架屏（Page / NewsList / NewsArticle / ProductsList / ProductDetail），琥珀 shimmer 动画（`.skeleton` 定义在 globals.css，`prefers-reduced-motion` 自动禁用动画）
-- `src/components/ErrorFallback.tsx`：i18n 感知错误界面（重试 + 返回首页），新增 `error.*` 5 个双语 key
-- `loading.tsx`：根 + `/news` + `/news/[slug]` + `/products` + `/products/[slug]` 共 5 个路由级 Suspense 边界
-- `error.tsx`（根路由错误边界）+ `global-error.tsx`（顶层致命错误，自含双语，替换整页布局）
-- news / products 各页原内联 spinner 加载态替换为对应骨架屏
+本批为功能队列第 7 项 **产品详情页 hero_image 真实展示**。新增：
+- `src/lib/image.ts`：`resolveImageSrc()` 统一解析 hero_image（支持完整 URL / 本地路径 / 裸 R2 key，按 `NEXT_PUBLIC_R2_PUBLIC_URL` 拼接，构建时内联）
+- 公开产品详情页：hero_image 存在则用 `<img>` 真实展示（eager + fetchPriority high），加载失败 `onError` 回退到原有的琥珀网格占位纹理；Product JSON-LD 的 image 改用解析后的 URL
+- admin 产品编辑页：新增 **Product Image** 区块（自由输入 hero_image URL/路径/R2 key + **Browse Media** 弹层从 `/api/admin/media` 选择图片一键设置 + 实时预览，图片缺失时预览变暗）
+- R2 公共域名未配置时优雅降级（选择器显示图标占位、预览不裂图）
 
-本批**无 schema 变更**，只需推代码 + 清缓存构建部署 + 验证。
+**说明**：`NEXT_PUBLIC_R2_PUBLIC_URL` 当前仅在 `.env.example` 里示例，未实际配置，因此线上媒体库图片选择器的 R2 预览会显示占位图标（属预期降级）；公开页 hero 图若线上产品已有 `hero_image` 值且可访问则真实展示，否则回退纹理。本批**无 schema 变更**（products.hero_image 列早已存在）。
 
 ## 任务 1：推代码（终端）
 
-本地有 2 个未推送提交：`d8f1a8f`（骨架屏 + 错误边界）、以及本指令文件及 HANDOFF-LOG 更新。Hermes 推代码前可用 `git log origin/master..HEAD --oneline` 核对，`git push` 会自动推送全部剩余未推送提交。
+本地有 2 个未推送提交：`c011184`（hero_image 展示 + 回退）、以及本指令文件及 HANDOFF-LOG 更新。`git push` 会自动推送全部剩余未推送提交。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -41,38 +40,30 @@ npm run deploy
 ### 3.1 公开路由全部 200
 
 ```bash
-for u in "/" "/about" "/news" "/news/sample-slug" "/products" "/products/sauna-controllers" "/contact" "/quote" "/sitemap.xml" "/robots.txt"; do
+for u in "/" "/products" "/products/sauna-controllers" "/products/jacquard-drivers" "/products/branded-units" "/products/accessories" "/admin/login" "/sitemap.xml" "/robots.txt"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
 ```
 
-预期: 全部 **HTTP 200**。`/news/sample-slug` 会 200（页面渲染，文章不存在走 notFound 呈现），不报错即可。
+预期: 全部 **HTTP 200**。
 
-### 3.2 骨架屏 / 错误边界专项（本批核心）
-
-```bash
-# ① 根路由 loading 边界: 首次请求响应应为流式 HTML，含 <div class="skeleton"> 或页面最终内容（加载中骨架屏在慢速/断开时出现）
-curl -s https://fnec.net/ | head -c 500
-```
-
-预期: 返回 HTML 片段（`<html` 开头或流式 chunk）。此项无法在纯 curl 下稳定看到骨架屏，**以浏览器实测为主**（见 3.4）。
-
-### 3.3 错误边界静态检查
+### 3.2 hero_image 专项（本批核心）
 
 ```bash
-# 部署产物应包含错误边界组件与骨架屏样式
-curl -s https://fnec.net/ | grep -c "skeleton"   # 预期 ≥ 0（骨架屏为动态渲染，CSS 在独立文件）
-# 确认 CSS 中含 .skeleton 与 shimmer 关键帧
-curl -s https://fnec.net/_next/static/css/$(curl -s https://fnec.net/ | grep -o '/_next/static/css/[^"]*\.css' | head -1) | grep -o "skeleton-shimmer" | head -1
+# ① 产品详情 HTML 应含 <img>（hero 图）或回退纹理占位，且 JSON-LD image 字段解析正确
+curl -s https://fnec.net/products/sauna-controllers | grep -o 'src="[^"]*"' | head -5
+curl -s https://fnec.net/products/sauna-controllers | grep -o '"image":"[^"]*"'
 ```
 
-预期: 命中 `skeleton-shimmer` 关键帧（说明骨架屏样式已打包发布）。
+预期: ① `<img src>` 存在（若该产品在 D1 配了 hero_image 则为该 URL；若未配置则回退纹理渲染，无裂图）；② JSON-LD 出现 `"image"` 字段（值为 hero 图 URL，或无则字段为 undefined 不输出——两者均可）。
 
-### 3.4 浏览器人工项（cron 环境跳过，标注"需人工"）
+### 3.3 admin 浏览器人工项（需人工，cron 环境跳过）
 
-1. 打开 `https://fnec.net/products`、`/news`、`/products/sauna-controllers`，在 DevTools Network 里把网络调为 Slow 3G，观察**骨架屏**（琥珀 shimmer 灰块）先于内容出现，无闪现错位。
-2. 手动触发一个渲染错误验证 `error.tsx`：DevTools → Network 断开后刷新某页，或临时在页面抛错（仅本地验证，勿改线上），确认出现「页面加载失败 / 重试」界面，点重试可恢复。
-3. 全站控制台 0 报错；页面正常加载后骨架屏消失。
+1. 登录 `https://fnec.net/admin/login` → 任意产品编辑页。
+2. 出现 **Product Image** 区块：输入框可粘贴 URL/路径；点 **Browse Media** 弹出媒体库网格（若 `NEXT_PUBLIC_R2_PUBLIC_URL` 未配置，缩略图为占位图标，属预期）；点选某图填充到 hero_image。
+3. 输入一个 hero_image 后下方出现 4:3 预览；填一个坏地址时预览变暗但不裂图、控制台 0 报错。
+4. 保存后到公开详情页确认 hero 图真实展示（或回退纹理）。
+5. 备注：若要启用媒体库 R2 真实预览，需在构建时设置 `NEXT_PUBLIC_R2_PUBLIC_URL`（见 `.env.example`），可后续人工配置。
 
 ---
 
@@ -80,6 +71,6 @@ curl -s https://fnec.net/_next/static/css/$(curl -s https://fnec.net/ | grep -o 
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ | 已推送 d8f1a8f（骨架屏+错误边界）与 030d187（指令文件）2 个提交至 origin/master |
-| 2 构建部署 | ✅ | npm run clean 清缓存（无残留 node 进程）→ build:cf 成功 → deploy 成功，Version ID: dbaa554a-8935-41d8-9ea3-46ae5b085241 |
-| 3 验证 | ✅ | 10 条公开路由全部 HTTP 200；根 HTML 含 skeleton 引用，CSS 命中 skeleton-shimmer 关键帧；3.4 浏览器人工项（Slow 3G 骨架屏/手动触发 error.tsx）需人工确认 |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |

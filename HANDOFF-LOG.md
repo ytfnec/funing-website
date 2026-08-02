@@ -110,6 +110,7 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 | 3 | admin Content 编辑器批量操作（多选删除/激活/暂停） | ✅ 已部署 | `10a4154`，详见第十二批指令 |
 | 4 | 新闻 /news 列表页 + admin 管理（D1 `news_article` 表，公开 /news + /news/[slug]，admin 增删改/发布切换） | ✅ 已部署 | `529a752`（第十三批），Hermes 已执行 db:deploy + 部署 Version `8e338b54`，全部路由 200、API 专项通过 |
 | 5 | 全量回归验证 + JSON-LD 补缺（sitemap/robots/结构化数据审查） | ✅ 已部署 | `9b79bf3`（第十四批），21/21 路由 200、API 回归 4×200 + 4×401 + 404、JSON-LD 专项通过（新闻详情 NewsArticle 待人工发布文章后验证） |
-| 6 | 加载骨架屏 + 错误边界（React error boundary + loading.tsx） | ✅ 代码已提交，待部署 | `d8f1a8f`，详见第十五批指令 |
+| 6 | 加载骨架屏 + 错误边界（React error boundary + loading.tsx） | ✅ 已部署 | `d8f1a8f`（第十五批），Version `dbaa554a`，路由 200 + skeleton 样式打包验证通过（浏览器人工项待确认） |
+| 7 | 产品详情页 hero_image 真实展示（缺失/损坏时优雅回退占位纹理，admin 可浏览 Media 库设置） | ✅ 代码已提交，待部署 | `c011184`，详见第十六批指令 |
 
-剩余队列：7) 产品详情 hero_image  8) 后台 Media 批量操作
+剩余队列：8) 后台 Media 批量操作
