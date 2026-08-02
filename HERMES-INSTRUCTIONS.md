@@ -101,10 +101,12 @@ curl -s -o /dev/null -w "missing-article -> HTTP %{http_code}\n" "https://fnec.n
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3.1 公开路由 | 待执行 | |
-| 3.2 sitemap/robots | 待执行 | |
-| 3.3 JSON-LD | 待执行 | |
-| 3.4 API 回归 | 待执行 | |
-| 3.5 浏览器人工项 | 待执行 | cron 环境无法登录，标注需人工 |
+| 1 推代码 | ✅ | 已推送 `9b79bf3`（JSON-LD 补缺）+ `3e0309a`（HANDOFF-LOG）+ `e2994c6`（本指令文件）至 origin/master |
+| 2 构建部署 | ✅ | 清缓存（.next/.open-next）→ `npm run build:cf`（webpack + OpenNext 构建成功）→ `npm run deploy`，Version ID `da2c8637-17d1-4743-95d4-b9e4f4654c62`；无 schema 变更，未执行 db:deploy |
+| 3.1 公开路由 | ✅ | 21/21 路由全部 HTTP 200（含 /news、/products/*、/admin/login、sitemap.xml、robots.txt），部署后首轮 curl 即 200，无 500/404 |
+| 3.2 sitemap/robots | ✅ | sitemap 含 `https://fnec.net`、`/news`、4 个 `/products/` 详情 URL；robots.txt 含 `Disallow: /admin/`、`Disallow: /api/`、`Sitemap: https://fnec.net/sitemap.xml` |
+| 3.3 JSON-LD | ✅（新闻详情转人工） | 首页含 Organization+WebSite ✅；产品详情含 Product ✅；新闻列表页无 NewsArticle（符合预期）✅。**新闻详情 NewsArticle**：线上无已发布文章（/api/news 返回空数组），无法线上验证 → 需人工发布一篇后 view-source 确认 |
+| 3.4 API 回归 | ✅ | 公开 API 4/4 均 200；admin API 4/4 均 401；`/api/news/definitely-not-exists` 404 ✅ |
+| 3.5 浏览器人工项 | 需人工 | cron 环境无法登录浏览器：①admin 登录后 News CRUD/Dashboard 冒烟；②发布一篇新闻后验证详情页 NewsArticle JSON-LD；③全站控制台 0 报错 |
+
+> 注：JSON-LD 输出格式为 `"@type":"X"`（冒号后无空格），指令中 grep 模式 `'"@type": "[^"]*"'` 匹配不到，已改用宽松模式验证。
