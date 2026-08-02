@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLang } from '@/lib/i18n';
+import { resolveImageSrc } from '@/lib/image';
 import { ArrowRight, Check, Shield, Clock, Zap, Package } from 'lucide-react';
 import { ProductDetailSkeleton } from '@/components/Skeleton';
 
@@ -146,6 +147,14 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(fallback);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(fallback ? false : true);
+  // Track hero-image load failures so we can fall back to the placeholder
+  // texture when the stored image is missing/broken.
+  const [heroFailed, setHeroFailed] = useState(false);
+  const heroImage = resolveImageSrc(product?.hero_image);
+
+  useEffect(() => {
+    setHeroFailed(false);
+  }, [heroImage]);
 
   useEffect(() => {
     let cancelled = false;
@@ -248,7 +257,7 @@ export default function ProductDetailPage() {
               '@type': 'Product',
               name: product.name,
               description: product.long_description || product.short_description || undefined,
-              image: product.hero_image || undefined,
+              image: heroImage || undefined,
               brand: { '@type': 'Brand', name: 'Funing Electronics' },
               manufacturer: {
                 '@type': 'Organization',
@@ -326,20 +335,35 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Visual panel */}
-            <div
-              className="aspect-[4/3] bg-[#0a0a0a] rounded-lg overflow-hidden flex items-center justify-center border border-[rgba(255,255,255,0.06)]"
-              style={{
-                background: "radial-gradient(circle at center, rgba(216,163,90,0.10), transparent 70%), linear-gradient(rgba(216,163,90,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.04) 1px, transparent 1px)",
-                backgroundSize: "100% 100%, 32px 32px, 32px 32px",
-              }}
-            >
-              <div className="text-center p-8">
-                <Icon className="w-16 h-16 text-[var(--amber)] opacity-60 mx-auto mb-4" />
-                <div className="text-[var(--gray)] text-[12px] tracking-[0.2em] uppercase">
-                  {product.name}
+            {/* Visual panel: real hero image when available, otherwise the
+                amber grid placeholder texture (kept as a graceful fallback). */}
+            <div className="aspect-[4/3] bg-[#0a0a0a] rounded-lg overflow-hidden relative border border-[rgba(255,255,255,0.06)]">
+              {heroImage && !heroFailed ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={heroImage}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  onError={() => setHeroFailed(true)}
+                />
+              ) : (
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    background: "radial-gradient(circle at center, rgba(216,163,90,0.10), transparent 70%), linear-gradient(rgba(216,163,90,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.04) 1px, transparent 1px)",
+                    backgroundSize: "100% 100%, 32px 32px, 32px 32px",
+                  }}
+                >
+                  <div className="text-center p-8">
+                    <Icon className="w-16 h-16 text-[var(--amber)] opacity-60 mx-auto mb-4" />
+                    <div className="text-[var(--gray)] text-[12px] tracking-[0.2em] uppercase">
+                      {product.name}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

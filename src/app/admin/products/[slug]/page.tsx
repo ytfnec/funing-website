@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Save, Loader2, Check, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Save, Loader2, Check, ArrowLeft, AlertCircle, Image as ImageIcon, FolderOpen } from 'lucide-react';
 import Link from 'next/link';
+import { resolveImageSrc, R2_PUBLIC_URL } from '@/lib/image';
 
 interface Product {
   id: string;
@@ -14,9 +15,19 @@ interface Product {
   category: string;
   short_description: string;
   long_description: string;
+  hero_image: string;
+  gallery_images: string;
   features: string;
   in_stock: number;
   sort_order: number;
+}
+
+interface MediaItem {
+  id: string;
+  filename: string;
+  original_name: string;
+  r2_key: string;
+  mime_type: string;
 }
 
 const CATEGORIES = [
@@ -35,6 +46,8 @@ export default function EditProduct() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState<Partial<Product>>({});
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -55,6 +68,22 @@ export default function EditProduct() {
     }
     load();
   }, [slug]);
+
+  // Load the media library on demand (used by the hero-image picker).
+  const loadMedia = async () => {
+    if (mediaItems.length > 0) {
+      setShowMediaPicker((v) => !v);
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/media');
+      if (res.ok) {
+        const data = await res.json();
+        setMediaItems((data.media || []).filter((m: MediaItem) => m.mime_type.startsWith('image/')));
+        setShowMediaPicker(true);
+      }
+    } catch {}
+  };
 
   const update = (field: string, value: string | number) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -231,6 +260,94 @@ export default function EditProduct() {
               />
             </div>
           </div>
+        </div>
+
+        {/* Product Image */}
+        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-2">Product Image</h2>
+          <p className="text-[var(--gray)] text-xs mb-4">
+            Hero image shown at the top of the product detail page. Paste a full URL, a local path, or a media-library R2 key.
+          </p>
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              value={form.hero_image || ''}
+              onChange={(e) => update('hero_image', e.target.value)}
+              placeholder="https://pub-xxx.r2.dev/products/sauna-controller.webp"
+              className={inputClass}
+            />
+            <button
+              type="button"
+              onClick={loadMedia}
+              className="btn btn-secondary text-sm py-3 px-4 whitespace-nowrap flex items-center gap-2"
+            >
+              <FolderOpen className="w-4 h-4" />
+              {showMediaPicker ? 'Hide Library' : 'Browse Media'}
+            </button>
+          </div>
+
+          {form.hero_image && (
+            <div className="mt-4 flex items-center gap-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={resolveImageSrc(form.hero_image)}
+                alt="Hero image preview"
+                className="w-40 aspect-[4/3] object-cover rounded-md border border-[rgba(255,255,255,0.12)] bg-[#050505]"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = '0.25'; }}
+              />
+              <div className="text-[var(--gray)] text-xs">
+                <div className="mb-1">Preview</div>
+                <div className="break-all max-w-[360px]">{resolveImageSrc(form.hero_image) || form.hero_image}</div>
+              </div>
+            </div>
+          )}
+
+          {showMediaPicker && (
+            <div className="mt-4">
+              {mediaItems.length === 0 ? (
+                <div className="text-[var(--gray)] text-sm p-4 border border-dashed border-[rgba(255,255,255,0.15)] rounded-md">
+                  No images in the media library yet. Upload some from the Media Library page, then come back here.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[260px] overflow-y-auto pr-1">
+                  {mediaItems.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => update('hero_image', item.r2_key)}
+                      className="bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md p-2 text-left hover:border-[var(--amber)] transition-colors group"
+                      title={item.original_name || item.r2_key}
+                    >
+                      <div className="aspect-[4/3] bg-[#0a0a0a] rounded overflow-hidden mb-2 flex items-center justify-center">
+                        {R2_PUBLIC_URL ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={resolveImageSrc(item.r2_key)}
+                            alt={item.original_name || 'Media item'}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => {
+                              const el = e.currentTarget as HTMLImageElement;
+                              el.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <ImageIcon className="w-6 h-6 text-[var(--gray)]" />
+                        )}
+                      </div>
+                      <div className="text-[10px] text-[var(--gray)] truncate group-hover:text-white transition-colors">
+                        {item.original_name || item.filename}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="mt-3 text-[11px] text-[var(--gray)]">
+                Click an image to use it as the hero image. Set{' '}
+                <code className="text-[var(--amber)]">NEXT_PUBLIC_R2_PUBLIC_URL</code> at build time to enable R2 previews.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Features (one per line) */}
