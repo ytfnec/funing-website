@@ -149,6 +149,11 @@ const translations = {
     'home.cta.btn2': 'Contact Us',
 
     // ─── Products Page ───
+    'prod.filter.all': 'All',
+    'prod.filter.sauna': 'Sauna Control',
+    'prod.filter.industrial': 'Industrial',
+    'prod.filter.components': 'Components',
+    'prod.filter.empty': 'No products in this category yet.',
     'prod.hero.eyebrow': 'Product Catalog',
     'prod.hero.title1': 'Electronic Control',
     'prod.hero.title2': 'Solutions',
@@ -594,6 +599,11 @@ const translations = {
     'home.cta.btn2': '联系我们',
 
     // ─── Products Page ───
+    'prod.filter.all': '全部',
+    'prod.filter.sauna': '桑拿控制',
+    'prod.filter.industrial': '工业控制',
+    'prod.filter.components': '配件',
+    'prod.filter.empty': '该分类暂无产品。',
     'prod.hero.eyebrow': '产品目录',
     'prod.hero.title1': '电子控制',
     'prod.hero.title2': '解决方案',

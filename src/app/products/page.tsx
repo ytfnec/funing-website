@@ -1,10 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useLang } from '@/lib/i18n';
 
+type Category = 'all' | 'sauna-control' | 'industrial-control' | 'components';
+
 export default function ProductsPage() {
   const { t } = useLang();
+  const [activeCategory, setActiveCategory] = useState<Category>('all');
 
   const products = [
     {
@@ -16,6 +20,7 @@ export default function ProductsPage() {
       specs: [t('p.saunaControllers.spec1'), t('p.saunaControllers.spec2'), t('p.saunaControllers.spec3'), t('p.saunaControllers.spec4')],
       icon: '⊞',
       placeholder: t('prod.placeholder1'),
+      category: 'sauna-control' as Category,
     },
     {
       slug: 'jacquard-drivers',
@@ -26,6 +31,7 @@ export default function ProductsPage() {
       specs: [t('p.jacquard.spec1'), t('p.jacquard.spec2'), t('p.jacquard.spec3'), t('p.jacquard.spec4')],
       icon: '⊟',
       placeholder: t('prod.placeholder2'),
+      category: 'industrial-control' as Category,
     },
     {
       slug: 'branded-units',
@@ -36,6 +42,7 @@ export default function ProductsPage() {
       specs: [t('p.branded.spec1'), t('p.branded.spec2'), t('p.branded.spec3'), t('p.branded.spec4')],
       icon: '◈',
       placeholder: t('prod.placeholder3'),
+      category: 'sauna-control' as Category,
     },
     {
       slug: 'accessories',
@@ -46,8 +53,20 @@ export default function ProductsPage() {
       specs: [t('p.accessories.spec1'), t('p.accessories.spec2'), t('p.accessories.spec3'), t('p.accessories.spec4')],
       icon: '◇',
       placeholder: t('prod.placeholder4'),
+      category: 'components' as Category,
     },
   ];
+
+  const categories: { key: Category; label: string }[] = [
+    { key: 'all', label: t('prod.filter.all') },
+    { key: 'sauna-control', label: t('prod.filter.sauna') },
+    { key: 'industrial-control', label: t('prod.filter.industrial') },
+    { key: 'components', label: t('prod.filter.components') },
+  ];
+
+  const filtered = activeCategory === 'all'
+    ? products
+    : products.filter((p) => p.category === activeCategory);
 
   return (
     <>
@@ -70,8 +89,27 @@ export default function ProductsPage() {
 
       {/* Product Listing */}
       <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
-        <div className="max-w-[1280px] mx-auto space-y-[clamp(48px,7vw,80px)]">
-          {products.map((s, i) => (
+        <div className="max-w-[1280px] mx-auto">
+          {/* Category filter */}
+          <div className="flex flex-wrap justify-center gap-3 mb-[clamp(48px,6vw,72px)]">
+            {categories.map((cat) => (
+              <button
+                key={cat.key}
+                type="button"
+                onClick={() => setActiveCategory(cat.key)}
+                className={`px-5 py-2 rounded-full text-[12px] tracking-[0.14em] uppercase border transition-all duration-200 ${
+                  activeCategory === cat.key
+                    ? 'bg-[var(--amber)] text-[#050505] border-[var(--amber)] font-bold'
+                    : 'border-[rgba(255,255,255,0.15)] text-[var(--gray)] hover:border-[var(--amber)] hover:text-white'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-[clamp(48px,7vw,80px)]">
+          {filtered.map((s, i) => (
             <article
               key={s.slug}
               className="grid grid-cols-1 md:grid-cols-2 gap-[clamp(40px,6vw,80px)] items-center"
@@ -133,6 +171,13 @@ export default function ProductsPage() {
               </div>
             </article>
           ))}
+          </div>
+
+          {filtered.length === 0 && (
+            <div className="text-center py-16 text-[var(--gray)]">
+              {t('prod.filter.empty')}
+            </div>
+          )}
         </div>
       </section>
 
