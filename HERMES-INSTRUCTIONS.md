@@ -83,6 +83,6 @@ curl -s -o /dev/null -w "batch-too-many -> HTTP %{http_code}\n" \
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ | git push 092f91a..f3be62d master → origin（52074b9 Media 批量删除 + f3be62d 指令文件）推送成功 |
+| 2 构建部署 | ✅ | 已清 .next/.open-next 缓存，无残留 node.exe 进程；npm run build:cf（webpack/OpenNext）成功；npm run deploy 成功 → Version ID: fa572c9c-a75c-44f9-9e56-9af37f61606d（当前线上 100%） |
+| 3 验证 | ✅ | 3.1 九条公开/admin 路由全部 HTTP 200；3.2 批量 API 专项：未登录调用 → 401（鉴权生效）；带 admin cookie 复测 bad-action → 400、101 个 ids → 400（Action/ids 校验均生效）；3.3 浏览器人工项（复选框/Select all/Delete Selected/R2+D1 同步删除）属人工验证，cron 环境跳过 |
