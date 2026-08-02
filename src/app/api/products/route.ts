@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { query, queryFirst, execute } from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { query } from '@/lib/db';
 
 export async function GET() {
   try {
@@ -12,7 +12,11 @@ export async function GET() {
       ORDER BY sort_order ASC
     `);
     
-    return NextResponse.json({ products });
+    return NextResponse.json({ products }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+      },
+    });
   } catch (error) {
     console.error('Products fetch error:', error);
     return NextResponse.json(

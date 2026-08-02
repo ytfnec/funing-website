@@ -27,9 +27,16 @@ export async function GET() {
       `SELECT ${cols} FROM news_article ${where} ORDER BY ${orderBy}`
     );
 
-    return NextResponse.json({
-      articles: rows.map((r) => normalizeArticle(r)),
-    });
+    return NextResponse.json(
+      {
+        articles: rows.map((r) => normalizeArticle(r)),
+      },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      }
+    );
   } catch (error) {
     console.error('News list fetch error:', error);
     return NextResponse.json({ articles: [] }, { status: 200 });
