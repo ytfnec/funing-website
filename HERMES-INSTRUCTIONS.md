@@ -43,6 +43,12 @@ curl -s -D - -o /dev/null "https://fnec.net/api/products" | grep -i "cache-contr
 5. Media 批量删除：勾选/全选/Delete Selected 实测 D1+R2 同步清理（第十七批）。
 6. 可选增强：构建时设 `NEXT_PUBLIC_R2_PUBLIC_URL` 启用媒体库 R2 真实预览。
 
+## 定时任务管理（1102 事故复发预防）
+
+- **结论**: `dev-auto-loop` 定时任务（每 15 分钟一次，带 290s 抖动）在循环期间多轮运行重叠触发，导致并发部署互相覆盖——这是 2026-08-02 全站 1102 事故的直接诱因（异常版本 `0fb4db4f` 覆盖正常版 `fa572c9c`）。
+- **建议**: 开发循环已收尾，**停用该定时任务**（Claude 桌面侧边栏 → Scheduled → `dev-auto-loop` → 停用，或由 Claude Code 直接 `update_scheduled_task enabled=false`）。停用后不再有并发部署风险，也不会干扰未来的人工部署。
+- 如需恢复自动开发，可在功能队列新增项目后重新启用。
+
 ---
 
 ## 执行回报（Hermes 填写）
