@@ -44,6 +44,6 @@ curl -s "https://fnec.net/contact" | grep -o "preferred\|Best Time\|bestTime" | 
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ 已完成 | 3db6d52..dbb4d3a 推送成功 |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `52c945e1-b147-49c6-bd70-49e083de90c8` |
+| 3 验证 | ✅ 通过 | 6 路由全 200；联系页含 preferredContact + bestTime 字段 |
