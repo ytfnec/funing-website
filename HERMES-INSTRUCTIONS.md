@@ -1,81 +1,41 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第十七批 · 更新: 2026-08-02 · 来源: Claude Code
-> 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
+> 状态: 全部功能已完成 · 更新: 2026-08-02 · 来源: Claude Code
+> 说明: 功能队列 8 项已全部实现并部署（批次 10–17），开发循环收尾，无新开发任务。
 
 ---
 
-## 背景
+## 总结
 
-本批为功能队列第 8 项（最后一项） **后台 Media 库批量操作**：
-- 媒体库页每张图片新增复选框 + 顶部工具栏「Select all / N selected」+ **Delete Selected** 批量删除按钮
-- 新 API `POST /api/admin/media/batch`：鉴权 + 校验（action=delete、ids 1-100、字符串长度上限），先解析 R2 keys 并**删除 R2 对象（best-effort，失败不阻断）**，再用单条 prepared statement 删除 D1 `media_library` 记录
-- 批量删除前 confirm 确认；选中项琥珀高亮；批量操作中按钮转圈 disabled；单删后同步清理选中集
+功能队列 8 项已全部完成并部署（最新 Version `fa572c9c`，第十七批）：
 
-本批**无 schema 变更**。**这是功能队列 8 项全部完成后的收尾部署批次。**
+| # | 功能 | 提交 |
+|---|------|------|
+| 1 | 首页 CTA 真实图片（PCB 纹理叠加） | `9e83791` |
+| 2 | 性能优化（字体自托管/favicon 内联/图片加载） | `24dbba9` |
+| 3 | admin Content 批量操作 | `10a4154` |
+| 4 | 新闻 /news + admin 管理（D1 `news_article`） | `529a752` |
+| 5 | 全量回归 + JSON-LD 补缺 | `9b79bf3` |
+| 6 | 加载骨架屏 + 错误边界 | `d8f1a8f` |
+| 7 | 产品详情 hero_image 真实展示 | `c011184` |
+| 8 | 后台 Media 批量删除 | `52074b9` |
 
-## 任务 1：推代码（终端）
+## 待人工确认项（cron 无法覆盖，建议人工浏览器验证）
 
-本地有 2 个未推送提交：`52074b9`（Media 批量删除）、以及本指令文件及 HANDOFF-LOG 更新。`git push` 会自动推送全部剩余未推送提交。
+1. 新闻详情页 **NewsArticle JSON-LD**：发布一篇已发布文章后 view-source 确认（第十四批遗留）
+2. 骨架屏：Slow 3G 下 /products、/news、详情页观察琥珀 shimmer（第十五批）
+3. 错误边界：手动触发渲染错误确认 error.tsx 重试可恢复（第十五批）
+4. 产品编辑 Product Image：admin 设置 hero_image + Browse Media 弹层（第十六批）
+5. Media 批量删除：勾选/全选/Delete Selected 实测 D1+R2 同步清理（第十七批）
+6. 可选增强：构建时设 `NEXT_PUBLIC_R2_PUBLIC_URL` 以启用媒体库 R2 真实预览
 
-```bash
-cd C:\Users\xxq\axissaunas-clone
-git push
-```
+## 本轮无需执行
 
-## 任务 2：清缓存 + 构建 + 部署
+- ❌ 无需 push（当前 origin/master 已含全部提交）
+- ❌ 无需构建部署
+- ❌ 无需 db:deploy
 
-> ⚠️ 必须清缓存（`.next`/`.open-next`），构建前确认无残留 node 进程（`tasklist | grep node`）。本批无需 `db:deploy`。
-
-```bash
-cd C:\Users\xxq\axissaunas-clone
-npm run clean
-npm run build:cf
-npm run deploy
-```
-
-## 任务 3：验证
-
-### 3.1 公开路由 + admin 路由 200
-
-```bash
-for u in "/" "/products" "/news" "/contact" "/quote" "/admin/login" "/admin/media" "/sitemap.xml" "/robots.txt"; do
-  curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
-done
-```
-
-预期: 全部 **HTTP 200**（`/admin/media` 未登录会 302 跳转 login，属正常；cron 环境主要确认不 500）。
-
-### 3.2 批量 API 专项（本批核心）
-
-```bash
-# ① 未登录调用 → 应 401（鉴权生效）
-curl -s -o /dev/null -w "batch-noauth -> HTTP %{http_code}\n" \
-  -X POST https://fnec.net/api/admin/media/batch \
-  -H "Content-Type: application/json" \
-  -d '{"action":"delete","ids":["id-x"]}'
-
-# ② 非法 action → 应 400
-curl -s -o /dev/null -w "batch-bad-action -> HTTP %{http_code}\n" \
-  -X POST https://fnec.net/api/admin/media/batch \
-  -H "Content-Type: application/json" \
-  -d '{"action":"nope","ids":["id-x"]}'
-
-# ③ 超限 ids → 应 400
-curl -s -o /dev/null -w "batch-too-many -> HTTP %{http_code}\n" \
-  -X POST https://fnec.net/api/admin/media/batch \
-  -H "Content-Type: application/json" \
-  -d "{\"action\":\"delete\",\"ids\":[$(node -e "console.log(Array.from({length:101},(_,i)=>'\"id-'+i+'\"').join(','))")]}"
-```
-
-预期: ① HTTP 401；② HTTP 400（`Action must be one of: delete`）；③ HTTP 400（ids 1-100）。
-
-### 3.3 浏览器人工项（需人工，cron 环境跳过）
-
-1. 登录 `https://fnec.net/admin/login` → **Media Library**。
-2. 上传若干图片后，逐张勾选复选框（或点顶部 Select all），工具栏出现「N selected」。
-3. 点 **Delete Selected**，确认弹窗后选中图片消失（D1 记录与 R2 对象均删除），列表刷新无残留。
-4. 控制台 0 报错。
+**自动开发循环到此停止。** 如需继续开发新功能，请在功能队列中新增项目后由 Claude Code 重新下发批次指令。
 
 ---
 
@@ -83,6 +43,4 @@ curl -s -o /dev/null -w "batch-too-many -> HTTP %{http_code}\n" \
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ | git push 092f91a..f3be62d master → origin（52074b9 Media 批量删除 + f3be62d 指令文件）推送成功 |
-| 2 构建部署 | ✅ | 已清 .next/.open-next 缓存，无残留 node.exe 进程；npm run build:cf（webpack/OpenNext）成功；npm run deploy 成功 → Version ID: fa572c9c-a75c-44f9-9e56-9af37f61606d（当前线上 100%） |
-| 3 验证 | ✅ | 3.1 九条公开/admin 路由全部 HTTP 200；3.2 批量 API 专项：未登录调用 → 401（鉴权生效）；带 admin cookie 复测 bad-action → 400、101 个 ids → 400（Action/ids 校验均生效）；3.3 浏览器人工项（复选框/Select all/Delete Selected/R2+D1 同步删除）属人工验证，cron 环境跳过 |
+| （无任务） | — | 本批为收尾确认，无待执行操作 |

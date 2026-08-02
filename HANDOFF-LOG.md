@@ -112,6 +112,13 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 | 5 | 全量回归验证 + JSON-LD 补缺（sitemap/robots/结构化数据审查） | ✅ 已部署 | `9b79bf3`（第十四批），21/21 路由 200、API 回归 4×200 + 4×401 + 404、JSON-LD 专项通过（新闻详情 NewsArticle 待人工发布文章后验证） |
 | 6 | 加载骨架屏 + 错误边界（React error boundary + loading.tsx） | ✅ 已部署 | `d8f1a8f`（第十五批），Version `dbaa554a`，路由 200 + skeleton 样式打包验证通过（浏览器人工项待确认） |
 | 7 | 产品详情页 hero_image 真实展示（缺失/损坏时优雅回退占位纹理，admin 可浏览 Media 库设置） | ✅ 已部署 | `c011184`（第十六批），Version `3ee54507`，路由 200 + hero/JSON-LD 专项通过（admin 浏览器人工项待确认） |
-| 8 | 后台 Media 库批量操作（多选 + 批量删除，同步清理 R2 对象与 D1 记录） | ✅ 代码已提交，待部署 | `52074b9`，详见第十七批指令 |
+| 8 | 后台 Media 库批量操作（多选 + 批量删除，同步清理 R2 对象与 D1 记录） | ✅ 已部署 | `52074b9`（第十七批），Version `fa572c9c`，路由 200 + 批量 API 专项通过（401/400/400，浏览器人工项待确认） |
 
-> **功能队列 8 项全部完成**（第 1-8 项）。后续批次为收尾/人工审查项，无新功能开发。
+> **✅ 功能队列 8 项全部完成并部署（2026-08-02）。**
+> 开发循环已收尾。以下为**待人工确认项**（cron 环境无法覆盖，见各批指令的"浏览器人工项"）：
+> 1. 新闻详情页 NewsArticle JSON-LD：发布一篇已发布文章后 view-source 确认（第十四批）
+> 2. 骨架屏：Slow 3G 下 /products、/news、详情页观察琥珀 shimmer（第十五批）
+> 3. 错误边界：手动触发渲染错误确认 error.tsx 重试可恢复（第十五批）
+> 4. 产品编辑 Product Image：admin 设置 hero_image + Browse Media 弹层（第十六批）
+> 5. Media 批量删除：勾选/全选/Delete Selected 实测 D1+R2 同步清理（第十七批）
+> 6. 可选增强：构建时设 `NEXT_PUBLIC_R2_PUBLIC_URL` 以启用媒体库 R2 真实预览
