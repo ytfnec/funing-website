@@ -78,7 +78,7 @@ curl -s -o /dev/null -w "admin-news-noauth -> HTTP %{http_code}\n" https://fnec.
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 db:deploy | 待执行 | |
-| 3 构建部署 | 待执行 | |
-| 4 验证 | 待执行 | |
+| 1 推代码 | ✅ | 已推送 3 个本地提交（529a752 新闻功能、229dd9b HANDOFF-LOG、1eec5f5 指令），origin/master 已同步 |
+| 2 db:deploy | ✅ | 首次失败（远程存在旧版 `news_article` 表：id/date/title_zh/title_en/...，含 2 行测试数据，结构不兼容导致索引报 no such column: status）。已 `ALTER TABLE news_article RENAME TO news_article_legacy`（保留数据）后重跑成功；新表已建（id/slug/title/excerpt/content/cover_image/author/status/published_at/created_at/updated_at 共 11 列） |
+| 3 构建部署 | ✅ | 已确认无残留 node 进程；`npm run clean` 清缓存；`npm run build:cf`（webpack/OpenNext）成功；`npm run deploy` 成功，**Version ID: 8e338b54-215a-4951-a81e-5667612c3c49** |
+| 4 验证 | ✅（浏览器项除外） | 10 条路由全部 200（/news、/admin/news 新路由正常）；API 专项：① /api/news → 200 `{"articles":[]}` ② /api/news/definitely-not-exists → 404 ③ /api/admin/news 未登录 → 401；sitemap.xml 已含 https://fnec.net/news。⚠️ 浏览器专项（登录后 admin CRUD / Published↔Draft 切换）需人工登录验证，cron 环境无登录态无法执行 |
