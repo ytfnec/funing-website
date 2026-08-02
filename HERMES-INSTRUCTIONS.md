@@ -63,7 +63,8 @@ npx wrangler d1 execute funing-db --remote --command "DELETE FROM page_views WHE
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 统计测试 | 待执行 | |
+| 1 推代码 | ✅ 已完成 | a5610d0..129f5bc 推送成功 |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `86e2cfda-ba70-48a9-bfda-8d99c98cdf05` |
+| 3 验证 | ✅ 通过 | 8 路由全 200（/api/views 首次 404 为部署传播延迟，~5s 后恢复；GET=405/POST=200 符合设计） |
+| 4 统计测试 | ✅ 通过 | POST /api/views → {"ok":true} → D1 确认写入 1 条 → 已清理 |
+| 5 admin stats | ✅ 通过 | ⚠️ **发现 admin_users 表为空，已创建管理员 info@fnec.net（角色 admin）**；登录后 Dashboard 显示 Page Views 卡片（总数+24h）正常 |
