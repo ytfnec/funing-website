@@ -80,8 +80,11 @@ curl -s "https://fnec.net/api/products" | head -c 200
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 www 绑定 | 需用户 | |
-| 5 main 清理 | 待确认 | |
+| 1 推代码 | ✅ 完成 | `b4f1867..5540c15 master -> master` |
+| 2 构建部署 | ✅ 完成 | 清理 3 个残留 tail 进程 → rm -rf 缓存 → build:cf（35页+8 API，TS 通过）→ deploy 成功，Version `a1e99af1` |
+| 3 验证 | ✅ 通过 | 全部路由最终 200（含 /admin/content、/api/content）；/api/content 返回 `{"overrides":{}}`；products 4 个 |
+| 4 www 绑定 | ⏸ 需用户 | OAuth 仅 zone:read，需 Dashboard → Worker → Domains 添加 www.fnec.net |
+| 5 main 清理 | ⏸ 待确认 | 需用户确认后执行 `git push origin --delete main` |
+
+> 回报时间: 2026-08-02 · Hermes Agent
+> 备注: 部署后首次 curl 旧版本缓存 500 → 版本全球传播后恢复 200；308 为 trailing-slash 重定向（正常）。
