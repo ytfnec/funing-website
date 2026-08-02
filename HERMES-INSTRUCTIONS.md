@@ -44,6 +44,6 @@ curl -s "https://fnec.net/products" | grep -o "SAUNA CONTROL\|Sauna Control\|fil
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ 已完成 | 4310815..77e6c33 推送成功 |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `c71604cb-8ccf-4553-9483-43590cc7b312` |
+| 3 验证 | ✅ 通过 | 6 路由全 200；产品页含 "sauna control" 筛选标签 |
