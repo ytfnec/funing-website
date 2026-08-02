@@ -122,3 +122,20 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 > 4. 产品编辑 Product Image：admin 设置 hero_image + Browse Media 弹层（第十六批）
 > 5. Media 批量删除：勾选/全选/Delete Selected 实测 D1+R2 同步清理（第十七批）
 > 6. 可选增强：构建时设 `NEXT_PUBLIC_R2_PUBLIC_URL` 以启用媒体库 R2 真实预览
+
+## 九、生产事故记录
+
+### 2026-08-02 全站 1102（Worker 超出资源限制）
+
+- **现象**: `https://fnec.net` 全站 HTTP 1102（Ray ID a250b7852bf52eba）。
+- **已知正常版本**: 批次17 Version `fa572c9c-a75c-44f9-9e56-9af37f61606d`（9 路由全 200）。
+- **疑似根因**:
+  1. 多个 "Dev auto loop" 定时任务会话**并发运行**，06:46 有会话重建 `.open-next`（server-functions 达 32MB）并可能部署异常版本覆盖正常版（Hermes 多次标记"并发 cron 部署冲突"）。
+  2. `open-next.config.ts` 用 `incrementalCache: 'dummy'`（无边缘缓存），公开页全量 SSR + 查 D1，免费版 10ms CPU 限额易被打满。
+  3. 公开只读 API（products/news）无 `Cache-Control`，每请求都打 Worker + D1。
+- **处理**:
+  - 下发第十八批（紧急）：Hermes `wrangler rollback` 到 `fa572c9c`（待执行确认）。
+  - 性能加固提交 `8373bff`：给 `/api/products`、`/api/products/[slug]`、`/api/news` 加 `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`（CDN 缓存，零配置）。待 Hermes 部署。
+- **建议**:
+  - 停用多余的 `dev-auto-loop` 定时任务，只保留一个，避免并发部署冲突。
+  - 后续可考虑 `open-next.config.ts` 启用 R2 增量缓存 / 缓存拦截（需新增 binding，规范要求谨慎）。
