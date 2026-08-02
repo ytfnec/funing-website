@@ -87,6 +87,10 @@ export default function Home() {
             alt=""
             fill
             priority
+            fetchPriority="high"
+            decoding="async"
+            placeholder="blur"
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAp0lEQVR42q2TWw7DIAwEOQNgDHk1978kZcFGJapUqfAxkuWwgyGJ8dbmGcyzQcC5HIAXSo0e/RKQszXAhUh+gEWGNV8FGq6B4HMKlDduoEYPz54So2NrWIN7DANdpJJB4GTssouGj8T53BqoVYI17NuddAEuSXfX8FWCrz1Wrg9Jn2IQyPi6+ynh+0gV1Oj1KeQYCwWzR5i+xOnXOP0hLfmUl/xM//AGRNI+0LjrUfwAAAAASUVORK5CYII="
             className="object-cover object-center"
             sizes="100vw"
           />
@@ -336,8 +340,11 @@ export default function Home() {
             src="/assets/cta-bg.webp"
             alt=""
             fill
-            className="object-cover object-center"
             priority={false}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            className="object-cover object-center"
             sizes="100vw"
           />
           <div className="absolute inset-0" style={{ background: "linear-gradient(rgba(5,5,5,0.78), rgba(5,5,5,0.9))" }} />

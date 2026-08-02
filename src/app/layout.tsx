@@ -1,9 +1,19 @@
 import type { Metadata, Viewport } from "next";
+import { Manrope } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ViewTracker } from "@/components/ViewTracker";
 import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
+
+// Self-hosted Manrope variable font (wght 200–800). Replaces the render-blocking
+// Google Fonts stylesheet: the font is downloaded at build time, emitted as a
+// static asset, and preloaded automatically — no external request, no FOUT.
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: { default: "Funing Electronics | Precision Electronic Control Systems | 烟台富宁电子", template: "%s | Funing Electronics" },
@@ -27,15 +37,15 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" className="h-full antialiased">
+    <html lang="zh-CN" className={`${manrope.variable} h-full antialiased`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Critical resource inlining: SVG favicon embedded as a data URI so the
+            browser makes zero extra requests for it (no /favicon.ico 404). */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
-          rel="stylesheet"
+          rel="icon"
+          href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwNTA1MDUiLz48cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHJ4PSIxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDhhMzVhIiBzdHJva2Utb3BhY2l0eT0iMC41IiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIzMiIgeT0iNDQiIGZvbnQtZmFtaWx5PSJBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2Q4YTM1YSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RjwvdGV4dD48L3N2Zz4="
+          sizes="any"
         />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
