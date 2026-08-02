@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2 } from 'lucide-react';
+import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check } from 'lucide-react';
 
 interface Contact {
   id: string;
@@ -14,6 +14,7 @@ interface Contact {
   message: string | null;
   product_interest: string | null;
   status: string;
+  notes: string | null;
   submitted_at: string;
 }
 
@@ -21,6 +22,9 @@ export default function AdminContacts() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [editingNotes, setEditingNotes] = useState<string | null>(null);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [savedNotes, setSavedNotes] = useState(false);
 
   useEffect(() => {
     loadContacts();
@@ -45,6 +49,27 @@ export default function AdminContacts() {
         body: JSON.stringify({ status }),
       });
       setContacts(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+    } catch {}
+  };
+
+  const startEditNotes = (c: Contact) => {
+    setEditingNotes(c.id);
+    setNotesDraft(c.notes || '');
+    setSavedNotes(false);
+  };
+
+  const saveNotes = async (c: Contact) => {
+    try {
+      const res = await fetch(`/api/admin/contacts?id=${c.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: notesDraft }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      setContacts(prev => prev.map(x => x.id === c.id ? { ...x, notes: notesDraft } : x));
+      setEditingNotes(null);
+      setSavedNotes(true);
+      setTimeout(() => setSavedNotes(false), 2000);
     } catch {}
   };
 
@@ -144,6 +169,56 @@ export default function AdminContacts() {
                         {s}
                       </button>
                     ))}
+                  </div>
+
+                  {/* Internal notes */}
+                  <div className="pt-2 border-t border-[rgba(255,255,255,0.06)]">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] tracking-[0.18em] uppercase text-[var(--gray)]">
+                        Internal Notes
+                      </span>
+                      {savedNotes && (
+                        <span className="flex items-center gap-1 text-[11px] text-green-400">
+                          <Check className="w-3 h-3" /> Saved
+                        </span>
+                      )}
+                    </div>
+                    {editingNotes === c.id ? (
+                      <div className="space-y-2">
+                        <textarea
+                          value={notesDraft}
+                          onChange={(e) => setNotesDraft(e.target.value)}
+                          rows={3}
+                          placeholder="Add follow-up notes for this lead…"
+                          className="w-full px-3 py-2 bg-[#050505] border border-[rgba(255,255,255,0.12)] rounded text-sm text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
+                        />
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => saveNotes(c)}
+                            className="flex items-center gap-1 text-[12px] text-[var(--amber)] hover:text-white transition-colors"
+                          >
+                            <Save className="w-3.5 h-3.5" /> Save Notes
+                          </button>
+                          <button
+                            onClick={() => setEditingNotes(null)}
+                            className="text-[12px] text-[var(--gray)] hover:text-white transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => startEditNotes(c)}
+                        className="w-full text-left text-sm leading-relaxed hover:bg-[rgba(255,255,255,0.02)] rounded p-2 transition-colors"
+                      >
+                        {c.notes ? (
+                          <span className="text-[var(--soft-white)]">{c.notes}</span>
+                        ) : (
+                          <span className="text-[var(--gray)]/60 italic">No notes yet — click to add</span>
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
