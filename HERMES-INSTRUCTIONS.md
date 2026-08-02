@@ -66,6 +66,6 @@ curl -s -X POST https://fnec.net/api/admin/content/batch \
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ | 开发提交 10a4154 已在远端（git push 显示 up-to-date，无待推内容） |
+| 2 构建部署 | ✅ | 已清缓存（.next/.open-next），无残留 node 进程；webpack 构建成功（Next 16.2.10）；部署 Version ID a2f8d8e6-36b1-4f3c-9991-45c2400540b9 |
+| 3 验证 | ✅ | 8 条路由全 200；批量 API：未登录 POST → 401（鉴权生效），非法 action → 401（无 500 / 无 "Failed to run bulk action"）；/admin/content 200；浏览器交互（勾选/工具栏/确认弹窗）需人工登录验证 |
