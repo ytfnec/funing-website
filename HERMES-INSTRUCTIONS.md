@@ -13,9 +13,12 @@
 
 ## 任务 1：推代码（终端）
 
-本地有 2 个未推送提交（`9b79bf3` JSON-LD 修复已被推送到 origin/master，但尚未部署上线——本批部署将包含它）：
+本地有 3 个未推送提交（`9b79bf3` JSON-LD 修复已在 origin/master 但尚未部署上线——本批部署将包含它）：
 - `3e0309a`（HANDOFF-LOG 批次记录更新）
-- `XXXXXXX`（本指令文件，Hermes 推代码前由你 `git rev-parse --short HEAD` 核对实际哈希即可，无需修改本文）
+- `e2994c6`（第十四批指令文件）
+- `bab93fc`（指令文件未推送提交清单修正）
+
+> 注: Hermes 推代码前可用 `git log origin/master..HEAD --oneline` 核对清单，以实际为准。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
