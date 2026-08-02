@@ -64,6 +64,6 @@ curl -s "https://fnec.net/products/sauna-controllers" | grep -o "application/ld+
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+|| 1 推代码 | ✅ 完成 | 已推送至 origin/master |
+|| 2 构建部署 | ✅ 完成 | 清缓存 + webpack构建 + 部署成功 |
+|| 3 验证 | ✅ 完成 | 全部路由200，sitemap含产品URL，robots.txt含Disallow/Sitemap，产品页含JSON-LD |
