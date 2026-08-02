@@ -107,5 +107,6 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 |----|------|------|-----------|
 | 1 | 首页 CTA 区块真实图片（PCB 纹理 `cta-bg.webp` 叠加） | ✅ 已部署 | `9e83791` |
 | 2 | 性能优化：next/image sizes/lazy、字体自托管(preload)、关键资源内联 | ✅ 已部署 | `24dbba9`，详见第十一批指令 |
+| 3 | admin Content 编辑器批量操作（多选删除/激活/暂停） | ✅ 代码已提交，待部署 | `10a4154`，详见第十二批指令 |
 
-剩余队列：3) admin Content 批量操作  4) 新闻 /news 列表页 + admin 管理  5) 全量回归验证  6) 骨架屏 + 错误边界  7) 产品详情 hero_image  8) 后台 Media 批量操作
+剩余队列：4) 新闻 /news 列表页 + admin 管理  5) 全量回归验证  6) 骨架屏 + 错误边界  7) 产品详情 hero_image  8) 后台 Media 批量操作
