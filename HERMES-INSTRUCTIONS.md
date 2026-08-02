@@ -1,13 +1,13 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 更新: 2026-08-02（第二批）· 来源: Claude Code
+> 更新: 2026-08-02（第三批）· 来源: Claude Code
 > 说明: 请在项目目录 `C:\Users\xxq\axissaunas-clone` 执行，完成后写回报。
 
 ---
 
 ## 任务 1：推代码（终端）
 
-本地有 2 个未推送提交：`d182d8f`（交接日志状态）、`bfe8482`（SEO 优化）。
+本地有 1 个未推送提交：`d8f4fb8`（运营功能：newsletter + 防spam + 登录限流）。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -16,8 +16,7 @@ git push
 
 ## 任务 2：清缓存 + 构建 + 部署
 
-> ⚠️ 必须清缓存（`rm -rf .next .open-next`），否则复用旧产物。
-> 构建前确认无残留 `next dev`/`wrangler dev`/`wrangler tail` 进程。
+> ⚠️ 必须清缓存（`rm -rf .next .open-next`），构建前确认无残留 node 进程。
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
@@ -26,7 +25,7 @@ npm run build:cf
 npm run deploy
 ```
 
-## 任务 3：验证 SEO 功能上线
+## 任务 3：验证
 
 ```bash
 # 基础路由 200
@@ -34,29 +33,28 @@ for u in "/" "/admin/login" "/products" "/contact" "/api/content" "/sitemap.xml"
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
 
-# sitemap.xml 应包含产品详情页
-curl -s "https://fnec.net/sitemap.xml" | head -c 600
-echo ""
+# 页脚 Newsletter 入口存在
+curl -s "https://fnec.net" | grep -o "newsletter" | head -1
 
-# robots.txt
-curl -s "https://fnec.net/robots.txt"
-
-# opengraph 图
-curl -s -o /dev/null -w "opengraph.png -> HTTP %{http_code}\n" "https://fnec.net/opengraph.png"
-
-# 产品详情页应含 Product JSON-LD
-curl -s "https://fnec.net/products/sauna-controllers" | grep -o "application/ld+json" | head -1
+# 联系表单 honeypot 字段存在
+curl -s "https://fnec.net/contact" | grep -o 'name="website"' | head -1
 ```
 
 预期：
-- 全部路由 200（含 sitemap.xml、robots.txt、opengraph.png）
-- sitemap.xml 含 `/products/sauna-controllers` 等产品 URL
-- robots.txt 含 `Disallow: /admin/` 和 `Sitemap: https://fnec.net/sitemap.xml`
-- 产品详情页 HTML 含 `application/ld+json`
+- 全部路由 200
+- 首页 HTML 含 "newsletter"
+- 联系页含 `name="website"`（honeypot）
 
-## 任务 4（无，可选）：其他
+## 任务 4（测试，可选）：验证 API
 
-无新 Dashboard 操作。
+```bash
+# Newsletter 订阅 API（会真实写入 D1！测试后请删除）
+curl -s -X POST "https://fnec.net/api/newsletter" -H "Content-Type: application/json" -d '{"email":"test-verify@example.com"}'
+# 预期: {"success":true}
+
+# 删除测试记录（如成功写入）
+npx wrangler d1 execute funing-db --remote --command "DELETE FROM newsletter_subscriptions WHERE email='test-verify@example.com';"
+```
 
 ---
 
@@ -64,6 +62,7 @@ curl -s "https://fnec.net/products/sauna-controllers" | grep -o "application/ld+
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-|| 1 推代码 | ✅ 完成 | 已推送至 origin/master |
-|| 2 构建部署 | ✅ 完成 | 清缓存 + webpack构建 + 部署成功 |
-|| 3 验证 | ✅ 完成 | 全部路由200，sitemap含产品URL，robots.txt含Disallow/Sitemap，产品页含JSON-LD |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
+| 4 API 测试 | 待执行 | |
