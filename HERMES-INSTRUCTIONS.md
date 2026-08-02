@@ -57,6 +57,6 @@ grep -o 'loading="lazy"' /tmp/home.html | wc -l
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ 已完成 | 40f5468..c1b4d45 推送成功（含 24dbba9 代码 + c1b4d45 指令） |
+| 2 构建部署 | ✅ 已完成 | 清缓存 → build:cf → deploy 成功，Version `bbe75b36-adba-4c36-8987-cfce226a49e2` |
+| 3 验证 | ✅ 通过 | 8 路由全 200。性能专项：① 字体自托管 ✅ CSS 内 4 个 woff2 全为 `/_next/static/media/*.woff2`，googleapis 计数 0；② favicon 内联 ✅ `data:image/svg+xml;base64`；③ hero `fetchPriority="high"` ✅ + lazy 1 处 ✅。浏览器：hero 图加载成功、Network 外部字体请求 0、自托管 woff2 已加载、控制台 0 错误 |
