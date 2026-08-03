@@ -139,3 +139,18 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **建议**:
   - 停用多余的 `dev-auto-loop` 定时任务，只保留一个，避免并发部署冲突。
   - 后续可考虑 `open-next.config.ts` 启用 R2 增量缓存 / 缓存拦截（需新增 binding，规范要求谨慎）。
+
+### 2026-08-03 1102 复现 — 根因确认与根治（batch 18–21）
+
+- **现象**: 全站 1102 后回滚 `fa572c9c` 恢复；随后 SSR 页面（`/`、`/products`）再次超时 30s，JSON API 正常 200。版本未变（`4788d816`）→ 排除版本覆盖，确认是 Worker 运行时资源超限。
+- **根因（最终确认）**:
+  - OpenNext Cloudflare 把 Next 预渲染的静态页（`.next/server/app/*.html` 有完整 HTML，routes-manifest 的 staticRoutes 含全部公开页）构建为 **Worker SSR**，`.open-next/assets` 无任何 HTML。每个请求都全量跑 Worker + D1，免费版 10ms CPU 限额一满即超时/1102。
+  - JSON API 有 CDN 缓存头所以仍 200 → "SSR 挂、API 好"。
+- **修复**:
+  - `03b17f8`：`next.config.js` 给公开页面加 `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`，CDN 边缘缓存预渲染 HTML。
+  - `18d7ce9`：**header 规则顺序修复**——Next.js 对同一 header 应用"最后匹配"的规则，catch-all 必须在前、`/admin/**` 与 `/api/admin/**` 的 `no-store` 覆盖规则在后（首版 admin 前置反被 catch-all 覆盖，Hermes 发现并修正）。
+- **结果**: batch21 部署 `37286ee2`，公开页命中 CDN 缓存（连打 200、~1s），admin 验证 `private, no-store`，tail 无 CPU 超限。**1102/SSR 超时根治**。
+- **遗留/可选**:
+  - 纯静态公开页（首页/about/oem/resources）可加 `export const dynamic='force-static'` 让构建期直接产出静态 HTML（彻底不打 Worker）。
+  - 或启用 OpenNext R2 增量缓存（`NEXT_INC_CACHE_R2_BUCKET` binding，需改 wrangler.toml）。
+  - `dev-auto-loop` 定时任务已停用，避免并发部署冲突复发。
