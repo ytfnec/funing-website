@@ -77,8 +77,8 @@ curl -s -o /dev/null -w "/products/sauna-controllers -> HTTP %{http_code}\n" "ht
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 行为抽查 | 待执行 | |
-| 5 1102 观察 | 待执行 | |
+| 1 推代码 | ✅ | `251d441..63bea9f` 推送（含 3ef05a7 静态化 + 研究记录 d32b226/4529f7b），origin/master..HEAD 为空 |
+| 2 构建+部署 | ✅ | build:cf:static 成功：**"Copied 24 prerendered HTML files"** + "Wrote .open-next/assets/_headers"；deploy 上传 25 个新静态资产，Version ID `a8a2ad6b-5ab4-431c-b896-5154332edc67` |
+| 3 验证 | ✅ | 9 路由全 200；`/about` 与 `/` 返回 `cache-control: public, max-age=0, s-maxage=300, stale-while-revalidate=3600` 且 **CF-Cache-Status: HIT**（静态 HTML 已从 assets 直出）；`/api/products` 保持 API 头（Worker 处理，正常） |
+| 4 行为抽查 | ✅ | `/about` 与 `/` HTML 均含 `self.__next_f`（RSC 数据内联，可 hydration）；`/products/sauna-controllers` 200（Worker 处理，缓存头正常） |
+| 5 1102 观察 | ✅ 已记录 | 部署后 3 分钟×6 轮：`/` `/about` `/admin/login` 全 200，无 1102。公开页现由 CDN 直出（HIT），理论上完全免疫 Worker 窗口；动态/API 页保持 Worker 处理。窗口内免疫效果待下次 1102 窗口实测 |
