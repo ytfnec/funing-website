@@ -259,3 +259,13 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - 后台 Contacts 页面: 全选/多选复选框 + 顶部批量删除工具栏 + 展开详情底部单条删除按钮；删除成功/失败提示。
   - i18n en/zh 各 695 keys 对齐；tsc 通过。
 - **设计**: 参照 Media/Content 模块的批量删除模式；删除为硬删除（不可恢复），有 confirm 二次确认。
+
+### 2026-08-03 批次 27 部署完成 — 询盘删除已上线（Hermes 回报）
+
+- **结果**: 批量删除功能部署成功，Version `eaed3f92`。公开页静态化保持（`build:cf:static` 46 页）。
+- **验证（Hermes）**:
+  - 鉴权: `/api/admin/contacts` 与 `/api/admin/contacts/batch` 未登录均 401 ✅。
+  - UI: 全选/勾选 → "删除所选"按钮激活（"已选 1 项"）；单条详情含删除按钮 ✅。
+  - **真实删除验证**: 用户确认 `maxeon shin` 询盘为测试数据 → 经 batch API 删除成功（`{"success":true,"count":1}`），列表已空 ✅。
+- **发现的优化点（可选）**: "删除所选"使用原生 `confirm()` 弹窗——真人使用正常（会弹确认框），但**自动化/脚本点击会卡死页面**（30s 超时、页面冻结）。如需可选优化：改用自定义确认弹窗（如 Radix Dialog 或内联确认）。
+- **用户文档**: 已制作《后台操作手册》（含询盘删除说明）与《i18n Key 完整对照表》，合并版《后台操作手册与i18nKey对照表》已交付。
