@@ -54,7 +54,7 @@ done
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器确认 | 待执行（可选） | |
+| 1 推代码 | ✅ | `eac94b4..84c0772` 推送（含 948c507 ConfirmDialog），origin/master..HEAD 为空 |
+| 2 构建+部署 | ✅ | `build:cf:static` 成功（46/46 页 + "Copied 24 prerendered HTML" + `_headers`）；部署 v`ae701358-2dc1-4c6a-98d2-b8321a6ccc69` |
+| 3 验证 | ✅ | 公开页 5 路由全 200（静态化保持）；`/api/admin/contacts` 未登录 401；`/api/admin/contacts/batch` GET 405（POST-only）；`/api/products` 200 |
+| 4 浏览器确认 | ✅ | 造测试询盘（Hermes Test）→ 勾选 → 删除所选 → **自定义 dialog 弹窗出现**（标题"删除"+取消/删除按钮，深色，非原生 confirm）：① 点取消 → 弹窗关闭、勾选保留、数据未删 ✅ ② 重新打开 → 确认删除 → 列表清空、无卡顿 ✅ ③ 测试数据已删除，询盘列表干净。**confirm() 问题已解决，自动化可正常操作** |
