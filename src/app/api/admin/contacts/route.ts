@@ -46,3 +46,21 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to update contact' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await getSession();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+
+    await execute('DELETE FROM contact_submissions WHERE id = ?', [id]);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Contact delete error:', error);
+    return NextResponse.json({ error: 'Failed to delete contact' }, { status: 500 });
+  }
+}

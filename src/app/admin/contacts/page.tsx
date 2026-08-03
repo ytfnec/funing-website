@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check, Mail, Clock } from 'lucide-react';
+import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check, Mail, Clock, Trash2, AlertCircle } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 
 interface Contact {
@@ -29,6 +29,10 @@ export default function AdminContacts() {
   const [editingNotes, setEditingNotes] = useState<string | null>(null);
   const [notesDraft, setNotesDraft] = useState('');
   const [savedNotes, setSavedNotes] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [deleted, setDeleted] = useState('');
 
   useEffect(() => {
     loadContacts();
@@ -77,6 +81,63 @@ export default function AdminContacts() {
     } catch {}
   };
 
+  const allSelected = contacts.length > 0 && contacts.every((c) => selected.has(c.id));
+
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    setSelected(allSelected ? new Set() : new Set(contacts.map((c) => c.id)));
+  };
+
+  const handleDelete = async (c: Contact) => {
+    if (!confirm(t('admin.contacts.deleteConfirm'))) return;
+    try {
+      const res = await fetch(`/api/admin/contacts?id=${c.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(t('admin.contacts.deleteFailed'));
+      setContacts(prev => prev.filter(x => x.id !== c.id));
+      setSelected(prev => {
+        const next = new Set(prev);
+        next.delete(c.id);
+        return next;
+      });
+      setDeleted(t('admin.contacts.deleted')?.replace?.('{n}', '1') || 'Deleted');
+      setTimeout(() => setDeleted(''), 2500);
+    } catch (err: any) {
+      setError(err.message || t('admin.contacts.deleteFailed'));
+    }
+  };
+
+  const runBulkDelete = async () => {
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    if (!confirm(t('admin.contacts.bulkDeleteConfirm').replace('{n}', String(ids.length)))) return;
+    setBusy(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/contacts/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }),
+      });
+      if (!res.ok) throw new Error(t('admin.contacts.bulkFailed'));
+      setDeleted(t('admin.contacts.deleted')?.replace?.('{n}', String(ids.length)) || 'Deleted');
+      setTimeout(() => setDeleted(''), 2500);
+      setSelected(new Set());
+      setContacts(prev => prev.filter(x => !ids.includes(x.id)));
+    } catch (err: any) {
+      setError(err.message || t('admin.contacts.bulkFailed'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -99,17 +160,64 @@ export default function AdminContacts() {
     <div>
       <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">{t('admin.contacts.title')}</h1>
 
+      {error && (
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-4 p-4 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+      {deleted && (
+        <div className="flex items-center gap-2 text-green-400 text-sm mb-4 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
+          <Check className="w-4 h-4 flex-shrink-0" />
+          <span>{deleted}</span>
+        </div>
+      )}
+
       <div className="space-y-3">
         {contacts.length === 0 ? (
           <div className="text-center py-20 text-[var(--gray)]">{t('admin.contacts.empty')}</div>
         ) : (
-          contacts.map((c) => (
-            <div key={c.id} className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg overflow-hidden">
+          <>
+          {/* Bulk delete toolbar */}
+          <div className="mb-4 bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 accent-[var(--amber)]"
+              />
+              <span className="text-sm text-[var(--soft-white)]">
+                {selected.size > 0 ? t('admin.contacts.selected').replace('{n}', String(selected.size)) : t('admin.contacts.selectAll')}
+              </span>
+            </label>
+            <div className="flex items-center gap-2 sm:ml-auto">
+              <button
+                onClick={runBulkDelete}
+                disabled={selected.size === 0 || busy}
+                className="btn btn-secondary text-xs py-1.5 px-3 text-red-400 hover:border-red-400/50 disabled:opacity-40"
+              >
+                {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />} {t('admin.contacts.deleteSelected')}
+              </button>
+            </div>
+          </div>
+          {contacts.map((c) => (
+            <div key={c.id} className={`bg-[#0a0a0a] border rounded-lg overflow-hidden transition-colors ${
+              selected.has(c.id) ? 'border-[rgba(216,163,90,0.55)]' : 'border-[rgba(255,255,255,0.06)]'
+            }`}>
               <button
                 onClick={() => setExpanded(expanded === c.id ? null : c.id)}
                 className="w-full p-5 flex items-center justify-between text-left hover:bg-[rgba(255,255,255,0.02)] transition-colors"
               >
                 <div className="flex items-center gap-4 min-w-0">
+                  <span onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selected.has(c.id)}
+                      onChange={() => toggleSelect(c.id)}
+                      className="w-4 h-4 accent-[var(--amber)] flex-shrink-0"
+                    />
+                  </span>
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
                     c.type === 'call' ? 'bg-blue-500/20 text-blue-400' :
                     c.type === 'quote' ? 'bg-[rgba(216,163,90,0.2)] text-[var(--amber)]' :
@@ -234,10 +342,21 @@ export default function AdminContacts() {
                       </button>
                     )}
                   </div>
+
+                  {/* Delete this submission */}
+                  <div className="pt-2 border-t border-[rgba(255,255,255,0.06)] flex justify-end">
+                    <button
+                      onClick={() => handleDelete(c)}
+                      className="flex items-center gap-1 text-[12px] text-[var(--gray)] hover:text-red-400 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> {t('admin.contacts.delete')}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
-          ))
+          ))}
+          </>
         )}
       </div>
     </div>
