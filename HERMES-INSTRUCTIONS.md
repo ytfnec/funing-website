@@ -1,16 +1,15 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第二十六批 · 更新: 2026-08-03 · 来源: Claude Code
-> 说明: 极致压榨 — 静态 HTML 直出（公开页绕过 Worker），推代码 + `build:cf:static` + 部署 + 专项验证。无 schema 变更，**不需要 db:deploy**。
+> 批次: 第二十七批 · 更新: 2026-08-03 · 来源: Claude Code
+> 说明: 询盘批量删除功能，推代码 + `build:cf:static` + 部署 + 验证。无 schema 变更，**不需要 db:deploy**。
 
 ---
 
 ## 背景
 
-- 用户要求"极致压榨"。调研发现 Next 已为所有静态路由预渲染完整 HTML（`.next/server/app/*.html`），但 OpenNext 1.20 将其丢进 dummy cache，Worker 每次缓存 miss 回源仍重跑 SSR（1102 主要 CPU 源）。
-- 提交 `3ef05a7`：新增 `scripts/copy-prerendered-html.mjs`（构建后把 HTML 复制进 `.open-next/assets/` + 生成 `_headers`）+ `npm run build:cf:static`。
-- **原理**: wrangler `[assets]` 默认 `run_worker_first: false`，Cloudflare Static Assets 会优先服务 assets 里的静态文件。复制后的 `about.html`、`index.html`、`admin/login.html` 等会从 CDN 直接返回，**完全绕过 Worker**。
-- **跳过**: 动态路由（`products/[slug]`、`news/[slug]`）和 `/api/*` 不进 assets，仍由 Worker 处理。
+- 用户反馈经常收到乱填的垃圾询盘，需要删除功能（含批量删除）。
+- 提交 `b9aca4e`（4 文件）: 新增批量删除 API + 单条删除 API + 后台 Contacts 多选/批量删除 UI + i18n keys。
+- **重要**: 公开页已启用静态化直出，**必须用 `npm run build:cf:static`**（含复制 HTML 步骤），否则公开页退回 Worker SSR。
 
 ## 任务 1：推代码（终端）
 
@@ -19,7 +18,7 @@ cd C:\Users\xxq\axissaunas-clone
 git push
 ```
 
-预期: 推送 `3ef05a7` 及前面待推送的提交；`git log origin/master..HEAD --oneline` 为空。
+预期: 推送 `b9aca4e` 及前面待推送的提交（含 HANDOFF-LOG `14ea364` 等）；`git log origin/master..HEAD --oneline` 为空。
 
 ## 任务 2：清缓存构建 + 复制 HTML + 部署（终端）
 
@@ -30,46 +29,30 @@ npm run build:cf:static
 npm run deploy
 ```
 
-预期:
-- `build:cf:static` = `build:cf` + `copy:html`，日志出现 "Copied 24 prerendered HTML files" 和 "Wrote .open-next/assets/_headers"。
-- 部署成功，线上版本更新。
+预期: `build:cf:static` 出现 "Copied 24 prerendered HTML files" + "Wrote .open-next/assets/_headers"；部署成功，线上版本更新。
 
-## 任务 3：验证静态化生效（终端，关键）
+## 任务 3：验证（终端）
 
 ```bash
-# 全路由回归
-for u in "/" "/about" "/products" "/news" "/contact" "/admin/login" "/api/products" "/api/news" "/robots.txt"; do
+# 公开页回归（确认静态化未破坏）
+for u in "/" "/about" "/products" "/news" "/admin/login" "/api/admin/contacts" "/api/products"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
-# 确认公开页响应头（静态化后应从 CDN 返回缓存头）
-curl -s -D - -o /dev/null "https://fnec.net/about"
-curl -s -D - -o /dev/null "https://fnec.net/"
+# 批量删除 API 鉴权验证（未登录应 401）
+curl -s -o /dev/null -w "batch unauthorized -> HTTP %{http_code}\n" -X POST "https://fnec.net/api/admin/contacts/batch" -H "Content-Type: application/json" -d '{"ids":["test"]}'
 ```
 
 预期:
-- 全部路由 **HTTP 200**。
-- `/about` 与 `/` 返回 `cache-control: public, max-age=0, s-maxage=300, stale-while-revalidate=3600`（来自 `_headers`）—— 说明静态 HTML 已从 assets 直出。
-- `/api/products` 仍返回 API 的 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`（Worker 处理，正常）。
+- 公开页全 200（静态化保持）。
+- `/api/admin/contacts` 未登录返回 **401**。
+- `/api/admin/contacts/batch` 未登录返回 **401**（无 session 不可调用）。
 
-## 任务 4：静态化行为抽查（终端）
+## 任务 4：浏览器人工确认（可选，不阻塞）
 
-```bash
-# 检查公开页 HTML 是否完整（含 RSC flight 数据）
-curl -s "https://fnec.net/about" | grep -c "self.__next_f"
-curl -s "https://fnec.net/" | grep -c "self.__next_f"
-# 检查动态路由仍由 Worker 处理（产品详情）
-curl -s -o /dev/null -w "/products/sauna-controllers -> HTTP %{http_code}\n" "https://fnec.net/products/sauna-controllers"
-```
+- 登录后台 → Contacts：勾选多条询盘 → Delete Selected；展开单条询盘底部 Delete 按钮；确认删除后列表消失。
+- 注意：此操作**硬删除**数据，验证时勿删真实询盘（可先用测试数据或仅验证 UI 显示）。
 
-预期:
-- 公开页 HTML 含 `self.__next_f`（RSC 数据内联，页面可 hydration）。
-- 产品详情 200（Worker 处理）。
-
-## 任务 5：1102 观察（报告即可）
-
-- 部署后记录是否有 1102；公开页（/、/products、/news、/about）是否全程 200（静态化后应完全不受 Worker 窗口影响）；动态/API 在窗口内是否仍受影响。
-
-> ⚠️ **回滚预案**: 若验证发现静态化未生效或有异常（如页面 500/空白/404），执行 `wrangler rollback` 回到部署前版本即可（assets 改动随版本回滚）。
+> 本批有前端 + API 改动；**不要**运行 db:deploy（无 schema 变更）。公开页静态化保持 `build:cf:static`。
 
 ---
 
@@ -77,9 +60,7 @@ curl -s -o /dev/null -w "/products/sauna-controllers -> HTTP %{http_code}\n" "ht
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ | `251d441..63bea9f` 推送（含 3ef05a7 静态化 + 研究记录 d32b226/4529f7b），origin/master..HEAD 为空 |
-| 2 构建+部署 | ✅ | build:cf:static 成功：**"Copied 24 prerendered HTML files"** + "Wrote .open-next/assets/_headers"；deploy 上传 25 个新静态资产，Version ID `a8a2ad6b-5ab4-431c-b896-5154332edc67` |
-| 3 验证 | ✅ | 9 路由全 200；`/about` 与 `/` 返回 `cache-control: public, max-age=0, s-maxage=300, stale-while-revalidate=3600` 且 **CF-Cache-Status: HIT**（静态 HTML 已从 assets 直出）；`/api/products` 保持 API 头（Worker 处理，正常） |
-| 4 行为抽查 | ✅ | `/about` 与 `/` HTML 均含 `self.__next_f`（RSC 数据内联，可 hydration）；`/products/sauna-controllers` 200（Worker 处理，缓存头正常） |
-| 5 1102 观察 | ✅ 已记录 | 部署后 3 分钟×6 轮：`/` `/about` `/admin/login` 全 200，无 1102。公开页现由 CDN 直出（HIT），理论上完全免疫 Worker 窗口；动态/API 页保持 Worker 处理。窗口内免疫效果待下次 1102 窗口实测 |
-| 6 后台 EN 补验（批次23遗留） | ✅ | 登录后台逐页验证 EN（fnec-lang=en）：登录页、Dashboard、Products、Content、News、Contacts、Media、Settings **共 8 页全英文渲染**，无残留中文 UI；期间 Browserbase 会话重置 1 次（cookie/localStorage 清空）导致重登，属浏览器环境问题非站点问题；直接导航 /admin/contacts 无 cookie 时重定向登录页（正常鉴权行为） |
+| 1 推代码 | 待执行 | |
+| 2 构建+部署 | 待执行 | |
+| 3 验证 | 待执行 | |
+| 4 浏览器确认 | 待执行（可选） | |

@@ -249,3 +249,13 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **1102 影响**: 公开页现由 CDN 直出（HIT），**理论免疫 Worker 1102 窗口**；动态/API 页仍由 Worker 处理。窗口内免疫效果待下次 1102 窗口实测。
 - **后台 EN 补验（批次 23 遗留，Hermes 完成）**: 登录后台逐页 fnec-lang=en 验证，登录/Dashboard/Products/Content/News/Contacts/Media/Settings **8 页全英文渲染，无残留中文 UI**。中途 Browserbase 会话重置 1 次（环境问题非站点问题）；无 cookie 直接导航 /admin/contacts 会重定向登录页（鉴权正常）。
 - **结论**: 后台双语化 + 公开页静态化全部完成并验证。这是 1102 治理的决定性优化——公开页不再消耗 Worker CPU。
+
+### 2026-08-03 询盘批量删除功能（batch 27）
+
+- **需求**: 用户反馈经常收到乱填的垃圾询盘，需要删除功能，且要批量删除。
+- **改动（提交 `b9aca4e`）**:
+  - 新增 `POST /api/admin/contacts/batch`（批量删除，1-100 个 id，session 鉴权）。
+  - `GET/PATCH` 的 contacts 主 API 增加 `DELETE /api/admin/contacts?id=`（单条删除）。
+  - 后台 Contacts 页面: 全选/多选复选框 + 顶部批量删除工具栏 + 展开详情底部单条删除按钮；删除成功/失败提示。
+  - i18n en/zh 各 695 keys 对齐；tsc 通过。
+- **设计**: 参照 Media/Content 模块的批量删除模式；删除为硬删除（不可恢复），有 confirm 二次确认。
