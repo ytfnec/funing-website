@@ -237,3 +237,15 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **方案（提交 `3ef05a7`）**: 构建后把 `.next/server/app/*.html` 复制到 `.open-next/assets/`（`run_worker_first: false` 时 Cloudflare Static Assets 直接服务，**完全绕过 Worker**）。新增 `scripts/copy-prerendered-html.mjs` + `npm run build:cf:static`。生成 `_headers`（300s + 1h SWR + 安全头）。跳过动态路由（[slug]）和 API。
 - **安全评估**: admin 页面静态化**不泄露数据**（HTML 壳无会话数据，鉴权在客户端 useEffect fetch `/api/auth`，失败跳 login）；公开页是 `'use client'` 壳 + RSC 内联，语言切换/内容 override 均由客户端 JS 处理，不受影响。
 - **验证要点（部署后）**: 检查 `/about` 等是否从 assets 直出（绕过 Worker）——可通过响应头或 1102 窗口行为判断；若不生效或异常，`wrangler rollback` 即可回滚。
+
+### 2026-08-03 批次 26 成功 — 公开页静态化直出已上线（重大优化）
+
+- **结果**: `3ef05a7` 静态化方案部署成功，Version `a8a2ad6b`。`build:cf:static` 复制 24 个预渲染 HTML 到 assets，deploy 上传 25 个新静态资产。
+- **验证（Hermes）**:
+  - 9 路由全 200；`/about` 与 `/` 返回 `_headers` 缓存头且 **CF-Cache-Status: HIT**（静态 HTML 已从 assets 直出，**公开页完全绕过 Worker**）。
+  - `/api/products` 保持 API 缓存头（Worker 处理，正常）；`/products/sauna-controllers` 200（Worker 处理）。
+  - 公开页 HTML 含 `self.__next_f`（RSC 数据完整，可正常 hydration）。
+  - 部署后 3 分钟×6 轮 `/` `/about` `/admin/login` 全 200，**无 1102**。
+- **1102 影响**: 公开页现由 CDN 直出（HIT），**理论免疫 Worker 1102 窗口**；动态/API 页仍由 Worker 处理。窗口内免疫效果待下次 1102 窗口实测。
+- **后台 EN 补验（批次 23 遗留，Hermes 完成）**: 登录后台逐页 fnec-lang=en 验证，登录/Dashboard/Products/Content/News/Contacts/Media/Settings **8 页全英文渲染，无残留中文 UI**。中途 Browserbase 会话重置 1 次（环境问题非站点问题）；无 cookie 直接导航 /admin/contacts 会重定向登录页（鉴权正常）。
+- **结论**: 后台双语化 + 公开页静态化全部完成并验证。这是 1102 治理的决定性优化——公开页不再消耗 Worker CPU。
