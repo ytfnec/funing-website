@@ -212,3 +212,10 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **结果**: 提交 `36d3138`（perf）+ `d20f049`（指令）已部署，线上 Version `4788d816-eaf9-4da3-b710-380d418eddbd`。6 路由全 200（`/` `/products` `/news` `/api/products` `/api/news` `/robots.txt`）；`/` 与 `/api/products` 均返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`（新缓存头生效）。
 - **1102 观察（Hermes）**: 16:45 起 SSR/登录 API 间歇挂（>2h，异常延长）；带 session/cookie 的浏览器请求更易触发 1102，无 cookie curl 多 200；重部署仅短暂恢复。19:00 后全路由 200。**结论**: Worker 资源问题（历史已知），本批 SWR 300→3600 生效后，1102 窗口内 CDN 可凭 stale 内容持续服务——是否覆盖窗口需下次发作再验证。
 - **⚠️ i18n 清理待部署**: 我随后提交的 `a45c6fb`（3 处硬编码清理）+ `8f9cb19`（指令更新）**已在 origin/master，但 Hermes 部署 v4788d816 是基于 `d20f049` 构建**，未包含这两个提交。需新批次确认线上是否已含 i18n 清理，未含则补部署。
+
+### 2026-08-03 批次 25 — i18n 清理确认已上线（Hermes 回报）
+
+- **结果**: Hermes 在收到批次 25 指令前，已按批次 24 更新版部署 `569bf3fc-8c5c-49a3-bf2e-372280633386`（基于最新 origin/master，**含 `36d3138` + `a45c6fb`**）。i18n 清理无需重复部署，批次 25 任务 1-2 确认即可。
+- **验证**: `/` `/products` `/news` `/api/products` `/api/news` `/robots.txt` `/admin/login` 全部 HTTP 200；`/` 返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`。中文登录页完整渲染（导航/表单/页脚齐全）→ **双语功能未破坏确认**。
+- **1102 观察更新**: 19:18-19:44 稳定期正常；19:44 浏览器 /admin/login → 1102（Ray a255117f89bc2eba，curl 同时刻 200）；19:49 curl 亦超时。**模式确认**: 浏览器（完整资源加载）比 curl 更易触发 1102；SWR 3600 兜底对缓存页有效（`/`、`/products`、`/api/*` 窗口内仍 200），但**动态页 `/admin/login` 无兜底，窗口内会挂**。
+- **后台双语化至此全部完成并上线**（含 3 处遗留硬编码清理）。
