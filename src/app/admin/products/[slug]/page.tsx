@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Save, Loader2, Check, ArrowLeft, AlertCircle, Image as ImageIcon, FolderOpen } from 'lucide-react';
 import Link from 'next/link';
+import { useLang } from '@/lib/i18n';
 import { resolveImageSrc, R2_PUBLIC_URL } from '@/lib/image';
 
 interface Product {
@@ -30,14 +31,8 @@ interface MediaItem {
   mime_type: string;
 }
 
-const CATEGORIES = [
-  { value: 'sauna-control', label: 'Sauna Control' },
-  { value: 'industrial-control', label: 'Industrial Control' },
-  { value: 'components', label: 'Components & Accessories' },
-  { value: 'custom', label: 'Custom OEM/ODM' },
-];
-
 export default function EditProduct() {
+  const { t } = useLang();
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
   const router = useRouter();
@@ -57,12 +52,12 @@ export default function EditProduct() {
           const data = await res.json();
           const product = (data.products || []).find((p: Product) => p.slug === slug);
           if (product) setForm(product);
-          else setError('Product not found');
+          else setError(t('admin.product.notFound'));
         } else {
-          setError('Failed to load product');
+          setError(t('admin.product.loadFailed'));
         }
       } catch {
-        setError('Connection error');
+        setError(t('admin.product.connError'));
       }
       setLoading(false);
     }
@@ -101,12 +96,12 @@ export default function EditProduct() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Save failed');
+        throw new Error(data.error || t('admin.product.saveFailed'));
       }
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (e: any) {
-      setError(e.message || 'Failed to save');
+      setError(e.message || t('admin.product.saveFailedGeneric'));
     } finally {
       setSaving(false);
     }
@@ -124,7 +119,7 @@ export default function EditProduct() {
     return (
       <div>
         <Link href="/admin/products" className="inline-flex items-center gap-2 text-[var(--amber)] text-sm mb-6 hover:underline">
-          <ArrowLeft className="w-4 h-4" /> Back to Products
+          <ArrowLeft className="w-4 h-4" /> {t('admin.product.back')}
         </Link>
         <div className="flex items-center gap-2 text-[var(--amber)] text-sm p-6 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -142,9 +137,9 @@ export default function EditProduct() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <Link href="/admin/products" className="inline-flex items-center gap-2 text-[var(--amber)] text-sm mb-2 hover:underline">
-            <ArrowLeft className="w-4 h-4" /> Back to Products
+            <ArrowLeft className="w-4 h-4" /> {t('admin.product.back')}
           </Link>
-          <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">Edit: {form.name}</h1>
+          <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">{t('admin.product.edit').replace('{name}', form.name || '')}</h1>
         </div>
         <button
           onClick={handleSave}
@@ -152,11 +147,11 @@ export default function EditProduct() {
           className="btn btn-primary text-sm py-2 px-4 disabled:opacity-50"
         >
           {saving ? (
-            <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+            <><Loader2 className="w-4 h-4 animate-spin" /> {t('admin.product.saving')}</>
           ) : saved ? (
-            <><Check className="w-4 h-4" /> Saved</>
+            <><Check className="w-4 h-4" /> {t('admin.product.saved')}</>
           ) : (
-            <><Save className="w-4 h-4" /> Save Changes</>
+            <><Save className="w-4 h-4" /> {t('admin.product.saveChanges')}</>
           )}
         </button>
       </div>
@@ -171,11 +166,11 @@ export default function EditProduct() {
       <div className="max-w-[800px] space-y-6">
         {/* Basic Info */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">Basic Information</h2>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.product.basicInfo')}</h2>
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>Name</label>
+                <label className={labelClass}>{t('admin.product.name')}</label>
                 <input
                   type="text"
                   value={form.name || ''}
@@ -184,7 +179,7 @@ export default function EditProduct() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Slug</label>
+                <label className={labelClass}>{t('admin.product.slug')}</label>
                 <input
                   type="text"
                   value={form.slug || ''}
@@ -194,7 +189,7 @@ export default function EditProduct() {
               </div>
             </div>
             <div>
-              <label className={labelClass}>Sub Title</label>
+              <label className={labelClass}>{t('admin.product.subTitle')}</label>
               <input
                 type="text"
                 value={form.sub_title || ''}
@@ -204,19 +199,24 @@ export default function EditProduct() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className={labelClass}>Category</label>
+                <label className={labelClass}>{t('admin.product.category')}</label>
                 <select
                   value={form.category || 'sauna-control'}
                   onChange={(e) => update('category', e.target.value)}
                   className={inputClass}
                 >
-                  {CATEGORIES.map((c) => (
+                  {[
+                    { value: 'sauna-control', label: t('admin.product.cat.sauna') },
+                    { value: 'industrial-control', label: t('admin.product.cat.industrial') },
+                    { value: 'components', label: t('admin.product.cat.components') },
+                    { value: 'custom', label: t('admin.product.cat.custom') },
+                  ].map((c) => (
                     <option key={c.value} value={c.value}>{c.label}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Price Range</label>
+                <label className={labelClass}>{t('admin.product.priceRange')}</label>
                 <input
                   type="text"
                   value={form.price_range || ''}
@@ -225,7 +225,7 @@ export default function EditProduct() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Sort Order</label>
+                <label className={labelClass}>{t('admin.product.sortOrder')}</label>
                 <input
                   type="number"
                   value={form.sort_order ?? 0}
@@ -239,10 +239,10 @@ export default function EditProduct() {
 
         {/* Descriptions */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">Descriptions</h2>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.product.descriptions')}</h2>
           <div className="space-y-4">
             <div>
-              <label className={labelClass}>Short Description</label>
+              <label className={labelClass}>{t('admin.product.shortDesc')}</label>
               <textarea
                 value={form.short_description || ''}
                 onChange={(e) => update('short_description', e.target.value)}
@@ -251,7 +251,7 @@ export default function EditProduct() {
               />
             </div>
             <div>
-              <label className={labelClass}>Long Description</label>
+              <label className={labelClass}>{t('admin.product.longDesc')}</label>
               <textarea
                 value={form.long_description || ''}
                 onChange={(e) => update('long_description', e.target.value)}
@@ -264,9 +264,9 @@ export default function EditProduct() {
 
         {/* Product Image */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-2">Product Image</h2>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-2">{t('admin.product.productImage')}</h2>
           <p className="text-[var(--gray)] text-xs mb-4">
-            Hero image shown at the top of the product detail page. Paste a full URL, a local path, or a media-library R2 key.
+            {t('admin.product.imageHint')}
           </p>
           <div className="flex items-center gap-3">
             <input
@@ -282,7 +282,7 @@ export default function EditProduct() {
               className="btn btn-secondary text-sm py-3 px-4 whitespace-nowrap flex items-center gap-2"
             >
               <FolderOpen className="w-4 h-4" />
-              {showMediaPicker ? 'Hide Library' : 'Browse Media'}
+              {showMediaPicker ? t('admin.product.hideLibrary') : t('admin.product.browseMedia')}
             </button>
           </div>
 
@@ -296,7 +296,7 @@ export default function EditProduct() {
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = '0.25'; }}
               />
               <div className="text-[var(--gray)] text-xs">
-                <div className="mb-1">Preview</div>
+                <div className="mb-1">{t('admin.product.preview')}</div>
                 <div className="break-all max-w-[360px]">{resolveImageSrc(form.hero_image) || form.hero_image}</div>
               </div>
             </div>
@@ -306,7 +306,7 @@ export default function EditProduct() {
             <div className="mt-4">
               {mediaItems.length === 0 ? (
                 <div className="text-[var(--gray)] text-sm p-4 border border-dashed border-[rgba(255,255,255,0.15)] rounded-md">
-                  No images in the media library yet. Upload some from the Media Library page, then come back here.
+                  {t('admin.product.noMediaHint')}
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[260px] overflow-y-auto pr-1">
@@ -343,8 +343,8 @@ export default function EditProduct() {
                 </div>
               )}
               <p className="mt-3 text-[11px] text-[var(--gray)]">
-                Click an image to use it as the hero image. Set{' '}
-                <code className="text-[var(--amber)]">NEXT_PUBLIC_R2_PUBLIC_URL</code> at build time to enable R2 previews.
+                {t('admin.product.r2Hint')}{' '}
+                <code className="text-[var(--amber)]">NEXT_PUBLIC_R2_PUBLIC_URL</code> {t('admin.product.r2Hint2')}
               </p>
             </div>
           )}
@@ -352,8 +352,8 @@ export default function EditProduct() {
 
         {/* Features (one per line) */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-2">Features</h2>
-          <p className="text-[var(--gray)] text-xs mb-4">One feature per line</p>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-2">{t('admin.product.features')}</h2>
+          <p className="text-[var(--gray)] text-xs mb-4">{t('admin.product.featuresHint')}</p>
           <textarea
             value={form.features || ''}
             onChange={(e) => update('features', e.target.value)}
@@ -364,7 +364,7 @@ export default function EditProduct() {
 
         {/* Status */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">Status</h2>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.product.status')}</h2>
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
@@ -372,13 +372,13 @@ export default function EditProduct() {
               onChange={(e) => update('in_stock', e.target.checked ? 1 : 0)}
               className="w-4 h-4 accent-[var(--amber)]"
             />
-            <span className="text-sm text-[var(--soft-white)]">In stock (visible on site)</span>
+            <span className="text-sm text-[var(--soft-white)]">{t('admin.product.inStockVisible')}</span>
           </label>
         </div>
 
         <div className="flex justify-end gap-4">
           <Link href="/admin/products" className="btn btn-secondary text-sm py-2 px-4">
-            Cancel
+            {t('admin.product.cancel')}
           </Link>
           <button
             onClick={handleSave}

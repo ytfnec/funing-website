@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check, Mail, Clock } from 'lucide-react';
+import { useLang } from '@/lib/i18n';
 
 interface Contact {
   id: string;
@@ -21,6 +22,7 @@ interface Contact {
 }
 
 export default function AdminContacts() {
+  const { t } = useLang();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -95,11 +97,11 @@ export default function AdminContacts() {
 
   return (
     <div>
-      <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">Contact Submissions</h1>
+      <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">{t('admin.contacts.title')}</h1>
 
       <div className="space-y-3">
         {contacts.length === 0 ? (
-          <div className="text-center py-20 text-[var(--gray)]">No submissions yet</div>
+          <div className="text-center py-20 text-[var(--gray)]">{t('admin.contacts.empty')}</div>
         ) : (
           contacts.map((c) => (
             <div key={c.id} className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg overflow-hidden">
@@ -121,8 +123,8 @@ export default function AdminContacts() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className={statusBadge(c.status)}>{c.status}</span>
-                  <span className="text-[10px] tracking-[0.14em] uppercase text-[var(--gray)] capitalize">{c.type}</span>
+                  <span className={statusBadge(c.status)}>{t(`admin.contacts.status.${c.status}` as any) || c.status}</span>
+                  <span className="text-[10px] tracking-[0.14em] uppercase text-[var(--gray)] capitalize">{t(`admin.contacts.type.${c.type}` as any) || c.type}</span>
                   <ChevronDown className={`w-4 h-4 text-[var(--gray)] transition-transform ${expanded === c.id ? 'rotate-180' : ''}`} />
                 </div>
               </button>
@@ -152,12 +154,12 @@ export default function AdminContacts() {
                     )}
                     {c.preferred_contact && (
                       <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
-                        <Mail className="w-4 h-4" /> Prefers: {c.preferred_contact}
+                        <Mail className="w-4 h-4" /> {t('admin.contacts.prefers')} {c.preferred_contact}
                       </div>
                     )}
                     {c.best_time && (
                       <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
-                        <Clock className="w-4 h-4" /> Best: {c.best_time}
+                        <Clock className="w-4 h-4" /> {t('admin.contacts.best')} {c.best_time}
                       </div>
                     )}
                   </div>
@@ -167,7 +169,7 @@ export default function AdminContacts() {
                     </div>
                   )}
                   <div className="flex items-center gap-2 pt-2">
-                    <span className="text-xs text-[var(--gray)]">Update status:</span>
+                    <span className="text-xs text-[var(--gray)]">{t('admin.contacts.updateStatus')}</span>
                     {['new', 'contacted', 'quoted', 'closed'].map((s) => (
                       <button
                         key={s}
@@ -178,7 +180,7 @@ export default function AdminContacts() {
                             : 'border-[rgba(255,255,255,0.1)] text-[var(--gray)] hover:border-[rgba(255,255,255,0.3)]'
                         }`}
                       >
-                        {s}
+                        {t(`admin.contacts.status.${s}` as any)}
                       </button>
                     ))}
                   </div>
@@ -187,11 +189,11 @@ export default function AdminContacts() {
                   <div className="pt-2 border-t border-[rgba(255,255,255,0.06)]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] tracking-[0.18em] uppercase text-[var(--gray)]">
-                        Internal Notes
+                        {t('admin.contacts.internalNotes')}
                       </span>
                       {savedNotes && (
                         <span className="flex items-center gap-1 text-[11px] text-green-400">
-                          <Check className="w-3 h-3" /> Saved
+                          <Check className="w-3 h-3" /> {t('admin.contacts.saved')}
                         </span>
                       )}
                     </div>
@@ -209,13 +211,13 @@ export default function AdminContacts() {
                             onClick={() => saveNotes(c)}
                             className="flex items-center gap-1 text-[12px] text-[var(--amber)] hover:text-white transition-colors"
                           >
-                            <Save className="w-3.5 h-3.5" /> Save Notes
+                            <Save className="w-3.5 h-3.5" /> {t('admin.contacts.saveNotes')}
                           </button>
                           <button
                             onClick={() => setEditingNotes(null)}
                             className="text-[12px] text-[var(--gray)] hover:text-white transition-colors"
                           >
-                            Cancel
+                            {t('admin.contacts.cancel')}
                           </button>
                         </div>
                       </div>

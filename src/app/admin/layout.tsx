@@ -3,24 +3,25 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useLang } from '@/lib/i18n';
 import {
-  LayoutDashboard, Package, FileText, Mail, Settings, LogOut, ChevronRight, Menu, X, Image as ImageIcon, Newspaper
+  LayoutDashboard, Package, FileText, Mail, Settings, LogOut, Menu, X, Image as ImageIcon, Newspaper
 } from 'lucide-react';
 
-const sidebarLinks = [
-  { href: '/admin', icon: LayoutDashboard, label: 'Dashboard', exact: true },
-  { href: '/admin/products', icon: Package, label: 'Products' },
-  { href: '/admin/content', icon: FileText, label: 'Content' },
-  { href: '/admin/news', icon: Newspaper, label: 'News' },
-  { href: '/admin/contacts', icon: Mail, label: 'Contacts' },
-  { href: '/admin/media', icon: ImageIcon, label: 'Media' },
-  { href: '/admin/settings', icon: Settings, label: 'Settings' },
-];
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { t } = useLang();
   const router = useRouter();
   const pathname = usePathname();
   const isLoginPage = pathname === '/admin/login';
+  const sidebarLinks = [
+    { href: '/admin', icon: LayoutDashboard, label: t('admin.dashboard'), exact: true },
+    { href: '/admin/products', icon: Package, label: t('admin.products') },
+    { href: '/admin/content', icon: FileText, label: t('admin.content') },
+    { href: '/admin/news', icon: Newspaper, label: t('admin.news') },
+    { href: '/admin/contacts', icon: Mail, label: t('admin.contacts') },
+    { href: '/admin/media', icon: ImageIcon, label: t('admin.media') },
+    { href: '/admin/settings', icon: Settings, label: t('admin.settings') },
+  ];
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(!isLoginPage);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -77,13 +78,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-6 border-b border-[rgba(255,255,255,0.06)]">
           <Link href="/admin" className="flex items-center gap-3">
             <span className="text-[var(--amber,#d8a35a)] text-[15px] tracking-[0.12em] uppercase font-bold">
-              Funing
+              {t('admin.brand')}
             </span>
             <span className="text-[var(--gray)] text-[10px] tracking-[0.16em] uppercase hidden sm:inline">
-              Electronics
+              {t('admin.brandSub')}
             </span>
           </Link>
-          <p className="text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mt-2">Admin</p>
+          <p className="text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mt-2">{t('admin.admin')}</p>
         </div>
 
         <nav className="flex-1 p-4 flex flex-col gap-1">
@@ -124,7 +125,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-3 px-4 py-3 text-[14px] text-[var(--gray)] hover:text-white hover:bg-[rgba(255,255,255,0.03)] rounded-md transition-colors w-full"
           >
             <LogOut className="w-4 h-4" />
-            Sign Out
+            {t('admin.signOut')}
           </button>
         </div>
       </aside>
@@ -148,7 +149,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
           <div className="flex items-center gap-4">
             <Link href="/" target="_blank" className="text-[var(--gray)] hover:text-white text-sm transition-colors">
-              View Site →
+              {t('admin.viewSite')} →
             </Link>
           </div>
         </header>

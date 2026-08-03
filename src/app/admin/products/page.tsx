@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, Check, X, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useLang } from '@/lib/i18n';
 
 interface Product {
   id: string;
@@ -16,6 +17,7 @@ interface Product {
 }
 
 export default function AdminProducts() {
+  const { t } = useLang();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +48,7 @@ export default function AdminProducts() {
   };
 
   const deleteProduct = async (id: string, name: string) => {
-    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+    if (!confirm(t('admin.products.deleteConfirm').replace('{name}', name))) return;
     try {
       await fetch(`/api/admin/products?id=${id}`, { method: 'DELETE' });
       setProducts(prev => prev.filter(p => p.id !== id));
@@ -64,9 +66,9 @@ export default function AdminProducts() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">Products</h1>
+        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">{t('admin.products.title')}</h1>
         <button className="btn btn-primary text-sm py-2 px-4">
-          <Plus className="w-4 h-4" /> Add Product
+          <Plus className="w-4 h-4" /> {t('admin.products.add')}
         </button>
       </div>
 
@@ -75,12 +77,12 @@ export default function AdminProducts() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-[rgba(255,255,255,0.06)]">
-                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Product</th>
-                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Category</th>
-                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Price</th>
-                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Status</th>
-                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Order</th>
-                <th className="text-right p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Actions</th>
+                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colProduct')}</th>
+                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colCategory')}</th>
+                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colPrice')}</th>
+                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colStatus')}</th>
+                <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colOrder')}</th>
+                <th className="text-right p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colActions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -99,7 +101,7 @@ export default function AdminProducts() {
                         p.in_stock ? 'bg-[rgba(52,211,153,0.2)] text-green-400' : 'bg-[rgba(255,75,75,0.2)] text-red-400'
                       }`}
                     >
-                      {p.in_stock ? 'In Stock' : 'Out of Stock'}
+                      {p.in_stock ? t('admin.products.inStock') : t('admin.products.outOfStock')}
                     </button>
                   </td>
                   <td className="p-4 text-sm text-[var(--gray)]">{p.sort_order}</td>

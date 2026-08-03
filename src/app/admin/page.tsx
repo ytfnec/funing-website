@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useLang } from '@/lib/i18n';
 import { Package, Mail, Eye, Newspaper, ArrowUpRight } from 'lucide-react';
 
 export default function AdminDashboard() {
+  const { t } = useLang();
   const [stats, setStats] = useState({
     products: 0,
     contacts: 0,
@@ -40,15 +42,15 @@ export default function AdminDashboard() {
   }, []);
 
   const statCards = [
-    { label: 'Products', value: stats.products, icon: Package, href: '/admin/products', color: 'var(--amber)' },
-    { label: 'News Articles', value: stats.news, icon: Newspaper, href: '/admin/news', color: '#c084fc' },
-    { label: 'New Contacts', value: stats.contacts, icon: Mail, href: '/admin/contacts', color: '#60a5fa' },
-    { label: 'Page Views', value: stats.views, icon: Eye, href: '#', color: '#34d399', sub: `${stats.viewsToday} in 24h` },
+    { label: t('admin.dash.products'), value: stats.products, icon: Package, href: '/admin/products', color: 'var(--amber)' },
+    { label: t('admin.dash.newsArticles'), value: stats.news, icon: Newspaper, href: '/admin/news', color: '#c084fc' },
+    { label: t('admin.dash.newContacts'), value: stats.contacts, icon: Mail, href: '/admin/contacts', color: '#60a5fa' },
+    { label: t('admin.dash.pageViews'), value: stats.views, icon: Eye, href: '#', color: '#34d399', sub: `${stats.viewsToday} ${t('admin.dash.in24h')}` },
   ];
 
   return (
     <div>
-      <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">Dashboard</h1>
+      <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">{t('admin.dash.title')}</h1>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -72,23 +74,23 @@ export default function AdminDashboard() {
       {/* Recent Contacts */}
       <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg overflow-hidden">
         <div className="p-6 border-b border-[rgba(255,255,255,0.06)] flex items-center justify-between">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold">Recent Contacts</h2>
-          <Link href="/admin/contacts" className="text-[var(--amber)] text-sm hover:underline">View all →</Link>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold">{t('admin.dash.recentContacts')}</h2>
+          <Link href="/admin/contacts" className="text-[var(--amber)] text-sm hover:underline">{t('admin.dash.viewAll')} →</Link>
         </div>
         {loading ? (
-          <div className="p-6 text-center text-[var(--gray)]">Loading...</div>
+          <div className="p-6 text-center text-[var(--gray)]">{t('admin.dash.loading')}</div>
         ) : recentContacts.length === 0 ? (
-          <div className="p-6 text-center text-[var(--gray)]">No contacts yet</div>
+          <div className="p-6 text-center text-[var(--gray)]">{t('admin.dash.noContacts')}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[rgba(255,255,255,0.06)]">
-                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Name</th>
-                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Type</th>
-                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Email</th>
-                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Date</th>
-                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">Status</th>
+                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.name')}</th>
+                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.type')}</th>
+                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.email')}</th>
+                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.date')}</th>
+                  <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.status')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -122,28 +124,28 @@ export default function AdminDashboard() {
           target="_blank"
           className="flex items-center justify-between p-5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg hover:border-[rgba(255,255,255,0.15)] transition-colors"
         >
-          <span className="text-white text-sm">View Live Site</span>
+          <span className="text-white text-sm">{t('admin.viewLiveSite')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
         <Link
           href="/admin/content"
           className="flex items-center justify-between p-5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg hover:border-[rgba(255,255,255,0.15)] transition-colors"
         >
-          <span className="text-white text-sm">Edit Homepage</span>
+          <span className="text-white text-sm">{t('admin.dash.editHomepage')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
         <Link
           href="/admin/products"
           className="flex items-center justify-between p-5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg hover:border-[rgba(255,255,255,0.15)] transition-colors"
         >
-          <span className="text-white text-sm">Manage Products</span>
+          <span className="text-white text-sm">{t('admin.dash.manageProducts')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
         <Link
           href="/admin/news"
           className="flex items-center justify-between p-5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg hover:border-[rgba(255,255,255,0.15)] transition-colors"
         >
-          <span className="text-white text-sm">Manage News</span>
+          <span className="text-white text-sm">{t('admin.dash.manageNews')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
       </div>

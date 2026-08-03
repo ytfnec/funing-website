@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLang } from '@/lib/i18n';
 import { LogIn, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export default function AdminLogin() {
+  const { t } = useLang();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +29,7 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Login failed');
+        setError(data.error || t('admin.login.failed'));
         setLoading(false);
         return;
       }
@@ -35,7 +37,7 @@ export default function AdminLogin() {
       router.push('/admin');
       router.refresh();
     } catch {
-      setError('Connection error. Please try again.');
+      setError(t('admin.login.connectionError'));
       setLoading(false);
     }
   };
@@ -59,18 +61,18 @@ export default function AdminLogin() {
             <ShieldCheck className="w-7 h-7 text-[#050505]" />
           </div>
           <div className="text-[var(--amber)] text-[20px] tracking-[0.12em] uppercase font-bold">
-            Funing
+            {t('admin.brand')}
           </div>
           <div className="text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mt-1">
-            Electronics
+            {t('admin.brandSub')}
           </div>
         </div>
 
         {/* Login Card */}
         <div className="bg-[#0a0a0a]/90 backdrop-blur border border-[rgba(255,255,255,0.08)] rounded-xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.5)] animate-fade-in" style={{ animationDelay: '80ms' }}>
           <div className="mb-8">
-            <h1 className="text-xl font-bold tracking-[0.06em] uppercase mb-1">Sign In</h1>
-            <p className="text-[var(--gray)] text-sm">Admin dashboard access</p>
+            <h1 className="text-xl font-bold tracking-[0.06em] uppercase mb-1">{t('admin.login.signIn')}</h1>
+            <p className="text-[var(--gray)] text-sm">{t('admin.login.subtitle')}</p>
           </div>
 
           {error && (
@@ -83,7 +85,7 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-xs tracking-[0.22em] uppercase text-[var(--gray)] mb-2">
-                Email
+                {t('admin.login.email')}
               </label>
               <input
                 id="email"
@@ -100,7 +102,7 @@ export default function AdminLogin() {
 
             <div>
               <label htmlFor="password" className="block text-xs tracking-[0.22em] uppercase text-[var(--gray)] mb-2">
-                Password
+                {t('admin.login.password')}
               </label>
               <div className="relative">
                 <input
@@ -118,7 +120,7 @@ export default function AdminLogin() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray)] hover:text-white transition-colors"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('admin.login.hidePassword') : t('admin.login.showPassword')}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -134,12 +136,12 @@ export default function AdminLogin() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Signing in...
+                  {t('admin.login.signingIn')}
                 </span>
               ) : (
                 <>
                   <LogIn className="w-5 h-5" />
-                  Sign In
+                  {t('admin.login.signIn')}
                 </>
               )}
             </button>
@@ -147,8 +149,8 @@ export default function AdminLogin() {
         </div>
 
         <p className="text-center text-[var(--gray)] text-sm mt-6">
-          Funing Electronics Admin • {' '}
-          <a href="/" className="text-[var(--amber)] hover:underline">View Site</a>
+          {t('admin.login.funingAdmin')} • {' '}
+          <a href="/" className="text-[var(--amber)] hover:underline">{t('admin.viewSite')}</a>
         </p>
       </div>
     </div>

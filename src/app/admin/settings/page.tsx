@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Save, Loader2, Check, AlertCircle } from 'lucide-react';
+import { useLang } from '@/lib/i18n';
 
 interface Settings {
   site_name: string;
@@ -22,6 +23,7 @@ const DEFAULT_SETTINGS: Settings = {
 };
 
 export default function AdminSettings() {
+  const { t } = useLang();
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -58,12 +60,12 @@ export default function AdminSettings() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Save failed');
+        throw new Error(data.error || t('admin.settings.saveFailed'));
       }
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (e: any) {
-      setError(e.message || 'Failed to save settings');
+      setError(e.message || t('admin.settings.saveFailedGeneric'));
     } finally {
       setSaving(false);
     }
@@ -83,18 +85,18 @@ export default function AdminSettings() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">Settings</h1>
+        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">{t('admin.settings.title')}</h1>
         <button
           onClick={handleSave}
           disabled={saving}
           className="btn btn-primary text-sm py-2 px-4 disabled:opacity-50"
         >
           {saving ? (
-            <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+            <><Loader2 className="w-4 h-4 animate-spin" /> {t('admin.settings.saving')}</>
           ) : saved ? (
-            <><Check className="w-4 h-4" /> Saved</>
+            <><Check className="w-4 h-4" /> {t('admin.settings.saved')}</>
           ) : (
-            <><Save className="w-4 h-4" /> Save</>
+            <><Save className="w-4 h-4" /> {t('admin.settings.save')}</>
           )}
         </button>
       </div>
@@ -109,11 +111,11 @@ export default function AdminSettings() {
       <div className="max-w-[600px] space-y-6">
         {/* Site Info */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">Site Information</h2>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.settings.siteInfo')}</h2>
           <div className="space-y-4">
             {[
-              { key: 'site_name', label: 'Site Name' },
-              { key: 'site_tagline', label: 'Tagline' },
+              { key: 'site_name', label: t('admin.settings.siteName') },
+              { key: 'site_tagline', label: t('admin.settings.tagline') },
             ].map((field) => (
               <div key={field.key}>
                 <label className={labelClass}>{field.label}</label>
@@ -130,11 +132,11 @@ export default function AdminSettings() {
 
         {/* Contact Info */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">Contact Information</h2>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.settings.contactInfo')}</h2>
           <div className="space-y-4">
             {[
-              { key: 'contact_email', label: 'Email', type: 'email' },
-              { key: 'contact_phone', label: 'Phone', type: 'tel' },
+              { key: 'contact_email', label: t('admin.settings.email'), type: 'email' },
+              { key: 'contact_phone', label: t('admin.settings.phone'), type: 'tel' },
             ].map((field) => (
               <div key={field.key}>
                 <label className={labelClass}>{field.label}</label>
@@ -151,11 +153,11 @@ export default function AdminSettings() {
 
         {/* Analytics */}
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
-          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">Analytics & Tracking</h2>
+          <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.settings.analytics')}</h2>
           <div className="space-y-4">
             {[
-              { key: 'ga_measurement_id', label: 'Google Analytics ID', placeholder: 'G-XXXXXXXXXX' },
-              { key: 'gtm_id', label: 'Google Tag Manager ID', placeholder: 'GTM-XXXXXXX' },
+              { key: 'ga_measurement_id', label: t('admin.settings.gaId'), placeholder: 'G-XXXXXXXXXX' },
+              { key: 'gtm_id', label: t('admin.settings.gtmId'), placeholder: 'GTM-XXXXXXX' },
             ].map((field) => (
               <div key={field.key}>
                 <label className={labelClass}>{field.label}</label>

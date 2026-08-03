@@ -5,6 +5,7 @@ import {
   Newspaper, Plus, Pencil, Trash2, Loader2, Save, Check, AlertCircle,
   Search, X, Eye, EyeOff,
 } from 'lucide-react';
+import { useLang } from '@/lib/i18n';
 
 interface Article {
   id: string;
@@ -31,6 +32,7 @@ const EMPTY_FORM = {
 };
 
 export default function AdminNews() {
+  const { t } = useLang();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -108,30 +110,30 @@ export default function AdminNews() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Save failed');
-      setSaved(data.created ? 'Article created' : 'Article updated');
+      if (!res.ok) throw new Error(data.error || t('admin.news.saveFailed'));
+      setSaved(data.created ? t('admin.news.created') : t('admin.news.updated'));
       setTimeout(() => setSaved(''), 2500);
       setEditing(null);
       await load();
     } catch (e: any) {
-      setError(e.message || 'Failed to save');
+      setError(e.message || t('admin.news.saveFailedGeneric'));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (a: Article) => {
-    if (!confirm(`Delete "${a.title}"? This cannot be undone.`)) return;
+    if (!confirm(t('admin.news.deleteConfirm').replace('{title}', a.title))) return;
     try {
       const res = await fetch(`/api/admin/news?id=${a.id}`, { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Delete failed');
+        throw new Error(data.error || t('admin.news.deleteFailed'));
       }
       setArticles((prev) => prev.filter((x) => x.id !== a.id));
       if (editing && typeof editing !== 'string' && editing.id === a.id) setEditing(null);
     } catch (e: any) {
-      setError(e.message || 'Delete failed');
+      setError(e.message || t('admin.news.deleteFailed'));
     }
   };
 
@@ -150,12 +152,12 @@ export default function AdminNews() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Update failed');
-      setSaved(next === 'published' ? 'Article published' : 'Article moved to draft');
+      if (!res.ok) throw new Error(data.error || t('admin.news.updateFailed'));
+      setSaved(next === 'published' ? t('admin.news.publishedMsg') : t('admin.news.movedDraft'));
       setTimeout(() => setSaved(''), 2500);
       await load();
     } catch (e: any) {
-      setError(e.message || 'Update failed');
+      setError(e.message || t('admin.news.updateFailed'));
     }
   };
 
@@ -181,9 +183,9 @@ export default function AdminNews() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">News Management</h1>
+        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">{t('admin.news.title')}</h1>
         <button onClick={openNew} className="btn btn-primary text-sm py-2 px-4">
-          <Plus className="w-4 h-4" /> New Article
+          <Plus className="w-4 h-4" /> {t('admin.news.newArticle')}
         </button>
       </div>
 
@@ -207,7 +209,7 @@ export default function AdminNews() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search articles…"
+          placeholder={t('admin.news.search')}
           className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.25)] focus:outline-none focus:border-[var(--amber)] text-sm"
         />
       </div>
@@ -217,7 +219,7 @@ export default function AdminNews() {
         <div className="mb-6 bg-[#0a0a0a] border border-[rgba(216,163,90,0.25)] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg tracking-[0.06em] uppercase font-bold">
-              {editing === 'new' ? 'New Article' : `Edit: ${editing.title}`}
+              {editing === 'new' ? t('admin.news.newArticle') : t('admin.news.edit').replace('{title}', editing.title)}
             </h2>
             <button onClick={closeEdit} className="text-[var(--gray)] hover:text-white" aria-label="Close editor">
               <X className="w-5 h-5" />
@@ -227,7 +229,7 @@ export default function AdminNews() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>Title <span className="text-[var(--amber)]">*</span></label>
+                <label className={labelClass}>{t('admin.news.titleField')} <span className="text-[var(--amber)]">*</span></label>
                 <input
                   type="text"
                   value={form.title}
@@ -242,7 +244,7 @@ export default function AdminNews() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Slug <span className="text-[var(--amber)]">*</span></label>
+                <label className={labelClass}>{t('admin.news.slug')} <span className="text-[var(--amber)]">*</span></label>
                 <input
                   type="text"
                   value={form.slug}
@@ -254,7 +256,7 @@ export default function AdminNews() {
             </div>
 
             <div>
-              <label className={labelClass}>Excerpt</label>
+              <label className={labelClass}>{t('admin.news.excerpt')}</label>
               <textarea
                 value={form.excerpt}
                 onChange={(e) => update('excerpt', e.target.value)}
@@ -265,7 +267,7 @@ export default function AdminNews() {
             </div>
 
             <div>
-              <label className={labelClass}>Content</label>
+              <label className={labelClass}>{t('admin.news.content')}</label>
               <textarea
                 value={form.content}
                 onChange={(e) => update('content', e.target.value)}
@@ -277,7 +279,7 @@ export default function AdminNews() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>Cover Image URL</label>
+                <label className={labelClass}>{t('admin.news.coverImage')}</label>
                 <input
                   type="text"
                   value={form.cover_image}
@@ -287,7 +289,7 @@ export default function AdminNews() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Author</label>
+                <label className={labelClass}>{t('admin.news.author')}</label>
                 <input
                   type="text"
                   value={form.author}
@@ -305,12 +307,12 @@ export default function AdminNews() {
                 onChange={(e) => update('status', e.target.checked ? 'published' : 'draft')}
                 className="w-4 h-4 accent-[var(--amber)]"
               />
-              <span className="text-sm text-[var(--soft-white)]">Published (visible on the live site)</span>
+              <span className="text-sm text-[var(--soft-white)]">{t('admin.news.published')}</span>
             </label>
 
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={closeEdit} className="btn btn-secondary text-sm py-2 px-4">
-                Cancel
+                {t('admin.news.cancel')}
               </button>
               <button
                 onClick={handleSave}
@@ -318,9 +320,9 @@ export default function AdminNews() {
                 className="btn btn-primary text-sm py-2 px-4 disabled:opacity-50"
               >
                 {saving ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+                  <><Loader2 className="w-4 h-4 animate-spin" /> {t('admin.product.saving')}</>
                 ) : (
-                  <><Save className="w-4 h-4" /> Save Article</>
+                  <><Save className="w-4 h-4" /> {t('admin.news.saveArticle')}</>
                 )}
               </button>
             </div>
@@ -333,13 +335,13 @@ export default function AdminNews() {
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-10 text-center">
           <Newspaper className="w-10 h-10 text-[var(--gray)] mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">
-            {articles.length === 0 ? 'No news articles yet' : 'No matching articles'}
+            {articles.length === 0 ? t('admin.news.noArticles') : t('admin.news.noMatch')}
           </h2>
           <p className="text-[var(--gray)] text-sm mb-6 max-w-[400px] mx-auto">
-            Publish product launches, company announcements, and industry updates for your visitors.
+            {t('admin.news.emptyDesc')}
           </p>
           <button onClick={openNew} className="btn btn-primary text-sm">
-            <Plus className="w-4 h-4" /> Create Article
+            <Plus className="w-4 h-4" /> {t('admin.news.create')}
           </button>
         </div>
       ) : (
@@ -360,7 +362,7 @@ export default function AdminNews() {
                     }`}
                   >
                     {a.status === 'published' ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
-                    {a.status}
+                    {a.status === 'published' ? t('admin.news.publishedLabel') : t('admin.news.draftLabel')}
                   </span>
                 </div>
                 <p className="text-[var(--gray)] text-sm truncate mt-1">
@@ -372,21 +374,21 @@ export default function AdminNews() {
                 <button
                   onClick={() => toggleStatus(a)}
                   className="p-2 text-[var(--gray)] hover:text-[var(--amber)] transition-colors"
-                  title={a.status === 'published' ? 'Move to draft' : 'Publish'}
+                  title={a.status === 'published' ? t('admin.news.moveDraft') : t('admin.news.publish')}
                 >
                   {a.status === 'published' ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={() => openEdit(a)}
                   className="p-2 text-[var(--gray)] hover:text-white transition-colors"
-                  title="Edit"
+                  title={t('admin.news.editAction')}
                 >
                   <Pencil className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(a)}
                   className="p-2 text-[var(--gray)] hover:text-red-400 transition-colors"
-                  title="Delete"
+                  title={t('admin.news.delete')}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

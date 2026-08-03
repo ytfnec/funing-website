@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Upload, Loader2, FolderOpen, Image as ImageIcon, Check, AlertCircle, Trash2, X } from 'lucide-react';
+import { useLang } from '@/lib/i18n';
 
 interface MediaItem {
   id: string;
@@ -40,6 +41,7 @@ function formatDate(iso: string): string {
 }
 
 export default function AdminMedia() {
+  const { t } = useLang();
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -82,12 +84,12 @@ export default function AdminMedia() {
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'Upload failed');
+        throw new Error(data.error || t('admin.media.uploadFailed'));
       }
-      setUploaded(`${file.name} uploaded`);
+      setUploaded(t('admin.media.uploaded').replace('{name}', file.name));
       setMedia((prev) => [data.media, ...prev]);
     } catch (err: any) {
-      setError(err.message || 'Upload failed');
+      setError(err.message || t('admin.media.uploadFailed'));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -95,12 +97,12 @@ export default function AdminMedia() {
   };
 
   const handleDelete = async (item: MediaItem) => {
-    if (!confirm(`Delete "${item.original_name}"? This cannot be undone.`)) return;
+    if (!confirm(t('admin.media.deleteConfirm').replace('{name}', item.original_name))) return;
     try {
       const res = await fetch(`/api/admin/media?id=${item.id}`, { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Delete failed');
+        throw new Error(data.error || t('admin.media.deleteFailed'));
       }
       setMedia((prev) => prev.filter((m) => m.id !== item.id));
       setSelected((prev) => {
@@ -110,7 +112,7 @@ export default function AdminMedia() {
         return next;
       });
     } catch (err: any) {
-      setError(err.message || 'Delete failed');
+      setError(err.message || t('admin.media.deleteFailed'));
     }
   };
 
@@ -132,7 +134,7 @@ export default function AdminMedia() {
   const runBulkDelete = async () => {
     const ids = Array.from(selected);
     if (ids.length === 0) return;
-    if (!confirm(`Delete ${ids.length} selected file(s)? This cannot be undone.`)) return;
+    if (!confirm(t('admin.media.bulkDeleteConfirm').replace('{n}', String(ids.length)))) return;
     setBusy(true);
     setError('');
     try {
@@ -142,13 +144,13 @@ export default function AdminMedia() {
         body: JSON.stringify({ action: 'delete', ids }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Bulk action failed');
-      setUploaded(`${ids.length} file(s) deleted`);
+      if (!res.ok) throw new Error(data.error || t('admin.media.bulkFailed'));
+      setUploaded(t('admin.media.deleted').replace('{n}', String(ids.length)));
       setTimeout(() => setUploaded(''), 2500);
       setSelected(new Set());
       setMedia((prev) => prev.filter((m) => !ids.includes(m.id)));
     } catch (err: any) {
-      setError(err.message || 'Bulk action failed');
+      setError(err.message || t('admin.media.bulkFailed'));
     } finally {
       setBusy(false);
     }
@@ -168,12 +170,12 @@ export default function AdminMedia() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Save failed');
+        throw new Error(data.error || t('admin.media.saveFailed'));
       }
       setMedia((prev) => prev.map((m) => (m.id === item.id ? { ...m, alt_text: altDraft } : m)));
       setEditingAlt(null);
     } catch (err: any) {
-      setError(err.message || 'Save failed');
+      setError(err.message || t('admin.media.saveFailed'));
     }
   };
 
@@ -188,7 +190,7 @@ export default function AdminMedia() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">Media Library</h1>
+        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">{t('admin.media.title')}</h1>
         <div>
           <input
             ref={fileInputRef}
@@ -203,9 +205,9 @@ export default function AdminMedia() {
             className={`btn btn-primary text-sm py-2 px-4 cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
           >
             {uploading ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</>
+              <><Loader2 className="w-4 h-4 animate-spin" /> {t('admin.media.uploading')}</>
             ) : (
-              <><Upload className="w-4 h-4" /> Upload</>
+              <><Upload className="w-4 h-4" /> {t('admin.media.upload')}</>
             )}
           </label>
         </div>
@@ -228,12 +230,12 @@ export default function AdminMedia() {
       {media.length === 0 ? (
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-8 text-center">
           <FolderOpen className="w-12 h-12 text-[var(--gray)] mx-auto mb-4" />
-          <h2 className="text-lg font-bold mb-2">No Media Yet</h2>
+          <h2 className="text-lg font-bold mb-2">{t('admin.media.empty')}</h2>
           <p className="text-[var(--gray)] text-sm mb-6 max-w-[400px] mx-auto">
-            Upload images and assets to your R2 bucket. Files are stored in Cloudflare R2 and served through the CDN.
+            {t('admin.media.emptyDesc')}
           </p>
           <label htmlFor="media-upload-input" className="btn btn-primary text-sm cursor-pointer">
-            <Upload className="w-4 h-4" /> Upload Your First Image
+            <Upload className="w-4 h-4" /> {t('admin.media.uploadFirst')}
           </label>
         </div>
       ) : (
@@ -248,7 +250,7 @@ export default function AdminMedia() {
               className="w-4 h-4 accent-[var(--amber)]"
             />
             <span className="text-sm text-[var(--soft-white)]">
-              {selected.size > 0 ? `${selected.size} selected` : 'Select all'}
+              {selected.size > 0 ? t('admin.media.selected').replace('{n}', String(selected.size)) : t('admin.media.selectAll')}
             </span>
           </label>
           <div className="flex items-center gap-2 sm:ml-auto">
@@ -256,9 +258,9 @@ export default function AdminMedia() {
               onClick={runBulkDelete}
               disabled={selected.size === 0 || busy}
               className="btn btn-secondary text-xs py-1.5 px-3 text-red-400 hover:border-red-400/50 disabled:opacity-40"
-              title="Delete selected files"
+              title={t('admin.media.deleteSelectedTitle')}
             >
-              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />} Delete Selected
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />} {t('admin.media.deleteSelected')}
             </button>
           </div>
         </div>
@@ -276,7 +278,7 @@ export default function AdminMedia() {
                   checked={selected.has(item.id)}
                   onChange={() => toggleSelect(item.id)}
                   className="w-4 h-4 accent-[var(--amber)] cursor-pointer"
-                  title={`Select ${item.original_name}`}
+                  title={t('admin.media.selectTitle').replace('{name}', item.original_name)}
                 />
               </div>
               <div className="aspect-square bg-[#050505] flex items-center justify-center overflow-hidden">
@@ -313,7 +315,7 @@ export default function AdminMedia() {
                       type="text"
                       value={altDraft}
                       onChange={(e) => setAltDraft(e.target.value)}
-                      placeholder="Alt text for accessibility/SEO"
+                      placeholder={t('admin.media.altPlaceholder')}
                       className="w-full px-2 py-1.5 bg-[#050505] border border-[rgba(255,255,255,0.15)] rounded text-xs text-white focus:outline-none focus:border-[var(--amber)]"
                     />
                     <div className="flex gap-2">
@@ -321,13 +323,13 @@ export default function AdminMedia() {
                         onClick={() => saveAlt(item)}
                         className="flex items-center gap-1 text-[11px] text-green-400 hover:text-white transition-colors"
                       >
-                        <Check className="w-3 h-3" /> Save
+                        <Check className="w-3 h-3" /> {t('admin.media.save')}
                       </button>
                       <button
                         onClick={() => setEditingAlt(null)}
                         className="flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-white transition-colors"
                       >
-                        <X className="w-3 h-3" /> Cancel
+                        <X className="w-3 h-3" /> {t('admin.media.cancel')}
                       </button>
                     </div>
                   </div>
@@ -335,10 +337,10 @@ export default function AdminMedia() {
                   <button
                     onClick={() => startEditAlt(item)}
                     className="mt-2 flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-[var(--amber)] transition-colors w-full text-left truncate"
-                    title={item.alt_text || 'No alt text'}
+                    title={item.alt_text || t('admin.media.noAlt')}
                   >
                     <ImageIcon className="w-3 h-3 flex-shrink-0" />
-                    <span className="truncate">{item.alt_text || 'Add alt text'}</span>
+                    <span className="truncate">{item.alt_text || t('admin.media.addAlt')}</span>
                   </button>
                 )}
 
@@ -346,7 +348,7 @@ export default function AdminMedia() {
                   onClick={() => handleDelete(item)}
                   className="mt-1.5 flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-red-400 transition-colors"
                 >
-                  <Trash2 className="w-3 h-3" /> Delete
+                  <Trash2 className="w-3 h-3" /> {t('admin.media.delete')}
                 </button>
               </div>
             </div>
@@ -356,12 +358,12 @@ export default function AdminMedia() {
       )}
 
       <div className="mt-6 p-6 bg-[rgba(216,163,90,0.05)] border border-[rgba(216,163,90,0.15)] rounded-lg">
-        <h3 className="text-sm font-bold mb-2">R2 Upload Guide</h3>
+        <h3 className="text-sm font-bold mb-2">{t('admin.media.guideTitle')}</h3>
         <ul className="text-[var(--gray)] text-sm space-y-2">
-          <li>• Images up to 10MB, formats: JPEG, PNG, WebP, GIF, SVG, AVIF</li>
-          <li>• Files are served through Cloudflare R2 CDN — no bandwidth charges</li>
-          <li>• Use descriptive filenames for better SEO (e.g., sauna-controller-panel.webp)</li>
-          <li>• R2 bucket: funing-storage</li>
+          <li>• {t('admin.media.guide1')}</li>
+          <li>• {t('admin.media.guide2')}</li>
+          <li>• {t('admin.media.guide3')}</li>
+          <li>• {t('admin.media.guide4')}</li>
         </ul>
       </div>
     </div>

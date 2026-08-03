@@ -5,7 +5,7 @@ import {
   Globe, Plus, Pencil, Trash2,
   Loader2, Save, Check, AlertCircle, Search, X, Power,
 } from 'lucide-react';
-import { defaultTranslations } from '@/lib/i18n';
+import { defaultTranslations, useLang, type TKey } from '@/lib/i18n';
 
 interface ContentBlock {
   id: string;
@@ -27,20 +27,21 @@ interface PageInfo {
 }
 
 const KNOWN_PAGES: PageInfo[] = [
-  { slug: 'home', name: 'Homepage', sections: ['hero', 'products', 'why-funing', 'oem', 'faq', 'cta'] },
-  { slug: 'products', name: 'Products', sections: ['hero', 'listing', 'cta'] },
-  { slug: 'oem', name: 'OEM/ODM', sections: ['hero', 'services', 'process', 'cta'] },
-  { slug: 'about', name: 'About', sections: ['main'] },
-  { slug: 'contact', name: 'Contact', sections: ['main'] },
-  { slug: 'quote', name: 'Quote', sections: ['main'] },
-  { slug: 'privacy', name: 'Privacy Policy', sections: ['main'] },
-  { slug: 'terms', name: 'Terms of Service', sections: ['main'] },
-  { slug: 'cookies', name: 'Cookie Policy', sections: ['main'] },
+  { slug: 'home', name: 'admin.content.page.home', sections: ['hero', 'products', 'why-funing', 'oem', 'faq', 'cta'] },
+  { slug: 'products', name: 'admin.content.page.products', sections: ['hero', 'listing', 'cta'] },
+  { slug: 'oem', name: 'admin.content.page.oem', sections: ['hero', 'services', 'process', 'cta'] },
+  { slug: 'about', name: 'admin.content.page.about', sections: ['main'] },
+  { slug: 'contact', name: 'admin.content.page.contact', sections: ['main'] },
+  { slug: 'quote', name: 'admin.content.page.quote', sections: ['main'] },
+  { slug: 'privacy', name: 'admin.content.page.privacy', sections: ['main'] },
+  { slug: 'terms', name: 'admin.content.page.terms', sections: ['main'] },
+  { slug: 'cookies', name: 'admin.content.page.cookies', sections: ['main'] },
 ];
 
 const EMPTY_FORM = { slug: '', content: '', page: '', section: '', title: '', is_active: 1 };
 
 export default function AdminContent() {
+  const { t } = useLang();
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<ContentBlock | 'new' | null>(null);
@@ -112,31 +113,31 @@ export default function AdminContent() {
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'Save failed');
+        throw new Error(data.error || t('admin.content.saveFailed'));
       }
-      setSaved(data.created ? 'Block created' : 'Block updated');
+      setSaved(data.created ? t('admin.content.created') : t('admin.content.updated'));
       setTimeout(() => setSaved(''), 2000);
       setEditing(null);
       await load();
     } catch (e: any) {
-      setError(e.message || 'Failed to save');
+      setError(e.message || t('admin.content.saveFailedGeneric'));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (block: ContentBlock) => {
-    if (!confirm(`Delete "${block.slug}"? This reverts that copy to its default.`)) return;
+    if (!confirm(t('admin.content.deleteConfirm').replace('{slug}', block.slug))) return;
     try {
       const res = await fetch(`/api/admin/content?id=${block.id}`, { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Delete failed');
+        throw new Error(data.error || t('admin.content.deleteFailed'));
       }
       setBlocks((prev) => prev.filter((b) => b.id !== block.id));
       if (editing && typeof editing !== 'string' && editing.id === block.id) setEditing(null);
     } catch (e: any) {
-      setError(e.message || 'Delete failed');
+      setError(e.message || t('admin.content.deleteFailed'));
     }
   };
 
@@ -183,7 +184,7 @@ export default function AdminContent() {
   const runBulkAction = async (action: 'activate' | 'deactivate' | 'delete') => {
     const ids = Array.from(selected);
     if (ids.length === 0) return;
-    if (action === 'delete' && !confirm(`Delete ${ids.length} selected block(s)? This reverts their copy to its default.`)) return;
+    if (action === 'delete' && !confirm(t('admin.content.bulkDeleteConfirm').replace('{n}', String(ids.length)))) return;
     setBusy(true);
     setError('');
     try {
@@ -193,14 +194,14 @@ export default function AdminContent() {
         body: JSON.stringify({ action, ids }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Bulk action failed');
-      const label = action === 'delete' ? 'deleted' : action === 'activate' ? 'activated' : 'paused';
-      setSaved(`${ids.length} block(s) ${label}`);
+      if (!res.ok) throw new Error(data.error || t('admin.content.bulkFailed'));
+      const label = action === 'delete' ? t('admin.content.deleted') : action === 'activate' ? t('admin.content.activated') : t('admin.content.pausedBulk');
+      setSaved(label.replace('{n}', String(ids.length)));
       setTimeout(() => setSaved(''), 2500);
       setSelected(new Set());
       await load();
     } catch (e: any) {
-      setError(e.message || 'Bulk action failed');
+      setError(e.message || t('admin.content.bulkFailed'));
     } finally {
       setBusy(false);
     }
@@ -231,17 +232,15 @@ export default function AdminContent() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">Content Management</h1>
+        <h1 className="text-2xl tracking-[0.06em] uppercase font-bold">{t('admin.content.title')}</h1>
         <button onClick={openNew} className="btn btn-primary text-sm py-2 px-4">
-          <Plus className="w-4 h-4" /> New Block
+          <Plus className="w-4 h-4" /> {t('admin.content.newBlock')}
         </button>
       </div>
 
       {/* How it works */}
       <div className="mb-6 p-5 bg-[rgba(216,163,90,0.05)] border border-[rgba(216,163,90,0.15)] rounded-lg text-[var(--gray)] text-sm leading-relaxed">
-        <strong className="text-white">How it works:</strong> content blocks override the site&apos;s built-in copy.
-        The slug format is <code className="text-[var(--amber)]">&lt;lang&gt;__&lt;key&gt;</code> — e.g. <code className="text-[var(--amber)]">en__home.hero.title1</code> or <code className="text-[var(--amber)]">zh__home.cta.title</code>.
-        Save a block and the live site picks it up (cached ~60s). Delete a block to revert to the default copy.
+        <strong className="text-white">{t('admin.content.howTitle')}</strong> {t('admin.content.how1')} <code className="text-[var(--amber)]">&lt;lang&gt;__&lt;key&gt;</code> — e.g. <code className="text-[var(--amber)]">en__home.hero.title1</code> or <code className="text-[var(--amber)]">zh__home.cta.title</code>. {t('admin.content.how2')}
       </div>
 
       {error && (
@@ -265,7 +264,7 @@ export default function AdminContent() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search blocks…"
+            placeholder={t('admin.content.searchPlaceholder')}
             className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.25)] focus:outline-none focus:border-[var(--amber)] text-sm"
           />
         </div>
@@ -274,9 +273,9 @@ export default function AdminContent() {
           onChange={(e) => setPageFilter(e.target.value)}
           className="px-4 py-2.5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)] text-sm"
         >
-          <option value="">All pages</option>
+          <option value="">{t('admin.content.allPages')}</option>
           {KNOWN_PAGES.map((p) => (
-            <option key={p.slug} value={p.slug}>{p.name}</option>
+            <option key={p.slug} value={p.slug}>{t(p.name as TKey)}</option>
           ))}
         </select>
       </div>
@@ -286,9 +285,9 @@ export default function AdminContent() {
         <div className="mb-6 bg-[#0a0a0a] border border-[rgba(216,163,90,0.25)] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg tracking-[0.06em] uppercase font-bold">
-              {editing === 'new' ? 'New Content Block' : `Edit: ${editing.slug}`}
+              {editing === 'new' ? t('admin.content.newBlockTitle') : t('admin.content.editTitle').replace('{slug}', editing.slug)}
             </h2>
-            <button onClick={closeEdit} className="text-[var(--gray)] hover:text-white" aria-label="Close editor">
+            <button onClick={closeEdit} className="text-[var(--gray)] hover:text-white" aria-label={t('admin.content.closeEditor')}>
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -296,7 +295,7 @@ export default function AdminContent() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="sm:col-span-2">
-                <label className={labelClass}>Slug <span className="text-[var(--amber)]">*</span></label>
+                <label className={labelClass}>{t('admin.content.slug')} <span className="text-[var(--amber)]">*</span></label>
                 <input
                   type="text"
                   value={form.slug}
@@ -307,7 +306,7 @@ export default function AdminContent() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Page (optional)</label>
+                <label className={labelClass}>{t('admin.content.pageOptional')}</label>
                 <select
                   value={form.page}
                   onChange={(e) => update('page', e.target.value)}
@@ -315,19 +314,19 @@ export default function AdminContent() {
                 >
                   <option value="">—</option>
                   {KNOWN_PAGES.map((p) => (
-                    <option key={p.slug} value={p.slug}>{p.name}</option>
+                    <option key={p.slug} value={p.slug}>{t(p.name as TKey)}</option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div>
-              <label className={labelClass}>Content <span className="text-[var(--amber)]">*</span></label>
+              <label className={labelClass}>{t('admin.content.contentField')} <span className="text-[var(--amber)]">*</span></label>
               <textarea
                 value={form.content}
                 onChange={(e) => update('content', e.target.value)}
                 rows={4}
-                placeholder="The override text shown on the live site…"
+                placeholder={t('admin.content.contentPlaceholder')}
                 className={inputClass + " resize-none"}
               />
             </div>
@@ -336,16 +335,16 @@ export default function AdminContent() {
             {previewDefault !== null && (
               <div className="rounded-lg border border-[rgba(255,255,255,0.08)] overflow-hidden">
                 <div className="px-4 py-2 bg-[#050505] border-b border-[rgba(255,255,255,0.06)] text-[10px] tracking-[0.18em] uppercase text-[var(--gray)] flex items-center justify-between">
-                  <span>Preview</span>
+                  <span>{t('admin.content.preview')}</span>
                   <span className="text-[var(--amber)]">{previewLang}</span>
                 </div>
                 <div className="px-4 py-3 space-y-3">
                   <div>
-                    <div className="text-[9px] tracking-[0.16em] uppercase text-[var(--gray)]/60 mb-1">Default</div>
+                    <div className="text-[9px] tracking-[0.16em] uppercase text-[var(--gray)]/60 mb-1">{t('admin.content.defaultLabel')}</div>
                     <div className="text-sm text-[var(--gray)] leading-relaxed">{previewDefault || '—'}</div>
                   </div>
                   <div>
-                    <div className="text-[9px] tracking-[0.16em] uppercase text-[var(--amber)]/70 mb-1">Override (live)</div>
+                    <div className="text-[9px] tracking-[0.16em] uppercase text-[var(--amber)]/70 mb-1">{t('admin.content.overrideLive')}</div>
                     <div className="text-sm text-[var(--soft-white)] leading-relaxed font-medium">
                       {form.content.trim() || '—'}
                     </div>
@@ -361,12 +360,12 @@ export default function AdminContent() {
                 onChange={(e) => update('is_active', e.target.checked ? 1 : 0)}
                 className="w-4 h-4 accent-[var(--amber)]"
               />
-              <span className="text-sm text-[var(--soft-white)]">Active (visible on site)</span>
+              <span className="text-sm text-[var(--soft-white)]">{t('admin.content.activeVisible')}</span>
             </label>
 
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={closeEdit} className="btn btn-secondary text-sm py-2 px-4">
-                Cancel
+                {t('admin.content.cancel')}
               </button>
               <button
                 onClick={handleSave}
@@ -374,9 +373,9 @@ export default function AdminContent() {
                 className="btn btn-primary text-sm py-2 px-4 disabled:opacity-50"
               >
                 {saving ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+                  <><Loader2 className="w-4 h-4 animate-spin" /> {t('admin.content.saving')}</>
                 ) : (
-                  <><Save className="w-4 h-4" /> Save Block</>
+                  <><Save className="w-4 h-4" /> {t('admin.content.saveBlock')}</>
                 )}
               </button>
             </div>
@@ -388,12 +387,12 @@ export default function AdminContent() {
       {filtered.length === 0 ? (
         <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-10 text-center">
           <Globe className="w-10 h-10 text-[var(--gray)] mx-auto mb-4" />
-          <h2 className="text-lg font-bold mb-2">No content blocks yet</h2>
+          <h2 className="text-lg font-bold mb-2">{t('admin.content.noBlocks')}</h2>
           <p className="text-[var(--gray)] text-sm mb-6 max-w-[400px] mx-auto">
-            Create your first block to override a piece of site copy.
+            {t('admin.content.noBlocksDesc')}
           </p>
           <button onClick={openNew} className="btn btn-primary text-sm">
-            <Plus className="w-4 h-4" /> Create Block
+            <Plus className="w-4 h-4" /> {t('admin.content.createBlock')}
           </button>
         </div>
       ) : (
@@ -408,7 +407,7 @@ export default function AdminContent() {
               className="w-4 h-4 accent-[var(--amber)]"
             />
             <span className="text-sm text-[var(--soft-white)]">
-              {selected.size > 0 ? `${selected.size} selected` : 'Select all'}
+              {selected.size > 0 ? t('admin.content.selected').replace('{n}', String(selected.size)) : t('admin.content.selectAll')}
             </span>
           </label>
           <div className="flex items-center gap-2 sm:ml-auto">
@@ -416,25 +415,25 @@ export default function AdminContent() {
               onClick={() => runBulkAction('activate')}
               disabled={selected.size === 0 || busy}
               className="btn btn-secondary text-xs py-1.5 px-3 disabled:opacity-40"
-              title="Activate selected blocks"
+              title={t('admin.content.activateTitle')}
             >
-              <Power className="w-3.5 h-3.5" /> Activate
+              <Power className="w-3.5 h-3.5" /> {t('admin.content.activate')}
             </button>
             <button
               onClick={() => runBulkAction('deactivate')}
               disabled={selected.size === 0 || busy}
               className="btn btn-secondary text-xs py-1.5 px-3 disabled:opacity-40"
-              title="Pause selected blocks"
+              title={t('admin.content.pauseTitle')}
             >
-              <Power className="w-3.5 h-3.5 opacity-50" /> Pause
+              <Power className="w-3.5 h-3.5 opacity-50" /> {t('admin.content.pause')}
             </button>
             <button
               onClick={() => runBulkAction('delete')}
               disabled={selected.size === 0 || busy}
               className="btn btn-secondary text-xs py-1.5 px-3 text-red-400 hover:border-red-400/50 disabled:opacity-40"
-              title="Delete selected blocks"
+              title={t('admin.content.deleteTitle')}
             >
-              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />} Delete
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />} {t('admin.content.delete')}
             </button>
           </div>
         </div>
@@ -450,7 +449,7 @@ export default function AdminContent() {
                   onChange={() => toggleSelect(block.id)}
                   onClick={(e) => e.stopPropagation()}
                   className="w-4 h-4 accent-[var(--amber)] flex-shrink-0"
-                  title={`Select ${block.slug}`}
+                  title={t('admin.content.selectTitle').replace('{slug}', block.slug)}
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -458,7 +457,7 @@ export default function AdminContent() {
                     <span className={`px-2 py-0.5 rounded-full text-[10px] tracking-[0.12em] uppercase ${
                       block.is_active ? 'bg-[rgba(52,211,153,0.15)] text-green-400' : 'bg-[rgba(255,255,255,0.08)] text-[var(--gray)]'
                     }`}>
-                      {block.is_active ? 'Active' : 'Paused'}
+                      {block.is_active ? t('admin.content.activeLabel') : t('admin.content.pausedLabel')}
                     </span>
                   </div>
                   {block.content && (
@@ -469,21 +468,21 @@ export default function AdminContent() {
                   <button
                     onClick={() => toggleActive(block)}
                     className="p-2 text-[var(--gray)] hover:text-[var(--amber)] transition-colors"
-                    title={block.is_active ? 'Pause' : 'Activate'}
+                    title={block.is_active ? t('admin.content.pauseAction') : t('admin.content.activateAction')}
                   >
                     <Power className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => openEdit(block)}
                     className="p-2 text-[var(--gray)] hover:text-white transition-colors"
-                    title="Edit"
+                    title={t('admin.content.editAction')}
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(block)}
                     className="p-2 text-[var(--gray)] hover:text-red-400 transition-colors"
-                    title="Delete"
+                    title={t('admin.content.deleteAction')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

@@ -170,3 +170,18 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   3. **升级 Paid 触发条件**: 超时窗口变得频繁（每天多次 / 每次持续数分钟）时再升级；升级在 Cloudflare Dashboard 操作（账号 `fnecyt@gmail.com`）。
   4. 人工验收：`MANUAL-ACCEPTANCE-CHECKLIST.md` 的 6 项浏览器确认待用户抽空过一遍（不阻塞使用）。
 - **备注**: 本地有一个未推送文档提交 `245f005`（本段记录），待下次 Hermes 有推送机会时随 `git push` 同步 origin。
+
+### 2026-08-03 后台中英双语化 — 10 个 admin 页面全部完成
+
+- **方案**: 复用前台语言设置（`fnec-lang`，localStorage）+ `useLang()` 的 `t()`，全部后台页面跟随语言切换。
+- **i18n keys**: `src/lib/i18n.tsx` en/zh 各 **684 keys，完全对齐**（含新增 `admin.content.*`、补齐 `admin.media.*`、`admin.settings.*`）。
+- **已改造文件（10 个 admin 页面 + i18n）**:
+  - 上一会话完成 7 个：`layout`、`login`、`dashboard(page)`、`products` 列表、`products/[slug]` 编辑、`news`、`contacts`。
+  - 本会话完成 3 个：`admin/media/page.tsx`、`admin/content/page.tsx`、`admin/settings/page.tsx`。
+- **验证**: `npx tsc --noEmit` ✅（exit 0）；en/zh key 一致性校验 ✅（684/684，无 only-en/only-zh）。
+- **细节处理**:
+  - `admin/content` 页的 `KNOWN_PAGES` 页面名下拉改为 i18n key（`admin.content.page.*`）。
+  - 参数插值沿用 `.replace('{n}', ...)` / `.replace('{slug}', ...)` 模式（`t()` 本身无插值）。
+  - 保留技术性内容不译：content 页的 slug 示例（`en__home.hero.title1`）、语言自标签（中文/English）。
+- **遗留小项（不阻塞）**: `contacts` 页 `Save failed` 错误、`layout` 头像 fallback `'A'`、`products/[slug]` `alt` fallback `'Media item'` 仍为硬编码，可后续顺手处理。
+- **提交**: 待统一提交后台双语化批次（本次 11 个文件含 i18n.tsx）。
