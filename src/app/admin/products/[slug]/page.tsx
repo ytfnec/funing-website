@@ -323,7 +323,7 @@ export default function EditProduct() {
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={resolveImageSrc(item.r2_key)}
-                            alt={item.original_name || 'Media item'}
+                            alt={item.original_name || t('admin.product.mediaItemAlt')}
                             className="w-full h-full object-cover"
                             loading="lazy"
                             onError={(e) => {

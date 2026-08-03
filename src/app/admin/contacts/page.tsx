@@ -69,7 +69,7 @@ export default function AdminContacts() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes: notesDraft }),
       });
-      if (!res.ok) throw new Error('Save failed');
+      if (!res.ok) throw new Error(t('admin.contacts.saveFailed'));
       setContacts(prev => prev.map(x => x.id === c.id ? { ...x, notes: notesDraft } : x));
       setEditingNotes(null);
       setSavedNotes(true);

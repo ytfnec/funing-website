@@ -499,6 +499,7 @@ const translations = {
     'admin.signOut': 'Sign Out',
     'admin.viewSite': 'View Site',
     'admin.viewLiveSite': 'View Live Site',
+    'admin.layout.avatarFallback': 'A',
 
     // ─── Admin / Login ───
     'admin.login.signIn': 'Sign In',
@@ -583,6 +584,7 @@ const translations = {
     'admin.product.noMediaHint': 'No images in the media library yet. Upload some from the Media Library page, then come back here.',
     'admin.product.r2Hint': 'Click an image to use it as the hero image. Set',
     'admin.product.r2Hint2': 'at build time to enable R2 previews.',
+    'admin.product.mediaItemAlt': 'Media item',
 
     // ─── Admin / News ───
     'admin.news.title': 'News Management',
@@ -1242,6 +1244,7 @@ const translations = {
     'admin.signOut': '退出登录',
     'admin.viewSite': '查看网站',
     'admin.viewLiveSite': '查看线上网站',
+    'admin.layout.avatarFallback': 'A',
 
     // ─── Admin / Login ───
     'admin.login.signIn': '登录',
@@ -1326,6 +1329,7 @@ const translations = {
     'admin.product.noMediaHint': '媒体库中暂无图片。请先在媒体库页面上传，然后返回此处选择。',
     'admin.product.r2Hint': '点击图片将其设为主图。构建时设置',
     'admin.product.r2Hint2': '以启用R2预览。',
+    'admin.product.mediaItemAlt': '媒体项目',
 
     // ─── Admin / News ───
     'admin.news.title': '资讯管理',
