@@ -158,5 +158,15 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **可选后续（未做）**:
   - 纯静态公开页加 `force-static`（让构建期预渲染更完整）——注意 OpenNext 1.20 无静态资产发布模式，仍走 Worker SSR，边际收益有限、有回归风险，**不推荐冒险**。
   - 启用 OpenNext R2 增量缓存（`NEXT_INC_CACHE_R2_BUCKET` binding，需改 wrangler.toml，有部署风险）。
-  - **若超时窗口仍频繁复发 → 升级 Workers Paid（$5/月，CPU 10ms→30ms）是直接解**（SSR 实测 ~1s 墙钟，CPU 余量足够）。
   - `dev-auto-loop` 定时任务已停用，避免并发部署冲突复发。
+
+### 2026-08-03 决策记录 — 1102 治理方案（用户已拍板）
+
+- **决策**: 采纳 **方案 2 — 保持现状 + 边缘缓存**。不升级 Workers Paid、不改 OpenNext 缓存架构（不冒部署风险）。
+- **理由**: 线上已稳定（`a216d0eb` 全路由 200），公开页边缘缓存生效（回源频率降 ~90%），日常访问正常；升级 Paid（$5/月，CPU 10ms→30ms）与 R2 增量缓存留作"超时窗口频繁复发时"的兜底方案。
+- **运维监控建议**:
+  1. 若再遇首页/产品页短暂超时（几秒~几十秒），多为免费版 CPU 波动窗口，等待后自动恢复，无需紧张。
+  2. 边缘缓存 = 60s CDN 缓存 + 300s 后台刷新，正常访问体验良好。
+  3. **升级 Paid 触发条件**: 超时窗口变得频繁（每天多次 / 每次持续数分钟）时再升级；升级在 Cloudflare Dashboard 操作（账号 `fnecyt@gmail.com`）。
+  4. 人工验收：`MANUAL-ACCEPTANCE-CHECKLIST.md` 的 6 项浏览器确认待用户抽空过一遍（不阻塞使用）。
+- **备注**: 本地有一个未推送文档提交 `245f005`（本段记录），待下次 Hermes 有推送机会时随 `git push` 同步 origin。
