@@ -1,17 +1,16 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第二十二批 · 更新: 2026-08-03 · 来源: Claude Code
-> 说明: 仅推送本地待同步的文档提交，**无需构建部署**。线上状态保持 `a216d0eb`（batch 21）不变。
+> 批次: 第二十三批 · 更新: 2026-08-03 · 来源: Claude Code
+> 说明: 后台中英双语化全部完成，推代码 + 清缓存构建部署 + 验证。无 schema 变更，**不需要 db:deploy**。
 
 ---
 
 ## 背景
 
-- 1102 诊断已澄清为时间窗口现象（代码/构建无问题），线上 `a216d0eb` 稳定、全路由 200。
-- 治理方案已定：**保持现状 + 边缘缓存**（不升级 Paid、不改 OpenNext 架构）。
-- 本地有 **2 个未推送提交**，均为 HANDOFF-LOG 文档更新，需要同步到 origin/master：
-  - `bbc97cc` — HANDOFF-LOG: record 1102 mitigation decision (option 2)
-  - `245f005` — HANDOFF-LOG: correct 1102 diagnosis per Hermes
+- 后台 10 个 admin 页面全部完成中英双语化（复用前台语言设置 `fnec-lang`）。
+- 提交 `ca7cfec`（12 文件）：media/content/settings 三页 + 上一会话已完成的 7 页 + i18n.tsx。
+- i18n: en/zh 各 **684 keys 完全对齐**；`npx tsc --noEmit` 本地已通过。
+- 纯前端改动，无 DB 迁移，无 wrangler 配置改动。
 
 ## 任务 1：推代码（终端）
 
@@ -20,9 +19,20 @@ cd C:\Users\xxq\axissaunas-clone
 git push
 ```
 
-预期: 推送 `245f005` + `bbc97cc` 两个提交；推送后 `git log origin/master..HEAD --oneline` 输出为空。
+预期: 推送 `ca7cfec` 及其前面的文档提交；推送后 `git log origin/master..HEAD --oneline` 输出为空。
 
-## 任务 2：线上状态确认（只读，不构建不部署）
+## 任务 2：清缓存构建部署（终端）
+
+```bash
+cd C:\Users\xxq\axissaunas-clone
+rm -rf .next .open-next
+npm run build:cf
+npm run deploy
+```
+
+预期: 构建成功，部署成功，线上版本更新（非 `a216d0eb`）。
+
+## 任务 3：验证（终端）
 
 ```bash
 for u in "/" "/products" "/news" "/admin/login" "/api/products"; do
@@ -31,9 +41,14 @@ done
 curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
 ```
 
-预期: 全部 **HTTP 200**；`/` 返回 `cache-control: public, s-maxage=60, stale-while-revalidate=300`。
+预期: 全部 **HTTP 200**；`/` 返回 `cache-control: public, s-maxage=60, stale-while-revalidate=300`（边缘缓存保持生效）。
 
-> 本批**仅同步文档提交**，不改代码、不清缓存、不部署、不跑 db:deploy。线上版本保持 `a216d0eb`。
+## 任务 4：浏览器人工确认（可选，不阻塞）
+
+- 访问 `https://fnec.net/admin/login`，登录后确认后台各页面标题/按钮随前台语言设置（`fnec-lang`）切换中英文。
+- 切换语言：`localStorage.setItem('fnec-lang', 'zh')` 或 `'en'` 后刷新。
+
+> 本批有前端代码改动，需完整构建部署；**不要**运行 db:deploy（无 schema 变更）。
 
 ---
 
@@ -41,5 +56,7 @@ curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ | 推送 `245f005` + `bbc97cc`（+`444a7c2` 指令本身）；`origin/master..HEAD` 为空 |
-| 2 线上状态 | ✅ | 5 路由全 200（`/` 2.1s、其余 ~1s，绕过缓存实测）；`/` → `cache-control: public, s-maxage=60, stale-while-revalidate=300` ✅；线上保持 `a216d0eb`，未部署未改动 |
+| 1 推代码 | 待执行 | |
+| 2 构建部署 | 待执行 | |
+| 3 验证 | 待执行 | |
+| 4 浏览器确认 | 待执行（可选） | |
