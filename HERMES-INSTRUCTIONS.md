@@ -57,6 +57,6 @@ curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
 | 任务 | 结果 | 说明 |
 |------|------|------|
 | 1 推代码 | ✅ | `689d119..5b93098` 已推送，origin/master..HEAD 为空 |
-| 2 构建部署 | ✅ | build:cf 成功（OpenNext bundle 完成）；deploy 成功，Version ID `9792f918-6dad-41f1-9c54-4a13831e7bf9`（非 a216d0eb） |
+| 2 构建部署 | ✅ | build:cf 成功（OpenNext bundle 完成）；deploy 成功，Version ID `9792f918`（非 a216d0eb） |
 | 3 验证 | ✅ | `/` `/products` `/news` `/admin/login` `/api/products` 全部 HTTP 200；`/` 返回 `cache-control: public, s-maxage=60, stale-while-revalidate=300` |
-| 4 浏览器确认 | ⚠️ 部分 | login 页双语验证通过（fnec-lang=en 切换后全页英文，导航/标题/表单齐全）；登录后台时遇 1102 超时窗口（POST /api/auth → 503 error code: 1102，即已知周期性窗口），待窗口过后补验后台 10 页 |
+| 4 浏览器确认 | ⚠️ 部分 | login 页双语验证通过（fnec-lang=en 切换后全页英文）；后台登录成功，仪表盘中文正常（侧边栏7页+统计+最近询盘）；**1102 异常延长**：16:45 起 SSR/登录 API 持续挂（超出常规 15-30min 窗口），两次同产物重部署（e6009a07/76c1d01e）仅短暂恢复 5-10 分钟，间歇复发（带 session 的浏览器请求易触发 1102，无 cookie curl 多 200）；EN 后台 10 页待环境稳定后补验。判断：Worker 环境资源问题（历史已知，batch19-21 做过 edge-cache 缓解），非本次代码问题 |
