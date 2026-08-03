@@ -84,3 +84,27 @@ npx wrangler tail --format pretty
 | 1 推代码 | ✅ | 推送 `03b17f8`（edge-cache 修复）及指令提交 |
 | 2 构建部署 | ✅ | clean→build:cf→deploy；新版本 `03a22f55` 100% 接管（首次部署） |
 | 3 验证 | ⚠️ 发现并修复 | 公开页缓存生效（连打 3 次 200，~1s）；**但 /admin/** 也被 catch-all 缓存（public）**——Next.js headers 是"最后匹配覆盖先匹配"，Claude Code 将 admin 规则前置反被覆盖。Hermes 已修（`18d7ce9`：catch-all 前置、admin 后置），重建部署 `37286ee2`，绕过 CDN 缓存验证：admin/login、admin/products → `private, no-store`，/api/admin/stats → `no-store` ✅；公开页 + API 头保持 public ✅；tail 无 CPU 超限 |
+
+---
+
+## ⚠️ 2026-08-03 09:0x 复发诊断补充（Hermes 回报，纠正 HANDOFF-LOG `603a684` "根治"结论）
+
+**"1102/SSR 超时根治"结论不成立。** 08:05–08:35 出现 30 分钟全 SSR 超时窗口（用户再次报障），边缘缓存 SWR 过期后回源即挂（25–45s 无响应），API 全程 200。
+
+**决定性对照实验（同构建产物）：**
+
+| 操作 | 结果 |
+|------|------|
+| 37286ee2 首次部署后 20 分钟 | ❌ SSR 全 25s 超时 |
+| 回滚 fa572c9c（batch 17） | ✅ 200（~1-2s） |
+| **37286ee2 同产物重部署（a216d0eb）** | ✅ **200（~1s）** |
+| a216d0eb 完整验证（6 路由 + admin no-store + 缓存头） | ✅ 全绿 |
+
+**结论：代码/构建无问题（8373bff 仅 API 头改动已排除）；SSR 超时是时间窗口现象**——免费版 Worker CPU 执行波动或短时流量高峰（robots 已封 8 个 AI 爬虫，不守规矩的仍会打）。
+
+**当前状态**：线上 a216d0eb（batch 21 完整版），全路由 200，边缘缓存 + admin no-store 生效。5 分钟窗口复测后台进行中。
+
+**建议更新**：
+- force-static 纯静态页（HANDOFF-LOG 建议）方向正确，可行：首页/about/oem/resources 等无用户态页面静态化，SSR 请求归零
+- 若超时窗口仍频繁复发 → **升级 Workers Paid（$5/月，CPU 10ms→30ms）** 是直接解（SSR 实测 ~1s 墙钟，CPU 余量足够）
+- 边缘缓存为当前有效缓解（回源频率降 ~90%）
