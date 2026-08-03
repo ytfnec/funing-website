@@ -140,17 +140,23 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - 停用多余的 `dev-auto-loop` 定时任务，只保留一个，避免并发部署冲突。
   - 后续可考虑 `open-next.config.ts` 启用 R2 增量缓存 / 缓存拦截（需新增 binding，规范要求谨慎）。
 
-### 2026-08-03 1102 复现 — 根因确认与根治（batch 18–21）
+### 2026-08-03 1102 复现 — 诊断与缓解（batch 18–21，结论已被 Hermes 修正）
 
-- **现象**: 全站 1102 后回滚 `fa572c9c` 恢复；随后 SSR 页面（`/`、`/products`）再次超时 30s，JSON API 正常 200。版本未变（`4788d816`）→ 排除版本覆盖，确认是 Worker 运行时资源超限。
-- **根因（最终确认）**:
-  - OpenNext Cloudflare 把 Next 预渲染的静态页（`.next/server/app/*.html` 有完整 HTML，routes-manifest 的 staticRoutes 含全部公开页）构建为 **Worker SSR**，`.open-next/assets` 无任何 HTML。每个请求都全量跑 Worker + D1，免费版 10ms CPU 限额一满即超时/1102。
-  - JSON API 有 CDN 缓存头所以仍 200 → "SSR 挂、API 好"。
-- **修复**:
-  - `03b17f8`：`next.config.js` 给公开页面加 `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`，CDN 边缘缓存预渲染 HTML。
-  - `18d7ce9`：**header 规则顺序修复**——Next.js 对同一 header 应用"最后匹配"的规则，catch-all 必须在前、`/admin/**` 与 `/api/admin/**` 的 `no-store` 覆盖规则在后（首版 admin 前置反被 catch-all 覆盖，Hermes 发现并修正）。
-- **结果**: batch21 部署 `37286ee2`，公开页命中 CDN 缓存（连打 200、~1s），admin 验证 `private, no-store`，tail 无 CPU 超限。**1102/SSR 超时根治**。
-- **遗留/可选**:
-  - 纯静态公开页（首页/about/oem/resources）可加 `export const dynamic='force-static'` 让构建期直接产出静态 HTML（彻底不打 Worker）。
-  - 或启用 OpenNext R2 增量缓存（`NEXT_INC_CACHE_R2_BUCKET` binding，需改 wrangler.toml）。
+> ⚠️ **更新（10:37）**: 此前 `603a684` 标注"根治"结论**不成立**，Hermes 已纠正。实际为**时间窗口现象**，非代码/构建缺陷。
+
+- **现象**: 全站 1102 后回滚 `fa572c9c` 恢复；随后 SSR 页面（`/`、`/products`）再次超时 30s，JSON API 正常 200。版本未变（`4788d816`）→ 排除版本覆盖。
+- **Hermes 决定性对照实验（同构建产物）**:
+  - `37286ee2` 首次部署后 20 分钟 → SSR 全 25s 超时 ❌
+  - 回滚 `fa572c9c`（batch17）→ 200（~1-2s）✅
+  - `37286ee2` **同产物重部署**（`a216d0eb`）→ 200（~1s）✅
+  - 完整验证 → 全绿 ✅
+- **结论**: **代码/构建无问题**；SSR 超时是**时间窗口现象**（免费版 Worker CPU 执行波动或短时流量高峰；robots 已封 8 个 AI 爬虫，不守规矩的仍会打）。API 全程 200 证明 Worker 存活、D1 正常，问题仅在 SSR 渲染在高峰期的 CPU 余量。
+- **缓解（已上线）**:
+  - `03b17f8`：`next.config.js` 给公开页加 `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`，CDN 边缘缓存 HTML，回源频率降 ~90%。
+  - `18d7ce9`：header 规则顺序修复（catch-all 前置、admin/API `no-store` 后置；Next 应用"最后匹配"规则）。
+  - 当前线上 `a216d0eb`（batch21 完整版），全路由 200。
+- **可选后续（未做）**:
+  - 纯静态公开页加 `force-static`（让构建期预渲染更完整）——注意 OpenNext 1.20 无静态资产发布模式，仍走 Worker SSR，边际收益有限、有回归风险，**不推荐冒险**。
+  - 启用 OpenNext R2 增量缓存（`NEXT_INC_CACHE_R2_BUCKET` binding，需改 wrangler.toml，有部署风险）。
+  - **若超时窗口仍频繁复发 → 升级 Workers Paid（$5/月，CPU 10ms→30ms）是直接解**（SSR 实测 ~1s 墙钟，CPU 余量足够）。
   - `dev-auto-loop` 定时任务已停用，避免并发部署冲突复发。
