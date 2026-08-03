@@ -219,3 +219,14 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **验证**: `/` `/products` `/news` `/api/products` `/api/news` `/robots.txt` `/admin/login` 全部 HTTP 200；`/` 返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`。中文登录页完整渲染（导航/表单/页脚齐全）→ **双语功能未破坏确认**。
 - **1102 观察更新**: 19:18-19:44 稳定期正常；19:44 浏览器 /admin/login → 1102（Ray a255117f89bc2eba，curl 同时刻 200）；19:49 curl 亦超时。**模式确认**: 浏览器（完整资源加载）比 curl 更易触发 1102；SWR 3600 兜底对缓存页有效（`/`、`/products`、`/api/*` 窗口内仍 200），但**动态页 `/admin/login` 无兜底，窗口内会挂**。
 - **后台双语化至此全部完成并上线**（含 3 处遗留硬编码清理）。
+
+### 2026-08-03 第二轮免费版优化调研 — 结论（已回滚无用改动）
+
+- **尝试**: 给 `sitemap.ts` 加 `revalidate = 3600` 以减少爬虫回源的 D1 查询。
+- **回滚原因（关键发现）**: OpenNext 1.20 `incrementalCache: 'dummy'` 的 `get/set` 均抛 IgnorableError（**不缓存任何东西**）。因此 **ISR/revalidate 类优化在 dummy 缓存下完全无效**——revalidate 会看似生效但实际每次仍回源查 D1。已回滚 sitemap 改动，保留 `force-dynamic`。
+- **其他已排查项（确认无可做或已做）**:
+  - 未使用依赖（framer-motion、date-fns、@tanstack×2、react-hook-form、@hookform、@radix-ui×5）: 源码零引用，tree-shaking 已排除出 bundle，移除无线上收益且有 lockfile 不同步风险 → **不做**。
+  - `/admin/login` 单独缓存: Next headers 的 `/admin/:path*` no-store 规则会覆盖任何前置 login 规则 → **不可行**。
+  - client bundle: 最重 220K 是 Next 运行时框架 chunk，非业务 → 正常。
+  - `/api/content` 客户端缓存: 会延迟 admin 内容修改生效 → **不做**（当前 300s CDN 缓存已是平衡点）。
+- **结论**: 免费版内**已无低成本高收益的剩余优化空间**。当前配置（公开页/API 300s + 1h SWR 边缘缓存、robots 静态化、ViewTracker 节流）已是免费版下的合理平衡。1102 属 Worker 固有资源波动，公开页已充分缓解；动态 admin 页在发作窗口内仍可能受影响，此为免费版已知边界。
