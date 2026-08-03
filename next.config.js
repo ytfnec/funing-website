@@ -8,11 +8,36 @@ const nextConfig = {
   },
   async headers() {
     return [
+      // Admin pages: never edge-cache (session cookies, live data). Listed
+      // first because Next.js merges header rules and we want the private
+      // value to win over the catch-all public rule below.
+      {
+        source: '/admin/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Cache-Control', value: 'private, no-store' },
+        ],
+      },
+      // Admin API: never edge-cache (auth + mutations). Public read APIs
+      // (/api/products, /api/news) set their own Cache-Control in their route
+      // handlers and are intentionally left alone here.
+      {
+        source: '/api/admin/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store' },
+        ],
+      },
+      // Public pages: let Cloudflare CDN cache the pre-rendered HTML at the
+      // edge (60s, stale-while-revalidate). These are ISR pages whose content
+      // changes at most every 300s, so edge-caching cuts Worker SSR traffic —
+      // the fix for recurring 1102 / SSR timeout on the free tier.
       {
         source: '/:path*',
         headers: [
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
         ],
       },
     ]
