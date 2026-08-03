@@ -185,3 +185,12 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - 保留技术性内容不译：content 页的 slug 示例（`en__home.hero.title1`）、语言自标签（中文/English）。
 - **遗留小项（不阻塞）**: `contacts` 页 `Save failed` 错误、`layout` 头像 fallback `'A'`、`products/[slug]` `alt` fallback `'Media item'` 仍为硬编码，可后续顺手处理。
 - **提交**: 待统一提交后台双语化批次（本次 11 个文件含 i18n.tsx）。
+
+### 2026-08-03 批次 23 部署完成 + 1102 窗口异常延长（⚠️ 需人工决策）
+
+- **批次 23 结果**: 后台双语化（`ca7cfec`）已部署上线，Version `9792f918`。推码✅、构建部署✅、5 路由 200✅、边缘缓存头确认✅。
+- **浏览器人工确认（Hermes）**: login 页双语切换验证通过；后台登录成功、仪表盘中文正常（侧边栏 7 页+统计+最近询盘）。**EN 后台 10 页待环境稳定后补验**。
+- **⚠️ 1102 异常延长**: 16:45 起 SSR/登录 API 持续挂起，**超出常规 15-30min 窗口**。两次同产物重部署（`e6009a07`/`76c1d01e`）仅短暂恢复 5-10 分钟，间歇复发。带 session 的浏览器请求易触发 1102，无 cookie curl 多数 200。
+- **Hermes 判断**: Worker 环境资源问题（历史已知，batch19-21 已做 edge-cache 缓解），**非本次代码问题**。
+- **与治理方案对照**: 本次窗口**已触及升级 Paid 触发条件**（"每天多次/每次持续数分钟"）。之前拍板方案 2（保持现状+边缘缓存），兜底=升级 Workers Paid（$5/月，CPU 10ms→30ms）。
+- **待人工决策**: 是否升级 Workers Paid，或继续观察等待窗口过去。
