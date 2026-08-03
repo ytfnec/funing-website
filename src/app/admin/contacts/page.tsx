@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check, Mail, Clock, Trash2, AlertCircle } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 interface Contact {
   id: string;
@@ -33,6 +34,8 @@ export default function AdminContacts() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [deleted, setDeleted] = useState('');
+  // Custom confirm dialog state (replaces native confirm())
+  const [confirmState, setConfirmState] = useState<null | { type: 'single'; contact: Contact } | { type: 'bulk'; count: number }>(null);
 
   useEffect(() => {
     loadContacts();
@@ -97,7 +100,6 @@ export default function AdminContacts() {
   };
 
   const handleDelete = async (c: Contact) => {
-    if (!confirm(t('admin.contacts.deleteConfirm'))) return;
     try {
       const res = await fetch(`/api/admin/contacts?id=${c.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(t('admin.contacts.deleteFailed'));
@@ -117,7 +119,6 @@ export default function AdminContacts() {
   const runBulkDelete = async () => {
     const ids = Array.from(selected);
     if (ids.length === 0) return;
-    if (!confirm(t('admin.contacts.bulkDeleteConfirm').replace('{n}', String(ids.length)))) return;
     setBusy(true);
     setError('');
     try {
@@ -193,7 +194,7 @@ export default function AdminContacts() {
             </label>
             <div className="flex items-center gap-2 sm:ml-auto">
               <button
-                onClick={runBulkDelete}
+                onClick={() => setConfirmState({ type: 'bulk', count: selected.size })}
                 disabled={selected.size === 0 || busy}
                 className="btn btn-secondary text-xs py-1.5 px-3 text-red-400 hover:border-red-400/50 disabled:opacity-40"
               >
@@ -346,7 +347,7 @@ export default function AdminContacts() {
                   {/* Delete this submission */}
                   <div className="pt-2 border-t border-[rgba(255,255,255,0.06)] flex justify-end">
                     <button
-                      onClick={() => handleDelete(c)}
+                      onClick={() => setConfirmState({ type: 'single', contact: c })}
                       className="flex items-center gap-1 text-[12px] text-[var(--gray)] hover:text-red-400 transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" /> {t('admin.contacts.delete')}
@@ -359,6 +360,28 @@ export default function AdminContacts() {
           </>
         )}
       </div>
+
+      {/* Custom confirm dialog */}
+      <ConfirmDialog
+        open={confirmState !== null}
+        title={t('admin.contacts.delete')}
+        message={
+          confirmState?.type === 'bulk'
+            ? t('admin.contacts.bulkDeleteConfirm').replace('{n}', String(confirmState.count))
+            : t('admin.contacts.deleteConfirm')
+        }
+        confirmLabel={t('admin.contacts.delete')}
+        busy={busy}
+        onConfirm={() => {
+          if (confirmState?.type === 'single') {
+            void handleDelete(confirmState.contact);
+          } else if (confirmState?.type === 'bulk') {
+            void runBulkDelete();
+          }
+          setConfirmState(null);
+        }}
+        onCancel={() => setConfirmState(null)}
+      />
     </div>
   );
 }
