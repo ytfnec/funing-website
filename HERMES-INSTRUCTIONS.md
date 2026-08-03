@@ -63,4 +63,4 @@ curl -s -o /dev/null -w "batch unauthorized -> HTTP %{http_code}\n" -X POST "htt
 | 1 推代码 | ✅ | `14ea364..dddadfa` 推送（含 b9aca4e 批量删除：API + 后台 UI + i18n），origin/master..HEAD 为空 |
 | 2 构建+部署 | ✅ | `build:cf:static` 成功（46/46 页 + "Copied 24 prerendered HTML" + `_headers` 写入）；部署 v`eaed3f92-e49d-4166-acf0-2cf081f3def1` |
 | 3 验证 | ✅ | 公开页 5 路由全 200（静态化保持）；`/api/admin/contacts` 未登录 **401**；`/api/admin/contacts/batch` 未登录 **401**；`/api/products` 200 |
-| 4 浏览器确认 | ✅（UI 级，未删数据） | 后台→询盘：全选 checkbox + "删除所选"按钮存在，勾选 1 条后按钮由 disabled → 激活（"已选 1 项"）；展开单条询盘详情含 **删除** 按钮 + 状态流转按钮（新询盘/已联系/已报价/已关闭）。**按指令未实际删除任何数据**。顺带发现：现有询盘（maxeon shin / fnecyt@gmail.com / jacquard-drivers 印尼客户）状态已为 已关闭 |
+| 4 浏览器确认 | ✅（UI 级 + 真实删除） | UI 确认：全选/勾选 → "删除所选"激活；单条详情含 删除 按钮。**真实删除验证**：用户确认 maxeon shin 询盘为测试数据 → 经 `/api/admin/contacts/batch` 删除成功（`{"success":true,"count":1}`），列表已空。⚠️ 发现："删除所选"使用原生 `confirm()` 弹窗——真人使用正常（会弹确认框），但自动化点击会卡死页面（工具 30s 超时、页面冻结直至重新导航）。如需可选优化：改自定义确认弹窗 |
