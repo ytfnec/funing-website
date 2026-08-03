@@ -269,3 +269,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - **真实删除验证**: 用户确认 `maxeon shin` 询盘为测试数据 → 经 batch API 删除成功（`{"success":true,"count":1}`），列表已空 ✅。
 - **发现的优化点（可选）**: "删除所选"使用原生 `confirm()` 弹窗——真人使用正常（会弹确认框），但**自动化/脚本点击会卡死页面**（30s 超时、页面冻结）。如需可选优化：改用自定义确认弹窗（如 Radix Dialog 或内联确认）。
 - **用户文档**: 已制作《后台操作手册》（含询盘删除说明）与《i18n Key 完整对照表》，合并版《后台操作手册与i18nKey对照表》已交付。
+
+### 2026-08-03 询盘删除 confirm 优化 + 文档整理
+
+- **confirm 弹窗优化（提交 `948c507`）**: 新增 `src/components/ConfirmDialog.tsx`（深黑+琥珀风格的自定义确认弹窗），替换 contacts 页面的原生 `window.confirm()`（单条 + 批量删除均改用）。原因：原生 confirm 在自动化/无头浏览器会卡死页面。i18n en/zh 各 696 keys 对齐，tsc 通过。
+- **文档整理**: 删除重复的旧版文档（操作手册 v1/v2、单独 i18n key 表），仅保留合并版《后台操作手册与i18nKey对照表_Funing电子官网.docx》。
+- **注意**: ConfirmDialog 为通用组件，后续可复用于 products/news/media 等其他模块的删除确认（它们仍用原生 confirm）。
