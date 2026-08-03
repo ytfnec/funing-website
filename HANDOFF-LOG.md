@@ -275,3 +275,14 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **confirm 弹窗优化（提交 `948c507`）**: 新增 `src/components/ConfirmDialog.tsx`（深黑+琥珀风格的自定义确认弹窗），替换 contacts 页面的原生 `window.confirm()`（单条 + 批量删除均改用）。原因：原生 confirm 在自动化/无头浏览器会卡死页面。i18n en/zh 各 696 keys 对齐，tsc 通过。
 - **文档整理**: 删除重复的旧版文档（操作手册 v1/v2、单独 i18n key 表），仅保留合并版《后台操作手册与i18nKey对照表_Funing电子官网.docx》。
 - **注意**: ConfirmDialog 为通用组件，后续可复用于 products/news/media 等其他模块的删除确认（它们仍用原生 confirm）。
+
+### 2026-08-03 批次 28 部署完成 — ConfirmDialog 已上线（Hermes 回报）
+
+- **结果**: ConfirmDialog（自定义确认弹窗）部署成功，Version `ae701358`。公开页静态化保持（`build:cf:static` 46 页）。
+- **验证（Hermes，含真实交互）**:
+  - 造测试询盘（Hermes Test）→ 勾选 → 删除所选 → **自定义 dialog 弹窗出现**（标题"删除"+取消/删除按钮，深色，非原生 confirm）。
+  - ① 点取消 → 弹窗关闭、勾选保留、数据未删 ✅
+  - ② 重新打开 → 确认删除 → 列表清空、无卡顿 ✅
+  - ③ 测试数据已删除，询盘列表干净。
+  - **结论: confirm() 卡死问题已解决，自动化可正常操作。**
+- **配套**: 询盘删除（批量 + 单条）全部功能上线；后台双语、静态化优化、i18n 696 keys 均稳定。
