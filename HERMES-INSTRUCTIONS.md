@@ -56,7 +56,7 @@ curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器确认 | 待执行（可选） | |
+| 1 推代码 | ✅ | `689d119..5b93098` 已推送，origin/master..HEAD 为空 |
+| 2 构建部署 | ✅ | build:cf 成功（OpenNext bundle 完成）；deploy 成功，Version ID `9792f918-6dad-41f1-9c54-4a13831e7bf9`（非 a216d0eb） |
+| 3 验证 | ✅ | `/` `/products` `/news` `/admin/login` `/api/products` 全部 HTTP 200；`/` 返回 `cache-control: public, s-maxage=60, stale-while-revalidate=300` |
+| 4 浏览器确认 | ⚠️ 部分 | login 页双语验证通过（fnec-lang=en 切换后全页英文，导航/标题/表单齐全）；登录后台时遇 1102 超时窗口（POST /api/auth → 503 error code: 1102，即已知周期性窗口），待窗口过后补验后台 10 页 |
