@@ -41,5 +41,5 @@ curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | 推送 `245f005` + `bbc97cc` |
-| 2 线上状态 | 待执行 | 路由 200 + 缓存头确认 |
+| 1 推代码 | ✅ | 推送 `245f005` + `bbc97cc`（+`444a7c2` 指令本身）；`origin/master..HEAD` 为空 |
+| 2 线上状态 | ✅ | 5 路由全 200（`/` 2.1s、其余 ~1s，绕过缓存实测）；`/` → `cache-control: public, s-maxage=60, stale-while-revalidate=300` ✅；线上保持 `a216d0eb`，未部署未改动 |
