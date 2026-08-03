@@ -206,3 +206,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - `ViewTracker`: 每浏览器 session 每路径只上报一次（sessionStorage 去重），降低高频 D1 写。
 - **验证**: `npx tsc --noEmit` ✅。
 - **说明**: `/api/auth/*` 保持 no-store（认证不可缓存）；`/api/admin/*` 保持 no-store（管理员数据）。
+
+### 2026-08-03 批次 24 部署完成 — perf 优化上线 + 1102 观察（Hermes 回报）
+
+- **结果**: 提交 `36d3138`（perf）+ `d20f049`（指令）已部署，线上 Version `4788d816-eaf9-4da3-b710-380d418eddbd`。6 路由全 200（`/` `/products` `/news` `/api/products` `/api/news` `/robots.txt`）；`/` 与 `/api/products` 均返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`（新缓存头生效）。
+- **1102 观察（Hermes）**: 16:45 起 SSR/登录 API 间歇挂（>2h，异常延长）；带 session/cookie 的浏览器请求更易触发 1102，无 cookie curl 多 200；重部署仅短暂恢复。19:00 后全路由 200。**结论**: Worker 资源问题（历史已知），本批 SWR 300→3600 生效后，1102 窗口内 CDN 可凭 stale 内容持续服务——是否覆盖窗口需下次发作再验证。
+- **⚠️ i18n 清理待部署**: 我随后提交的 `a45c6fb`（3 处硬编码清理）+ `8f9cb19`（指令更新）**已在 origin/master，但 Hermes 部署 v4788d816 是基于 `d20f049` 构建**，未包含这两个提交。需新批次确认线上是否已含 i18n 清理，未含则补部署。
