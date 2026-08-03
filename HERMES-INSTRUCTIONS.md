@@ -61,7 +61,19 @@ curl -s -D - -o /dev/null "https://fnec.net/api/products" | grep -i "cache-contr
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 1102 观察 | 待执行 | |
+| 1 推代码 | ✅ | `d394bbe..d20f049` 已推送（含 perf 提交 36d3138），origin/master..HEAD 为空 |
+| 2 构建部署 | ✅ | build:cf 成功；deploy 成功，Version ID `4788d816-eaf9-4da3-b710-380d418eddbd` |
+| 3 验证 | ✅ | `/` `/products` `/news` `/api/products` `/api/news` `/robots.txt` 全部 HTTP 200；`/` 与 `/api/products` 均返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`（部署后约 2 分钟旧缓存过期后新头生效） |
+| 4 1102 观察 | ✅ 已记录 | 见下方专项记录 |
+
+## 1102 专项观察记录（任务 4，2026-08-03）
+
+- **发作时段**：16:45 起 SSR/登录 API 间歇挂，异常延长（>2h，常规窗口 15-30min）
+- **17:44-18:28**：带 cache-buster 轮询 25 次全连接超时（000）；期间无 cookie curl 的静态/API 页多 200（/products /news /api/products）
+- **18:29 重部署 e6009a07** → 全 200，仅稳定 ~5 分钟
+- **18:33-34 复发**：浏览器（带 session）切 EN 刷新 /admin/dashboard → 1102；无 cookie curl /admin/login 同时刻 200
+- **18:36 重部署 76c1d01e** → 全 200；18:39 浏览器 /admin/login 再 1102（curl 同时刻 200）；18:40 浏览器连接超时
+- **18:43**：/ 200、/admin/login 000、/products 200（间歇）
+- **18:47 部署 4788d816**（本批）→ 部署瞬间 / 000，随后恢复
+- **19:00 后**：全路由 200，新缓存头（SWR 3600）生效
+- **结论**：带 cookie/重负载请求更易触发 1102（Worker 资源问题，历史已知，非代码）；本批 SWR 300→3600 生效后，1102 窗口内 CDN 可凭 stale 内容持续服务，是否覆盖窗口需后续发作时再验证 |
