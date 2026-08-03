@@ -1,54 +1,75 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第二十五批 · 更新: 2026-08-03 · 来源: Claude Code
-> 说明: 补部署 i18n 清理提交（`a45c6fb`），代码已在 origin/master，只需重新构建部署。无 schema 变更，**不需要 db:deploy**。
+> 批次: 第二十六批 · 更新: 2026-08-03 · 来源: Claude Code
+> 说明: 极致压榨 — 静态 HTML 直出（公开页绕过 Worker），推代码 + `build:cf:static` + 部署 + 专项验证。无 schema 变更，**不需要 db:deploy**。
 
 ---
 
 ## 背景
 
-- 批次 24 部署（v4788d816）基于 `d20f049` 构建，**未包含**随后提交的 i18n 清理 `a45c6fb`（3 处后台硬编码改 i18n key）。
-- 代码已推送到 origin/master（`git log origin/master..HEAD` 应为空），本地 HEAD = origin/master = `26f46df`。
-- 只需**重新构建部署**即可让线上包含 i18n 清理。
+- 用户要求"极致压榨"。调研发现 Next 已为所有静态路由预渲染完整 HTML（`.next/server/app/*.html`），但 OpenNext 1.20 将其丢进 dummy cache，Worker 每次缓存 miss 回源仍重跑 SSR（1102 主要 CPU 源）。
+- 提交 `3ef05a7`：新增 `scripts/copy-prerendered-html.mjs`（构建后把 HTML 复制进 `.open-next/assets/` + 生成 `_headers`）+ `npm run build:cf:static`。
+- **原理**: wrangler `[assets]` 默认 `run_worker_first: false`，Cloudflare Static Assets 会优先服务 assets 里的静态文件。复制后的 `about.html`、`index.html`、`admin/login.html` 等会从 CDN 直接返回，**完全绕过 Worker**。
+- **跳过**: 动态路由（`products/[slug]`、`news/[slug]`）和 `/api/*` 不进 assets，仍由 Worker 处理。
 
-## 任务 1：确认代码已同步（终端）
+## 任务 1：推代码（终端）
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
-git log origin/master..HEAD --oneline
+git push
 ```
 
-预期: 输出为空（无未推送提交）。若本地落后 origin，先 `git pull --rebase`。
+预期: 推送 `3ef05a7` 及前面待推送的提交；`git log origin/master..HEAD --oneline` 为空。
 
-## 任务 2：清缓存构建部署（终端）
+## 任务 2：清缓存构建 + 复制 HTML + 部署（终端）
 
 ```bash
 cd C:\Users\xxq\axissaunas-clone
 rm -rf .next .open-next
-npm run build:cf
+npm run build:cf:static
 npm run deploy
 ```
 
-预期: 构建成功、部署成功，线上版本更新（基于最新 origin/master，含 i18n 清理）。
+预期:
+- `build:cf:static` = `build:cf` + `copy:html`，日志出现 "Copied 24 prerendered HTML files" 和 "Wrote .open-next/assets/_headers"。
+- 部署成功，线上版本更新。
 
-## 任务 3：验证（终端）
+## 任务 3：验证静态化生效（终端，关键）
 
 ```bash
-for u in "/" "/products" "/news" "/api/products" "/api/news" "/robots.txt" "/admin/login"; do
+# 全路由回归
+for u in "/" "/about" "/products" "/news" "/contact" "/admin/login" "/api/products" "/api/news" "/robots.txt"; do
   curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
 done
-curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
+# 确认公开页响应头（静态化后应从 CDN 返回缓存头）
+curl -s -D - -o /dev/null "https://fnec.net/about"
+curl -s -D - -o /dev/null "https://fnec.net/"
 ```
 
 预期:
-- 全部路由 **HTTP 200**（含 admin/login）。
-- `/` 返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`。
+- 全部路由 **HTTP 200**。
+- `/about` 与 `/` 返回 `cache-control: public, max-age=0, s-maxage=300, stale-while-revalidate=3600`（来自 `_headers`）—— 说明静态 HTML 已从 assets 直出。
+- `/api/products` 仍返回 API 的 `cache-control: public, s-maxage=300, stale-while-revalidate=3600`（Worker 处理，正常）。
 
-## 任务 4：i18n 清理生效抽查（可选，不阻塞）
+## 任务 4：静态化行为抽查（终端）
 
-- 浏览器访问 `/admin/login`，`localStorage.setItem('fnec-lang','en')` 后刷新，确认页面英文正常（此前的双语验证已通过，本批主要确认部署未破坏）。
+```bash
+# 检查公开页 HTML 是否完整（含 RSC flight 数据）
+curl -s "https://fnec.net/about" | grep -c "self.__next_f"
+curl -s "https://fnec.net/" | grep -c "self.__next_f"
+# 检查动态路由仍由 Worker 处理（产品详情）
+curl -s -o /dev/null -w "/products/sauna-controllers -> HTTP %{http_code}\n" "https://fnec.net/products/sauna-controllers"
+```
 
-> 本批为纯前端补部署；**不要**运行 db:deploy（无 schema 变更）。
+预期:
+- 公开页 HTML 含 `self.__next_f`（RSC 数据内联，页面可 hydration）。
+- 产品详情 200（Worker 处理）。
+
+## 任务 5：1102 观察（报告即可）
+
+- 部署后记录是否有 1102；公开页（/、/products、/news、/about）是否全程 200（静态化后应完全不受 Worker 窗口影响）；动态/API 在窗口内是否仍受影响。
+
+> ⚠️ **回滚预案**: 若验证发现静态化未生效或有异常（如页面 500/空白/404），执行 `wrangler rollback` 回到部署前版本即可（assets 改动随版本回滚）。
 
 ---
 
@@ -56,14 +77,8 @@ curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 确认同步 | ✅ | 推送 CC 指令提交 `3ca3ad8`，origin/master..HEAD 为空 |
-| 2 构建部署 | ✅ | **已含 i18n 清理**：Hermes 在收到本批指令前已按批次 24 更新版部署 `569bf3fc-8c5c-49a3-bf2e-372280633386`（基于最新 origin/master，含 36d3138 + a45c6fb）；本批无新增代码，无需重复部署 |
-| 3 验证 | ✅ | `/` `/products` `/news` `/api/products` `/api/news` `/robots.txt` `/admin/login` 全部 HTTP 200；`/` 返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600` |
-| 4 抽查 | ⚠️ 部分（可选） | 中文登录页完整渲染确认（导航/登录表单/页脚齐全）→ **部署未破坏双语功能确认**；EN 切换抽查遇 1102 窗口复发（19:44 浏览器 1102 Ray a255117f，curl 同时刻 200；19:49 curl 亦超时）未完成——此前批次 23 已实测 login 页 EN 切换通过，本批未改 i18n 代码（a45c6fb 仅后台 3 处硬编码），风险低 |
-
-## 1102 观察更新（补充）
-
-- **19:18-19:44 稳定期**：curl + 浏览器中文页均正常（期间部署 v569bf3fc 验证全过）
-- **19:44 复发**：浏览器 /admin/login → 1102（Ray a255117f89bc2eba）；curl 同时刻 200
-- **19:49**：curl /admin/login 亦超时（000, 20s）→ 窗口全面复发
-- 模式确认：**浏览器（完整资源加载/数据中心 IP）比 curl 更易触发 1102**；SWR 3600 兜底对缓存页有效（/、/products、/api/* 在窗口内仍 200 直至 19:44），动态页（/admin/login）无兜底时窗口内挂 |
+| 1 推代码 | 待执行 | |
+| 2 构建+部署 | 待执行 | |
+| 3 验证 | 待执行 | |
+| 4 行为抽查 | 待执行 | |
+| 5 1102 观察 | 待执行 | |

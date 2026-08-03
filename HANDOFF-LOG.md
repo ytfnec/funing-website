@@ -230,3 +230,10 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - client bundle: 最重 220K 是 Next 运行时框架 chunk，非业务 → 正常。
   - `/api/content` 客户端缓存: 会延迟 admin 内容修改生效 → **不做**（当前 300s CDN 缓存已是平衡点）。
 - **结论**: 免费版内**已无低成本高收益的剩余优化空间**。当前配置（公开页/API 300s + 1h SWR 边缘缓存、robots 静态化、ViewTracker 节流）已是免费版下的合理平衡。1102 属 Worker 固有资源波动，公开页已充分缓解；动态 admin 页在发作窗口内仍可能受影响，此为免费版已知边界。
+
+### 2026-08-03 第三轮极致压榨 — 静态 HTML 直出（batch 26，实验性）
+
+- **背景**: 用户要求"极致压榨，有必要就删减功能"。调研发现 **Next 已为所有静态路由预渲染完整 SSR HTML**（`.next/server/app/*.html`，自包含含 RSC flight 数据、零 API 依赖），但 OpenNext 1.20 把它们丢弃进 dummy cache，Worker 每次缓存 miss 回源都重新 SSR —— 这正是 1102 的主要 CPU 负载源。
+- **方案（提交 `3ef05a7`）**: 构建后把 `.next/server/app/*.html` 复制到 `.open-next/assets/`（`run_worker_first: false` 时 Cloudflare Static Assets 直接服务，**完全绕过 Worker**）。新增 `scripts/copy-prerendered-html.mjs` + `npm run build:cf:static`。生成 `_headers`（300s + 1h SWR + 安全头）。跳过动态路由（[slug]）和 API。
+- **安全评估**: admin 页面静态化**不泄露数据**（HTML 壳无会话数据，鉴权在客户端 useEffect fetch `/api/auth`，失败跳 login）；公开页是 `'use client'` 壳 + RSC 内联，语言切换/内容 override 均由客户端 JS 处理，不受影响。
+- **验证要点（部署后）**: 检查 `/about` 等是否从 assets 直出（绕过 Worker）——可通过响应头或 1102 窗口行为判断；若不生效或异常，`wrangler rollback` 即可回滚。
