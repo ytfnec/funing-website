@@ -81,6 +81,6 @@ npx wrangler tail --format pretty
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
+| 1 推代码 | ✅ | 推送 `03b17f8`（edge-cache 修复）及指令提交 |
+| 2 构建部署 | ✅ | clean→build:cf→deploy；新版本 `03a22f55` 100% 接管（首次部署） |
+| 3 验证 | ⚠️ 发现并修复 | 公开页缓存生效（连打 3 次 200，~1s）；**但 /admin/** 也被 catch-all 缓存（public）**——Next.js headers 是"最后匹配覆盖先匹配"，Claude Code 将 admin 规则前置反被覆盖。Hermes 已修（`18d7ce9`：catch-all 前置、admin 后置），重建部署 `37286ee2`，绕过 CDN 缓存验证：admin/login、admin/products → `private, no-store`，/api/admin/stats → `no-store` ✅；公开页 + API 头保持 public ✅；tail 无 CPU 超限 |
