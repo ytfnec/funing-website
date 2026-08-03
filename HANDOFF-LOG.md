@@ -194,3 +194,15 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **Hermes 判断**: Worker 环境资源问题（历史已知，batch19-21 已做 edge-cache 缓解），**非本次代码问题**。
 - **与治理方案对照**: 本次窗口**已触及升级 Paid 触发条件**（"每天多次/每次持续数分钟"）。之前拍板方案 2（保持现状+边缘缓存），兜底=升级 Workers Paid（$5/月，CPU 10ms→30ms）。
 - **待人工决策**: **已定 — 用户明确保持免费版，不升级 Paid**。本意是用免费版做网站展示，尊重此意愿，不再建议升级。1102 间歇窗口接受并等待自行恢复；edge-cache 为主要缓解（已生效）。
+
+### 2026-08-03 免费版内优化 — 边缘缓存加长 + 视图上报节流（batch 24）
+
+- **背景**: 批次 23 报告 1102 窗口异常延长（16:45 起超出常规），用户拍板**保持免费版不升级**。据此在免费版框架内继续优化。
+- **技术依据**: 所有公开页均为 `'use client'` 壳（HTML 不含内容，内容由客户端 JS fetch 公开 API 渲染）。因此**缓存 HTML 壳完全不影响用户体验**。
+- **改动（提交 `36d3138`）**:
+  - `next.config.js`: 公开页 HTML 缓存 `s-maxage=60→300`、`stale-while-revalidate=300→3600`（CDN 在 1102 窗口期间可顶住长达 1 小时 stale 页面）。
+  - 公开 API（products、products/[slug]、news、news/[slug]、content）: 缓存同参数加长；news/[slug] **补上了缺失的缓存头**。
+  - `robots.ts`: 移除 `force-dynamic` → 构建期静态化，爬虫抓取不再打 Worker。
+  - `ViewTracker`: 每浏览器 session 每路径只上报一次（sessionStorage 去重），降低高频 D1 写。
+- **验证**: `npx tsc --noEmit` ✅。
+- **说明**: `/api/auth/*` 保持 no-store（认证不可缓存）；`/api/admin/*` 保持 no-store（管理员数据）。
