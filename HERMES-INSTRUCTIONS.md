@@ -82,3 +82,4 @@ curl -s -o /dev/null -w "/products/sauna-controllers -> HTTP %{http_code}\n" "ht
 | 3 验证 | ✅ | 9 路由全 200；`/about` 与 `/` 返回 `cache-control: public, max-age=0, s-maxage=300, stale-while-revalidate=3600` 且 **CF-Cache-Status: HIT**（静态 HTML 已从 assets 直出）；`/api/products` 保持 API 头（Worker 处理，正常） |
 | 4 行为抽查 | ✅ | `/about` 与 `/` HTML 均含 `self.__next_f`（RSC 数据内联，可 hydration）；`/products/sauna-controllers` 200（Worker 处理，缓存头正常） |
 | 5 1102 观察 | ✅ 已记录 | 部署后 3 分钟×6 轮：`/` `/about` `/admin/login` 全 200，无 1102。公开页现由 CDN 直出（HIT），理论上完全免疫 Worker 窗口；动态/API 页保持 Worker 处理。窗口内免疫效果待下次 1102 窗口实测 |
+| 6 后台 EN 补验（批次23遗留） | ✅ | 登录后台逐页验证 EN（fnec-lang=en）：登录页、Dashboard、Products、Content、News、Contacts、Media、Settings **共 8 页全英文渲染**，无残留中文 UI；期间 Browserbase 会话重置 1 次（cookie/localStorage 清空）导致重登，属浏览器环境问题非站点问题；直接导航 /admin/contacts 无 cookie 时重定向登录页（正常鉴权行为） |
