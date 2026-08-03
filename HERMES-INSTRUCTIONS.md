@@ -56,7 +56,14 @@ curl -s -D - -o /dev/null "https://fnec.net/" | grep -i "cache-control"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 确认同步 | 待执行 | |
-| 2 构建部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 抽查 | 待执行（可选） | |
+| 1 确认同步 | ✅ | 推送 CC 指令提交 `3ca3ad8`，origin/master..HEAD 为空 |
+| 2 构建部署 | ✅ | **已含 i18n 清理**：Hermes 在收到本批指令前已按批次 24 更新版部署 `569bf3fc-8c5c-49a3-bf2e-372280633386`（基于最新 origin/master，含 36d3138 + a45c6fb）；本批无新增代码，无需重复部署 |
+| 3 验证 | ✅ | `/` `/products` `/news` `/api/products` `/api/news` `/robots.txt` `/admin/login` 全部 HTTP 200；`/` 返回 `cache-control: public, s-maxage=300, stale-while-revalidate=3600` |
+| 4 抽查 | ⚠️ 部分（可选） | 中文登录页完整渲染确认（导航/登录表单/页脚齐全）→ **部署未破坏双语功能确认**；EN 切换抽查遇 1102 窗口复发（19:44 浏览器 1102 Ray a255117f，curl 同时刻 200；19:49 curl 亦超时）未完成——此前批次 23 已实测 login 页 EN 切换通过，本批未改 i18n 代码（a45c6fb 仅后台 3 处硬编码），风险低 |
+
+## 1102 观察更新（补充）
+
+- **19:18-19:44 稳定期**：curl + 浏览器中文页均正常（期间部署 v569bf3fc 验证全过）
+- **19:44 复发**：浏览器 /admin/login → 1102（Ray a255117f89bc2eba）；curl 同时刻 200
+- **19:49**：curl /admin/login 亦超时（000, 20s）→ 窗口全面复发
+- 模式确认：**浏览器（完整资源加载/数据中心 IP）比 curl 更易触发 1102**；SWR 3600 兜底对缓存页有效（/、/products、/api/* 在窗口内仍 200 直至 19:44），动态页（/admin/login）无兜底时窗口内挂 |
