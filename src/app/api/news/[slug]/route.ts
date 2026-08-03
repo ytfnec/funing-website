@@ -39,7 +39,11 @@ export async function GET(
     if (!article) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
-    return NextResponse.json({ article });
+    return NextResponse.json({ article }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+      },
+    });
   } catch (error) {
     console.error('News article fetch error:', error);
     return NextResponse.json({ error: 'Failed to fetch article' }, { status: 500 });
