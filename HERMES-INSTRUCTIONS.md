@@ -59,7 +59,7 @@ curl -s "https://fnec.net/" | grep -c "/assets/logo-amber.png"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | 描述琥珀色 logo 效果/对比度/尺寸 |
+| 1 推代码 | ✅ | `ec65402`（琥珀色重着色+裁剪 686×790+48px）+ `84da8e4`（指令）已推送，origin 同步 |
+| 2 构建+部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`1bc1d3c2` |
+| 3 验证 | ✅ | 8 路由全 200（/ /about /products /news /admin/login /assets/logo-amber.png /assets/logo.png /api/products）；首页 HTML 引用 `/assets/logo-amber.png` ×1 |
+| 4 浏览器验证 | ✅ | Header 左侧**琥珀色 logo**：`/assets/logo-amber.png` 加载正常（natural 686×790 裁剪版 → 渲染 42×48，h-12 生效）；canvas 像素采样：主体 627px 中 **625px（99.7%）为琥珀色相**（20°-60°），深蓝已完全替换、渐变立体感保留；与导航间距 **120px，无重叠**。深黑 Header 上清晰醒目，对比度良好 |
