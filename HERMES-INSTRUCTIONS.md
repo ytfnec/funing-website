@@ -58,7 +58,7 @@ curl -s "https://fnec.net/" | grep -c "FAQPage"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器确认 | 待执行（可选） | |
+| 1 推代码 | ✅ | 推送 `0d038b2`（含 bcdced9，5 文件）；`git log origin/master..HEAD` 为空 |
+| 2 构建+部署 | ✅ | 清缓存 → `build:cf:static` 成功（46/46 页 + "Copied 24 prerendered HTML files" + `Wrote .open-next\assets\_headers`）；部署 v`be4f2e89-c77e-4388-bb11-34da272f3d9b` |
+| 3 验证 | ✅ | 7 路由全 200；首页 HTML `FAQPage` JSON-LD 计数 1（静态化内联生效） |
+| 4 浏览器确认 | ✅ | ① 造测试询盘 → Contacts 工具栏「导出 CSV」按钮出现（e39）→ 点击触发下载：Blob `text/csv;charset=utf-8;` 206B（代码 `new Blob(['\uFEFF'+csv])` BOM 确认，Excel 不乱码）；测试询盘已删。② 产品详情页 `/products/sauna-controllers` HTML 含 `BreadcrumbList`（计数 1） |
