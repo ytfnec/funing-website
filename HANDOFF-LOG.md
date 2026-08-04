@@ -350,3 +350,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - `public/assets/logo-amber.png`: 用 HSL 色相替换把蓝色系 → 品牌琥珀色（#d8a35a），保留明暗渐变保持立体感；裁剪内容边界（686×790）去掉周围透明边距。
   - Header: 引用 `/assets/logo-amber.png`，尺寸 h-10(40px) → **h-12(48px)**。
 - **待部署验证**: 琥珀色在深黑 Header 上的对比度、放大后的观感。
+
+### 2026-08-03 logo 优化 — 琥珀→鲜橙（batch 36）
+
+- **用户反馈**: 琥珀色太淡（主色 (212,194,166) 淡米黄），要求更鲜艳。
+- **改动（提交 `da9f589`）**: `logo-orange.png` 用 HSL 色相替换蓝色→**鲜艳橙**（色相 0.07，饱和度 0.85），主色 `(243,163,105)` 明显更浓；保留裁剪（686×790）和 h-12(48px) 尺寸。
+- **待部署验证**: 橙色在深黑 Header 上的鲜艳度/对比度。
