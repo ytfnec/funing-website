@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLang } from '@/lib/i18n';
@@ -144,12 +144,25 @@ export default function ProductDetailPage() {
   const { t } = useLang();
   const fallback = useFallbackProduct(slug);
 
-  const [product, setProduct] = useState<Product | null>(fallback);
+  // API-loaded structured fields only (hero_image, specs, features, etc).
+  // Copy fields (name/sub_title/short_description/price_range) intentionally
+  // NOT stored here so they always come from the responsive `fallback` (t())
+  // and follow the selected language.
+  const [apiData, setApiData] = useState<Partial<Product> | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(fallback ? false : true);
   // Track hero-image load failures so we can fall back to the placeholder
   // texture when the stored image is missing/broken.
   const [heroFailed, setHeroFailed] = useState(false);
+
+  // Derived render data: localized copy from `fallback` (re-evaluated on every
+  // render, so it tracks language changes), enriched by API structured fields.
+  const product = useMemo<Product | null>(() => {
+    if (fallback) return { ...fallback, ...(apiData || {}) };
+    // No fallback (custom product): API data is the only source.
+    return (apiData as Product) || null;
+  }, [fallback, apiData]);
+
   const heroImage = resolveImageSrc(product?.hero_image);
 
   useEffect(() => {
@@ -172,22 +185,12 @@ export default function ProductDetailPage() {
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
         if (!cancelled) {
-          // Merge API data over fallback so partial DB rows still render richly,
-          // BUT keep the i18n-localized copy fields (name / sub_title /
-          // short_description / price_range) from the fallback so the page
-          // follows the selected language. The D1 rows store English template
-          // copy that would otherwise override the localized text. For slugs
-          // without a fallback (custom products added in admin), the API copy
-          // is the only source, so it's kept.
+          // Store API structured fields (hero_image, specs, features, etc).
+          // Copy fields (name/sub_title/short_description/price_range) come
+          // from the responsive `fallback` so they follow the selected language.
           const api = data.product || {};
-          setProduct((prev) => {
-            const hasLocalized = !!(prev && prev.name);
-            if (hasLocalized) {
-              const { name: _n, sub_title: _s, short_description: _sd, price_range: _p, ...structured } = api;
-              return { ...(prev || ({} as Product)), ...structured };
-            }
-            return { ...(prev || ({} as Product)), ...api };
-          });
+          const { name: _n, sub_title: _s, short_description: _sd, price_range: _p, ...structured } = api;
+          setApiData(structured);
           setNotFound(false);
         }
       } catch {
@@ -202,7 +205,7 @@ export default function ProductDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [slug, fallback]);
+  }, [slug]);
 
   // Dynamic SEO metadata + Product JSON-LD (client-side since page uses useLang).
   useEffect(() => {

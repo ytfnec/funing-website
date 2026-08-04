@@ -387,3 +387,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **根因（Hermes 诊断）**: 产品中心"获取报价"的产品卡片按钮进的是**产品详情页**（/products/[slug]），非报价页。详情页初始用 i18n fallback 中文渲染，随后 fetch `/api/products/[slug]` 返回 **D1 英文模板数据**覆盖 → 变英文。D1 数据确认: name/sub_title/short_description/price_range 全英文且与 i18n fallback 重复，long_description/specifications/features 全 null，唯一独有=hero_image。
 - **修复**: 详情页 merge 时**跳过文案字段**（name/sub_title/short_description/price_range），仅用 D1 结构化字段（hero_image 等）；有 fallback 时文案走 i18n（随语言切换）。对无 fallback 的自定义产品（后台新增），保留 API 文案。产品列表页不受影响（纯 i18n 静态）。
 - **验证**: tsc 通过。待 Hermes 部署后浏览器确认中文界面产品详情页保持中文。
+
+### 2026-08-03 修复产品详情页 EN 反向 bug（batch 43）
+
+- **Hermes 反馈（batch 42 部署后）**: 中文界面✅，但切 EN 时详情页文案不随语言切换（仍中文）。根因: `useState(fallback)` 挂载时物化 fallback 的 t() 文案，跳过文案字段后固定为 hydration 时的中文。
+- **修复**: 拆分 state——`apiData` 只存 API 结构化字段（hero_image/specs/features 等），`product` 用 useMemo 从 `fallback`（响应式 t()）+ `apiData` 派生。渲染文案始终来自 fallback（随语言切换），结构化字段来自 API。fetch useEffect 依赖改 `[slug]`。
+- **验证**: tsc 通过。待 Hermes 部署验证中英文双向切换都正确。
