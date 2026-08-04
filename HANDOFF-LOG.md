@@ -306,3 +306,13 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - **结论: 之前"无预览"= 配置缺失（R2 URL 未注入），现已修复。**
 - **附带收益**: 产品图、新闻封面可用 `https://media.fnec.net/...` 直链，对 SEO/分享友好。
 - **至此后台功能全部闭环**: 双语化、静态化、询盘删除+ConfirmDialog、媒体库预览。
+
+### 2026-08-03 SEO + 询盘导出（batch 30）
+
+- **SEO 结构化数据增强（提交 `bcdced9`）**:
+  - 首页: FAQPage JSON-LD（复用 FAQ 区块文案，Google 可展示富摘要）。
+  - 产品详情/新闻详情: BreadcrumbList JSON-LD（匹配已有可见面包屑）。
+  - 说明: hreflang 不适用（中英文共用 URL，客户端切换，无独立语言 URL）。
+- **询盘导出 CSV**: 后台 Contacts 工具栏新增「导出 CSV」按钮，BOM 前缀 UTF-8（Excel 打开不乱码），导出当前列表全部字段。
+- **报价表单评估**: 现有报价表单已完善（分步式：产品多选→数量档位→规格→联系方式，支持 ?product= 预填），无需改动。
+- i18n en/zh 各 697 keys 对齐；tsc 通过。
