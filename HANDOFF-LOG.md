@@ -371,3 +371,13 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - Footer: 文字 logo → `/assets/logo-amber-solid.png`（h-11）。
   - favicon: 内联 SVG F 字母 → 品牌 logo PNG（`logo-favicon.png` 64×64 + `logo-favicon-32.png` 32×32，内容裁剪填满）。
   - 生成 favicon 方法: 从裁剪后的纯琥珀 logo 取中心正方形，LANCZOS 缩放至 64/32。
+
+### 2026-08-03 favicon 优化 — 深蓝图案去 FNEC 文字（batch 39）
+
+- **用户反馈**: 浏览器标签页 favicon 应裁掉 "FNEC" 文字，保留上方图案，颜色用初始深蓝。
+- **改动（提交 `8969419`）**:
+  - 从原始深蓝透明 logo 裁剪图案区（y110-728），内容 bbox 635×597，深蓝主色 `(19,66,134)`。
+  - 重新生成 favicon（64×64 + 32×32，取中心方形 LANCZOS）。
+  - `?v=2` 版本参数强制浏览器刷新旧 favicon 缓存。
+  - 新增 `public/assets/logo-pattern-blue.png`（图案深蓝版，供后续引用）。
+- **说明**: Header/Footer 仍用纯琥珀 logo（用户认可批次 37/38 方案），仅 favicon 改用深蓝图案。
