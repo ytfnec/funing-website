@@ -96,8 +96,8 @@ done
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 确认同步 | 待执行 | |
-| 2 放置 PNG | 待执行 | 报文件大小 |
-| 3 提交 | 待执行 | 报 commit hash |
-| 4 构建部署 | 待执行 | |
-| 5 验证 | 待执行 | `/assets/logo.png` 是否 200 |
+| 1 确认同步 | ✅ | 先推送 CC 批次33 提交（`fd4ee2c` 媒体库方案 + `c9e39fb` 本地资源修订）→ `git log origin/master..HEAD` 为空 |
+| 2 放置 PNG | ✅ | `public/assets/logo.png` = 1024×1024 RGBA PNG，416,424 字节（≈406KB），透明背景（83.6% 透明 / 16.1% 保留） |
+| 3 提交 | ✅ | `db830aa` "Add transparent PNG logo asset (public/assets/logo.png)" 已推送 |
+| 4 构建部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`16496bbb`；产物 `.open-next/assets/assets/logo.png`（public/ 平铺进 assets/） |
+| 5 验证 | ✅ | `/` 200、`/about` 200、**`/assets/logo.png` 200 image/png**（assets 目录 = URL 根，`/assets/assets/logo.png` 404 属正常）；下载 hash 与本地原件 **MD5 一致**（934859c1…） |
