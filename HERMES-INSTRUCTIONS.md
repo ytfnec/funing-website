@@ -66,6 +66,6 @@ console.log('products h1 =', document.querySelector('h1')?.textContent?.slice(0,
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 复现诊断 | 待执行 | 记录关键信息 |
-| 2 对照测试 | 待执行 | 场景 A/B 结果 |
-| 3 报告 | 待执行 | 明确触发条件 |
+| 1 复现诊断 | ✅ | 基线(zh-CN浏览器+无localStorage)：/products 中文(h1=电子控制解决方案, html lang=zh-CN)；点「获取报价」→ URL=/quote、**整页导航**(navType=navigate，链接为普通 `<a href="/quote">` 非 Next Link)；quote 初始及 2s 后均中文(h1=您对什么感兴趣？)——**当前环境无法复现用户场景**；quote/products 静态 HTML 均中文 SSR |
+| 2 对照测试 | ✅ | **场景A**(localStorage='zh')：products 中文→quote 中文 ✅；**场景B**(清空)：products 中文→quote 中文 ✅；**场景C**(localStorage='en' 模拟 en 检测结果)：products **全英文**(ELECTRONIC CONTROL SOLUTIONS)→quote **英文**("What Are You Interested In?") ✅——三场景下两页语言**永远一致**（同一 LanguageProvider 全局状态） |
+| 3 报告 | ✅ | ① 触发=**整页导航**（普通`<a>`，每次全新 hydration）；② quote 英文确切条件=**localStorage 无 fnec-lang + navigator.language 非 zh 开头**（src/lib/i18n.tsx:1547-1550 检测分支 setLang('en')，且**不写回 localStorage**）；③ 产品中心静态 HTML 确为中文（SSR），但 hydration 后**同样会切英文**（同 Provider）。**用户场景"产品中心中文+quote 英文"在同一 Provider 状态下不可能共存**，最可能解释=**hydration 时序**：用户在 /products 静态中文渲染瞬间点击（hydration 未完成/JS 慢），quote 整页加载后 hydration 检测 en→英文。修复建议：检测结果写回 localStorage 消除闪烁/或在 head inline script 预读 |
