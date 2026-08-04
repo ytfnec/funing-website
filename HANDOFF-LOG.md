@@ -316,3 +316,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **询盘导出 CSV**: 后台 Contacts 工具栏新增「导出 CSV」按钮，BOM 前缀 UTF-8（Excel 打开不乱码），导出当前列表全部字段。
 - **报价表单评估**: 现有报价表单已完善（分步式：产品多选→数量档位→规格→联系方式，支持 ?product= 预填），无需改动。
 - i18n en/zh 各 697 keys 对齐；tsc 通过。
+
+### 2026-08-03 企业 logo 加入网站 Header（batch 31）
+
+- **需求**: 用户提供企业 logo 图片 URL（`https://media.fnec.net/1782382842444-wxg76b.jpg`，R2 桶中），要加入网站。
+- **改动**: Header 顶部 logo 由文字版（"Funing Electronics" 琥珀色文字）改为**图片 logo**，直接引用 R2 公网 URL。带 `onError` 回退：图片加载失败自动回退到原文字版，保证网站不因图片问题崩溃。
+- **待验证**: 图片为 jpg，需 Hermes 部署后确认在深黑 Header 上的显示效果（若为白底矩形，可能需调整样式如加容器/圆角）。

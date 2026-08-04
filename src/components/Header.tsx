@@ -8,6 +8,7 @@ import { useLang, LanguageSwitcher } from '@/lib/i18n';
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
   const { t } = useLang();
 
   useEffect(() => {
@@ -31,12 +32,24 @@ export function Header() {
       <div className="px-page h-[64px] flex items-center justify-between mx-auto max-w-[1400px]">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3" aria-label="Funing Electronics home">
-          <div className="text-[var(--amber,#d8a35a)] text-[15px] tracking-[0.12em] uppercase font-bold">
-            {t('brand.funing')}
-          </div>
-          <span className="text-[11px] tracking-[0.16em] uppercase text-[var(--gray)] hidden sm:inline">
-            {t('brand.electronics')}
-          </span>
+          {!logoFailed ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src="https://media.fnec.net/1782382842444-wxg76b.jpg"
+              alt="Funing Electronics"
+              className="h-9 w-auto object-contain"
+              onError={() => setLogoFailed(true)}
+            />
+          ) : (
+            <>
+              <div className="text-[var(--amber,#d8a35a)] text-[15px] tracking-[0.12em] uppercase font-bold">
+                {t('brand.funing')}
+              </div>
+              <span className="text-[11px] tracking-[0.16em] uppercase text-[var(--gray)] hidden sm:inline">
+                {t('brand.electronics')}
+              </span>
+            </>
+          )}
         </Link>
 
         {/* Desktop Nav */}
