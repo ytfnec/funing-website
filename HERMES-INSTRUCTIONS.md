@@ -41,6 +41,6 @@ npx wrangler d1 execute funing-db --remote --command "SELECT slug, specification
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 查询产品字段 | 待执行 | 列出 4 产品字段值 |
-| 2 补充查询 | 待执行 | 规格/特性/图片 |
-| 3 报告 | 待执行 | D1 数据是否默认英文模板 |
+| 1 查询产品字段 | ✅ | 4 产品全部英文：sauna-controllers=Sauna Control Systems / Infrared · Touch Panel · LED / Embedded MCU controllers... / Sample pricing；jacquard-drivers=Jacquard Machine Drivers / Textile · Electronic Control · Driver Cards / High-speed driver cards... / Volume pricing；branded-units=Branded Sauna Units / Authorized Distributor · Health Mate · Samick / Authorized distributor of premium infrared sauna brands... / Wholesale pricing；accessories=Components & Accessories / LED Boards · Sensors · Cables · Heaters / OEM replacement parts... / Bulk pricing |
+| 2 补充查询 | ✅ | long_description/specifications/features **全部 null**；hero_image 仅 sauna-controllers + branded-units 有值（media/media-*.jpg），jacquard-drivers + accessories 为 null |
+| 3 报告 | ✅ | **结论：D1 数据=默认英文模板，与 i18n fallback 文案重复**。① name/sub_title/short_description/price_range **全部英文**且与 fallback 的 t() 字段一一对应（重复）；② long_description/specifications/features **无非空值**（全 null）；③ D1 唯一独有数据=hero_image（2/4 有值）。**修复方向**：详情页 API merge 时**跳过文案字段**（name/sub_title/short_description/price_range），仅用 D1 结构化字段（hero_image 等），文案统一走 t() fallback→中文界面即不再被英文覆盖 |
