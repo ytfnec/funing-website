@@ -33,13 +33,17 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3" aria-label="Funing Electronics home">
           {!logoFailed ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src="https://media.fnec.net/1782382842444-wxg76b.jpg"
-              alt="Funing Electronics"
-              className="h-9 w-auto object-contain"
-              onError={() => setLogoFailed(true)}
-            />
+            // White-bg square logo → framed as a rounded badge so the white
+            // backdrop reads as intentional design on the dark header.
+            <span className="bg-white rounded-lg p-1.5 h-10 w-10 flex items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://media.fnec.net/1782382842444-wxg76b.jpg"
+                alt="Funing Electronics"
+                className="h-full w-full object-contain"
+                onError={() => setLogoFailed(true)}
+              />
+            </span>
           ) : (
             <>
               <div className="text-[var(--amber,#d8a35a)] text-[15px] tracking-[0.12em] uppercase font-bold">

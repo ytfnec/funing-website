@@ -322,3 +322,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **需求**: 用户提供企业 logo 图片 URL（`https://media.fnec.net/1782382842444-wxg76b.jpg`，R2 桶中），要加入网站。
 - **改动**: Header 顶部 logo 由文字版（"Funing Electronics" 琥珀色文字）改为**图片 logo**，直接引用 R2 公网 URL。带 `onError` 回退：图片加载失败自动回退到原文字版，保证网站不因图片问题崩溃。
 - **待验证**: 图片为 jpg，需 Hermes 部署后确认在深黑 Header 上的显示效果（若为白底矩形，可能需调整样式如加容器/圆角）。
+
+### 2026-08-03 企业 logo 样式优化（batch 31 反馈后）
+
+- **Hermes 图片分析**: logo 为 **1024×1024 白底方形 JPEG**，83.5% 像素白色，logo 内容仅占中心 ~16.5%。直接放深黑 Header 显示为 36×36 突兀白块，内容缩至 ~14px 看不清。
+- **优化**: 改为**白色圆角徽章容器**（`bg-white rounded-lg p-1.5 h-10 w-10` + 阴影），白底变成有意的设计元素，logo 内容放大到约 40px 高、中心内容 ~16px 可读。
+- **可选后续**: 若用户能提供**透明背景 PNG** 或**宽幅横版 logo**，可替换为更理想的展示（无白底徽章、直接融入深色 Header）。
