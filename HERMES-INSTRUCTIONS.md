@@ -58,7 +58,7 @@ curl -s -o /dev/null -w "media.fnec.net -> HTTP %{http_code}\n" "https://media.f
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 确认 .env | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 预览验证 | 待执行（可选） | |
+| 1 确认 .env | ✅ | `.env` 第 6 行 `NEXT_PUBLIC_R2_PUBLIC_URL=https://media.fnec.net`（已配置，非注释） |
+| 2 构建+部署 | ✅ | 清缓存 → `build:cf:static` 成功（46/46 页 + "Copied 24 prerendered HTML" + `_headers`）；R2 URL 已内联进媒体页+产品编辑页 bundle；部署 v`c35eb2e0-9299-430a-ab9b-ff90bf16312c` |
+| 3 验证 | ✅ | 公开页 5 路由全 200；`/api/products` 200；`/api/admin/media` 未登录 401；`media.fnec.net` 可达（404 但 1.9s 有响应，自定义域生效） |
+| 4 预览验证 | ✅ | 上传测试图（test-preview.png，canvas 生成）→ R2 对象公网 200（`https://media.fnec.net/media/media-e6ff...png`）；媒体库 `<img>` 真实加载（naturalWidth 64×64，src 指向 media.fnec.net）→ **缩略图预览生效**；删除后 D1 记录清 + R2 对象 404（cache-buster 验证，CDN 边缘缓存已过期）。**之前"无预览"= 配置缺失（R2 URL 未注入），现已修复** |
