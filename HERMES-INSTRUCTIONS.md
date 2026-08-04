@@ -57,7 +57,7 @@ curl -s "https://fnec.net/" | grep -c "/assets/logo.png"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | 描述透明 logo 效果/白边情况 |
+| 1 推代码 | ✅ | `c6d3d39`（Header 切透明 logo）+ `cf5acd7`（指令）已推送，origin 同步 |
+| 2 构建+部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`fa54ad42` |
+| 3 验证 | ✅ | 7 路由全 200（/ /about /products /news /admin/login /assets/logo.png /api/products）；首页 HTML 引用 `/assets/logo.png` ×1 |
+| 4 浏览器验证 | ✅ | Header 左侧**直接展示透明 logo**：`/assets/logo.png` 完整加载（1024×1024 → 40×40 contain），**白底徽章容器已移除**（badgeGone），背景 rgba(0,0,0,0)；canvas 像素采样：**边缘 3px 内 0 个不透明像素（去底干净、无白边）**，主体 141px 正常。深黑 Header 上协调清晰 |
