@@ -33,13 +33,13 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3" aria-label="Funing Electronics home">
           {!logoFailed ? (
-            // Transparent-background logo (public/assets/logo.png), served
-            // as a static asset through the CDN. Directly on the dark header.
+            // Amber recolored, cropped transparent logo — matches the brand
+            // amber (#d8a35a) and shows clearly on the dark header.
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src="/assets/logo.png"
+              src="/assets/logo-amber.png"
               alt="Funing Electronics"
-              className="h-10 w-auto object-contain"
+              className="h-12 w-auto object-contain"
               onError={() => setLogoFailed(true)}
             />
           ) : (
