@@ -65,7 +65,7 @@ curl -s "https://fnec.net/" | grep -c "logo-amber-solid"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | Header/Footer/favicon 三处 logo 是否都生效 |
+| 1 推代码 | ✅ | `084a8fd`（Footer 图片 logo + favicon PNG）+ `3ca57e4`（指令）已推送，origin 同步 |
+| 2 构建+部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`a4ec2dad`（等传播后验证一次通过） |
+| 3 验证 | ✅ | 9 路由全 200（含 /assets/logo-favicon.png + logo-favicon-32.png）；首页 HTML：favicon 引用 ×2、Footer logo 引用 ×1 |
+| 4 浏览器验证 | ✅ | **三处 logo 全部生效**：① Header：`logo-amber-solid.png` 42×48 纯琥珀；② Footer：**图片 logo 38×44（h-11）替代原文字**，像素采样 **100% 琥珀色**，无文字残留；③ favicon：`logo-favicon.png`(64) + `logo-favicon-32.png`(32) 双引用，企业 logo 图案替换原 F 字母 |
