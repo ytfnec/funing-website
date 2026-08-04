@@ -56,7 +56,7 @@ curl -s "https://fnec.net/" | grep -c "/assets/logo-amber-solid.png"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | 描述纯色 logo 效果/与按钮同色/无渐变 |
+| 1 推代码 | ✅ | `c3aae34`（纯琥珀 #d8a35a 无渐变）+ `b127d3d`（指令）已推送，origin 同步 |
+| 2 构建+部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`08714646`（按批次 36 经验等待传播后验证，一次通过） |
+| 3 验证 | ✅ | 7 路由全 200（/ /about /products /news /admin/login /assets/logo-amber-solid.png /api/products）；首页 HTML 引用 `/assets/logo-amber-solid.png` ×2 |
+| 4 浏览器验证 | ✅ | Header 左侧**纯琥珀 logo**：`/assets/logo-amber-solid.png` → 渲染 42×48（h-12）；像素采样：**95.4% 主体像素为单色 (216,163,90) = #d8a35a，无渐变**；与按钮对照：首页按钮背景实测 `rgb(216,163,90)`，**与 logo 完全同色**；间距 120px 无重叠。深黑 Header 上协调清晰 |
