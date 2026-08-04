@@ -61,7 +61,7 @@ curl -s "https://fnec.net/" | grep -c "logo-favicon.png?v=2"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | favicon 是否深蓝图案、无 FNEC 文字 |
+| 1 推代码 | ✅ | `8969419`（深蓝图案 favicon 重生成 + ?v=2）+ `42d3f89`（指令）已推送，origin 同步 |
+| 2 构建+部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`b97863cd`（等传播后验证一次通过） |
+| 3 验证 | ✅ | 6 路由全 200（含 logo-pattern-blue.png）；首页 HTML 引用 `logo-favicon.png?v=2` ×2 |
+| 4 浏览器验证 | ✅ | **favicon 已更新为深蓝图案**：链接 `logo-favicon.png?v=2` + `logo-favicon-32.png?v=2`（?v=2 强制刷新生效）；像素采样主色 **(16,64,128)** ≈ 目标 (19,66,134) **深蓝**，图案区含原青色渐变细节，**无 FNEC 文字**（裁切 y110-728 生效）；**Header 42×48 / Footer 38×44 纯琥珀 logo 未受影响** |
