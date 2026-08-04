@@ -1,59 +1,64 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第三十九批 · 更新: 2026-08-03 · 来源: Claude Code
-> 说明: 部署新 favicon（深蓝图案、无 FNEC 文字），推代码 + `build:cf:static` + 部署 + 验证。无 schema 变更，**不需要 db:deploy**。
+> 批次: 第四十批 · 更新: 2026-08-03 · 来源: Claude Code
+> 说明: **诊断** 产品中心中文界面点获取报价进入英文界面的问题。本批**不改代码**，仅浏览器复现并报告。无 schema 变更。
 
 ---
 
 ## 背景
 
-- 用户反馈: 浏览器标签页 favicon 应裁掉 "FNEC" 文字，只保留上方图案，用初始深蓝色。
-- 改动（提交 `8969419`）:
-  - `logo-pattern-blue.png`: 从原始深蓝透明 logo 裁剪图案区（y110-728），内容 bbox 635×597，深蓝主色 `(19,66,134)`，**无 FNEC 文字**。
-  - favicon（64×64 + 32×32）从图案重新生成（中心方形 LANCZOS）。
-  - layout: favicon 链接加 `?v=2` 强制刷新浏览器缓存。
-- **重要**: 公开页静态化保持，**必须用 `npm run build:cf:static`**。Header/Footer 仍用纯琥珀 logo（不变）。
+- 用户反馈: 产品中心（/products）中文界面下，点"获取报价"进入 /quote 变成英文界面。
+- 已排查: quote 页静态 HTML 是中文；LanguageProvider 用 `useState('zh')` + `useEffect` 挂载后读 `localStorage.fnec-lang`，无则用 `navigator.language` 检测。
+- 需要浏览器复现确认触发条件。
 
-## 任务 1：推代码（终端）
+## 任务 1：复现并收集诊断信息（浏览器）
 
-```bash
-cd C:\Users\xxq\axissaunas-clone
-git push
+> 用浏览器自动化（如 Playwright/Puppeteer）执行以下步骤，**每一步记录结果**：
+
+```javascript
+// 诊断脚本伪代码，请在浏览器环境执行并记录输出
+// 1. 打开产品中心
+// 记录 navigator.language, localStorage.getItem('fnec-lang')
+const navLang = navigator.language;
+const saved = localStorage.getItem('fnec-lang');
+console.log('navigator.language =', navLang);
+console.log('localStorage fnec-lang =', saved);
+
+// 2. 访问 https://fnec.net/products，等待加载完成（hydration）
+// 记录页面 h1 文本（判断语言）：zh => '产品中心...'，en => 'Products...'
+// 记录 document.documentElement.lang
+console.log('products page html lang =', document.documentElement.lang);
+console.log('products h1 =', document.querySelector('h1')?.textContent?.slice(0, 30));
+
+// 3. 点击"获取报价"按钮（btn-primary 链接到 /quote）
+// 记录点击后 URL、是否整页刷新（performance.getEntriesByType('navigation')[0].type）
+// 记录 quote 页 h1/step 标题文本和 html lang
+// 等 2 秒让 hydration 完成后再记录一次
 ```
 
-预期: 推送 `8969419` 及前面待推送提交；`git log origin/master..HEAD --oneline` 为空。
+**需要记录的关键信息**:
+- `navigator.language`（浏览器语言）
+- `localStorage.getItem('fnec-lang')` 初始值
+- 产品中心 h1 文本（中文还是英文）
+- 产品中心 `document.documentElement.lang`
+- 点击"获取报价"后: URL 是否变为 `/quote`？是否整页刷新（navigation type）？
+- quote 页初始 h1 文本 + 2 秒后 h1 文本（是否 hydration 后变化）
+- quote 页 `document.documentElement.lang`
 
-## 任务 2：清缓存构建 + 复制 HTML + 部署（终端）
+## 任务 2：对照测试（浏览器）
 
-```bash
-cd C:\Users\xxq\axissaunas-clone
-rm -rf .next .open-next
-npm run build:cf:static
-npm run deploy
-```
+- **场景 A**: 先把 `localStorage.setItem('fnec-lang','zh')` 再访问 /products → 点获取报价 → quote 页语言？
+- **场景 B**: 清空 localStorage（`localStorage.removeItem('fnec-lang')`）再访问 /products → 点获取报价 → quote 页语言？
+- 报告两个场景的 quote 页语言是否不同。
 
-预期: `build:cf:static` 成功（新 favicon 进 assets）；部署成功。
+## 任务 3：报告（回报表）
 
-## 任务 3：验证（终端）
+- 完整报告两个场景的行为差异，明确指出:
+  1. 是**客户端导航**还是**整页刷新**触发？
+  2. quote 页显示英文的**确切触发条件**（localStorage 为空？navigator 英文？）
+  3. 产品中心当时是否真的是中文（还是静态 HTML 残留）？
 
-```bash
-for u in "/" "/about" "/assets/logo-favicon.png" "/assets/logo-favicon-32.png" "/assets/logo-pattern-blue.png" "/api/products"; do
-  curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
-done
-# favicon 引用含 v=2
-curl -s "https://fnec.net/" | grep -c "logo-favicon.png?v=2"
-```
-
-预期: 全路由 200；favicon PNG 200；首页 HTML 含 `logo-favicon.png?v=2`。
-
-## 任务 4：浏览器验证（浏览器）
-
-- 访问 `https://fnec.net`，检查浏览器标签页图标（favicon）:
-  - 应为**深蓝色图案**（无 "FNEC" 文字），即 logo 上方图案。
-  - 用 `?v=2` 确保不是旧缓存的 favicon（可能需要强制刷新 Ctrl+Shift+R 一次）。
-- Header/Footer 应保持纯琥珀 logo 不变（确认未受影响）。
-
-> 本批有前端改动；**不要**运行 db:deploy。公开页静态化保持 `build:cf:static`。
+> 本批纯诊断，**不改代码、不部署**；**不要**运行 db:deploy。
 
 ---
 
@@ -61,7 +66,6 @@ curl -s "https://fnec.net/" | grep -c "logo-favicon.png?v=2"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | ✅ | `8969419`（深蓝图案 favicon 重生成 + ?v=2）+ `42d3f89`（指令）已推送，origin 同步 |
-| 2 构建+部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`b97863cd`（等传播后验证一次通过） |
-| 3 验证 | ✅ | 6 路由全 200（含 logo-pattern-blue.png）；首页 HTML 引用 `logo-favicon.png?v=2` ×2 |
-| 4 浏览器验证 | ✅ | **favicon 已更新为深蓝图案**：链接 `logo-favicon.png?v=2` + `logo-favicon-32.png?v=2`（?v=2 强制刷新生效）；像素采样主色 **(16,64,128)** ≈ 目标 (19,66,134) **深蓝**，图案区含原青色渐变细节，**无 FNEC 文字**（裁切 y110-728 生效）；**Header 42×48 / Footer 38×44 纯琥珀 logo 未受影响** |
+| 1 复现诊断 | 待执行 | 记录关键信息 |
+| 2 对照测试 | 待执行 | 场景 A/B 结果 |
+| 3 报告 | 待执行 | 明确触发条件 |
