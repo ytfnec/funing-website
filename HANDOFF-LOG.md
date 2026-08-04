@@ -335,3 +335,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **透明 PNG 转换成功**（Hermes 用 PIL 去白底）: 1024×1024 → 83.6% 透明 / 16.1% 保留，**无白色误删**，主体居中（bbox 682×786），彩色 86% + 深色 10% + 浅灰 4%。
 - **R2 上传受阻（待解决）**: 转换成功但 `wrangler r2 object put` 上传的对象，`media.fnec.net/<key>` 一律 404（含 `media/` 前缀、随机 probe key 共 3 次对照）；同一 bucket 经**媒体库 API 上传**的对象正常 200。疑似 R2 自定义域与 S3 API 写入通道配置不一致。
 - **下一步（batch 33）**: 重新生成透明 PNG，通过**后台媒体库 API** 上传（已验证可行通道）→ 拿到可访问 URL → 若效果好替换 Header 透明 logo。
+
+### 2026-08-03 批次 33 完成 — 透明 logo 上线 + Header 切换
+
+- **透明 PNG 本地资源已部署**（v`16496bbb`）: `public/assets/logo.png`（1024×1024 RGBA，406KB，透明背景），通过 `/assets/logo.png` CDN 访问 200，MD5 与本地一致。绕开了 R2 S3 API 自定义域 404 的问题。
+- **Header 切换**（提交待批 34）: 从白底徽章改为**直接展示透明 logo**（`/assets/logo.png`，h-10 40px），更精致，融入深色 Header。
+- **R2 上传通道问题（记录）**: `wrangler r2 object put` 上传的对象 `media.fnec.net` 访问 404（S3 API 通道与自定义域不一致），媒体库 API 通道正常。已在 HANDOFF-LOG 记录，后续如需上传 R2 对象建议走媒体库 API 或 Dashboard。
