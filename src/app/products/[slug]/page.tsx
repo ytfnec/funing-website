@@ -280,6 +280,20 @@ export default function ProductDetailPage() {
             }),
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fnec.net/' },
+                { '@type': 'ListItem', position: 2, name: 'Products', item: 'https://fnec.net/products' },
+                { '@type': 'ListItem', position: 3, name: product.name, item: `https://fnec.net/products/${slug}` },
+              ],
+            }),
+          }}
+        />
         <div className="max-w-[1280px] mx-auto">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="mb-8 text-[12px] tracking-[0.12em] uppercase text-[var(--gray)]">

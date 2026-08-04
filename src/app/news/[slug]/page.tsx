@@ -105,6 +105,20 @@ export default function NewsArticlePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fnec.net/' },
+              { '@type': 'ListItem', position: 2, name: 'News', item: 'https://fnec.net/news' },
+              { '@type': 'ListItem', position: 3, name: article.title, item: `https://fnec.net/news/${article.slug}` },
+            ],
+          }),
+        }}
+      />
       <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(40px,5vw,72px)] bg-[#050505]">
         <div className="max-w-[860px] mx-auto">
           <Link

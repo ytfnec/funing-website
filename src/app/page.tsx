@@ -77,8 +77,26 @@ export default function Home() {
     { q: t('home.faq.q6'), a: t('home.faq.a6') },
   ];
 
+  // FAQPage structured data — gives Google a chance to show rich FAQ results
+  // in search, driven by the same copy rendered in the FAQ section.
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq
+      .filter((f) => f.q && f.a)
+      .map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+  };
+
   return (
     <main className="flex-1">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[100dvh] min-h-[calc(100vh-84px)] flex items-center justify-center overflow-hidden bg-black">
         <div className="absolute inset-0 z-0">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check, Mail, Clock, Trash2, AlertCircle } from 'lucide-react';
+import { Phone, MapPin, Loader2, ChevronDown, ExternalLink, Building2, Save, Check, Mail, Clock, Trash2, AlertCircle, Download } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 
@@ -139,6 +139,29 @@ export default function AdminContacts() {
     }
   };
 
+  const exportCsv = () => {
+    if (contacts.length === 0) return;
+    const headers = ['Name', 'Email', 'Type', 'Status', 'Company', 'Phone', 'Location', 'Product Interest', 'Message', 'Submitted At'];
+    const esc = (v: string | null | undefined) => {
+      const s = v == null ? '' : String(v);
+      return `"${s.replace(/"/g, '""')}"`;
+    };
+    const rows = contacts.map((c) => [
+      esc(c.name), esc(c.email), esc(c.type), esc(c.status), esc(c.company),
+      esc(c.phone), esc(c.location), esc(c.product_interest), esc(c.message), esc(c.submitted_at),
+    ]);
+    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `contacts-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -193,6 +216,14 @@ export default function AdminContacts() {
               </span>
             </label>
             <div className="flex items-center gap-2 sm:ml-auto">
+              <button
+                onClick={exportCsv}
+                disabled={contacts.length === 0}
+                className="btn btn-secondary text-xs py-1.5 px-3 disabled:opacity-40"
+                title="Export CSV"
+              >
+                <Download className="w-3.5 h-3.5" /> {t('admin.contacts.export')}
+              </button>
               <button
                 onClick={() => setConfirmState({ type: 'bulk', count: selected.size })}
                 disabled={selected.size === 0 || busy}
