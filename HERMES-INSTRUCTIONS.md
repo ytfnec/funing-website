@@ -96,9 +96,9 @@ ls -la /tmp/logo-transparent.png
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | 描述徽章样式效果 |
-| 5 PNG 转换 | 待执行 | 描述转换效果/是否误删白色内容 |
-| 6 上传 R2 | 待执行（可选） | 若成功上传，报新 URL |
+| 1 推代码 | ✅ | `c1f7e07`（含 `89925c9` 徽章改动）已推送，origin/master 同步 |
+| 2 构建+部署 | ✅ | `rm -rf .next .open-next` → build:cf:static 成功 → deploy 成功，v`67aa14f1` |
+| 3 验证 | ✅ | 全路由 200（/ /about /products /news /admin/login /api/products）；首页 HTML 含 logo 引用 ×1；徽章类 `bg-white rounded-lg p-1.5 h-10 w-10 shadow-[0_2px_12px_rgba(0,0,0,0.35)]` 本地/线上一致 |
+| 4 浏览器验证 | ✅ | 实测 40×40 白底徽章、**圆角 8px**、内边距 6px、阴影 `0 2px 12px rgba(0,0,0,.35)` 生效；logo 图完整加载（1024×1024, contain 自适应）；深黑 Header 上协调不突兀 |
+| 5 PNG 转换 | ✅ | 1024×1024 → 透明 PNG（83.6% 透明 / 16.1% 保留）；**无白色误删**：主体居中（bbox 682×786），彩色 86% + 深色 10% + 浅灰 4%（224 亮度 > 阈值 230 完整保留），白色仅为背景 |
+| 6 上传 R2 | ⚠️ 受阻 | 转换成功但上传受阻：`wrangler r2 object put` 成功、对象存在（get 可读），但 `media.fnec.net/logo-transparent.png` 及 `media/` 前缀、随机 probe key **一律 404**（3 次对照）；同 bucket 媒体 API 上传对象正常 200。疑似 R2 自定义域与 S3 API 写入通道配置不一致，**建议 CC 在 Dashboard 手动上传或用媒体库上传**，或排查自定义域配置 |
