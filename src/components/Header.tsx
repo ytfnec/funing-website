@@ -33,11 +33,11 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3" aria-label="Funing Electronics home">
           {!logoFailed ? (
-            // Vivid orange recolored, cropped transparent logo — brighter and
-            // more saturated than amber for clear contrast on the dark header.
+            // Solid brand-amber (#d8a35a) logo — same color as the site's
+            // buttons, no gradient, matches the design language.
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src="/assets/logo-orange.png"
+              src="/assets/logo-amber-solid.png"
               alt="Funing Electronics"
               className="h-12 w-auto object-contain"
               onError={() => setLogoFailed(true)}
