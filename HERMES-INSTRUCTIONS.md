@@ -57,7 +57,7 @@ done
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | 中英双向切换详情页文案是否跟随 |
+| 1 推代码 | ✅ | `4fa006d` + `5f61357` 推送，origin 同步 |
+| 2 构建+部署 | ✅ | build:cf:static 成功 → 部署 v`bdaded8e` |
+| 3 验证 | ✅ | 7 路由全 200（/ /products /products/sauna-controllers /products/jacquard-drivers /admin/login /api/products /api/products/sauna-controllers） |
+| 4 浏览器验证 | ✅ 三场景全通过 | **A 中文界面**：详情页 h1=桑拿控制系统、价格=样品价 $12/台起、JSON-LD 中文；**B 切 EN**：h1 变 "Sauna Control Systems"、价格 "From $12/unit (sample)"、导航/页脚/title 全英文；**C 切回中文**：h1 恢复桑拿控制系统、JSON-LD/标题回中文。hero_image 三种语言下均正常加载（D1 结构化字段保留），双向切换修复生效 |
