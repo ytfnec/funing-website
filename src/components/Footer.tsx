@@ -67,9 +67,12 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" aria-label="Funing Electronics home">
-              <div className="text-[var(--amber,#d8a35a)] text-[15px] tracking-[0.12em] uppercase font-bold">
-                {t('brand.funing')} {t('brand.electronics')}
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/assets/logo-amber-solid.png"
+                alt="Funing Electronics"
+                className="h-11 w-auto object-contain"
+              />
             </Link>
             <p className="text-[var(--gray)] text-[13px] leading-relaxed mt-6 max-w-[220px]">
               {t('brand.tagline')}

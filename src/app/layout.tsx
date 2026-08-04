@@ -39,13 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN" className={`${manrope.variable} h-full antialiased`}>
       <head>
-        {/* Critical resource inlining: SVG favicon embedded as a data URI so the
-            browser makes zero extra requests for it (no /favicon.ico 404). */}
-        <link
-          rel="icon"
-          href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwNTA1MDUiLz48cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHJ4PSIxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDhhMzVhIiBzdHJva2Utb3BhY2l0eT0iMC41IiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIzMiIgeT0iNDQiIGZvbnQtZmFtaWx5PSJBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2Q4YTM1YSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RjwvdGV4dD48L3N2Zz4="
-          sizes="any"
-        />
+        {/* Brand favicon: company logo (solid amber), served as a static asset. */}
+        <link rel="icon" type="image/png" href="/assets/logo-favicon.png" sizes="64x64" />
+        <link rel="icon" type="image/png" href="/assets/logo-favicon-32.png" sizes="32x32" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
