@@ -40,8 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-CN" className={`${manrope.variable} h-full antialiased`}>
       <head>
         {/* Brand favicon: company logo (solid amber), served as a static asset. */}
-        <link rel="icon" type="image/png" href="/assets/logo-favicon.png" sizes="64x64" />
-        <link rel="icon" type="image/png" href="/assets/logo-favicon-32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="/assets/logo-favicon.png?v=2" sizes="64x64" />
+        <link rel="icon" type="image/png" href="/assets/logo-favicon-32.png?v=2" sizes="32x32" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
