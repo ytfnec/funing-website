@@ -393,3 +393,12 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **Hermes 反馈（batch 42 部署后）**: 中文界面✅，但切 EN 时详情页文案不随语言切换（仍中文）。根因: `useState(fallback)` 挂载时物化 fallback 的 t() 文案，跳过文案字段后固定为 hydration 时的中文。
 - **修复**: 拆分 state——`apiData` 只存 API 结构化字段（hero_image/specs/features 等），`product` 用 useMemo 从 `fallback`（响应式 t()）+ `apiData` 派生。渲染文案始终来自 fallback（随语言切换），结构化字段来自 API。fetch useEffect 依赖改 `[slug]`。
 - **验证**: tsc 通过。待 Hermes 部署验证中英文双向切换都正确。
+
+### 2026-08-03 批次 43 完成 — 产品详情页双向语言切换修复（Hermes 回报）
+
+- **结果**: v`bdaded8e`，三场景全通过：
+  - A 中文界面：详情页 h1=桑拿控制系统、价格=样品价、JSON-LD 中文 ✅
+  - B 切 EN：h1=Sauna Control Systems、价格英文、导航/页脚/title 全英文 ✅
+  - C 切回中文：恢复中文 ✅
+  - hero_image 三种语言下均正常（D1 结构化字段保留）。
+- **说明**: 产品详情页语言跳变问题**彻底解决**。同时清理了不再使用的渐变版 logo（logo-amber.png、logo-orange.png），Header 用纯琥珀 `logo-amber-solid.png`。
