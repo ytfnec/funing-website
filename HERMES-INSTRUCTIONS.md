@@ -57,7 +57,7 @@ curl -s "https://fnec.net/" | grep -c "/assets/logo-orange.png"
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | 描述橙色 logo 效果/对比度/尺寸 |
+| 1 推代码 | ✅ | `da9f589`（鲜艳橙 HSL 重着色）+ `5563699`（指令）已推送，origin 同步 |
+| 2 构建+部署 | ✅ | 清缓存 → build:cf:static 成功 → deploy 成功，v`76aa018d`（⚠️ 注意：部署后有约 3-4 分钟传播延迟，期间旧版仍在服务，属正常） |
+| 3 验证 | ✅ | 8 路由全 200（/ /about /products /news /admin/login /assets/logo-orange.png /api/products）；首页 HTML 引用 `/assets/logo-orange.png` ×2 |
+| 4 浏览器验证 | ✅ | Header 左侧**鲜艳橙色 logo**：`/assets/logo-orange.png` 加载正常 → 渲染 42×48（h-12）；像素采样：主色 **(240,160,96)** 与目标 (243,163,105) 吻合，73.4% 主体像素高饱和（>50%），中位饱和度 58%（较琥珀明显更浓），亮部渐变保留立体感；与导航间距 **120px 无重叠**。深黑 Header 上鲜明醒目 |
