@@ -341,3 +341,12 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **透明 PNG 本地资源已部署**（v`16496bbb`）: `public/assets/logo.png`（1024×1024 RGBA，406KB，透明背景），通过 `/assets/logo.png` CDN 访问 200，MD5 与本地一致。绕开了 R2 S3 API 自定义域 404 的问题。
 - **Header 切换**（提交待批 34）: 从白底徽章改为**直接展示透明 logo**（`/assets/logo.png`，h-10 40px），更精致，融入深色 Header。
 - **R2 上传通道问题（记录）**: `wrangler r2 object put` 上传的对象 `media.fnec.net` 访问 404（S3 API 通道与自定义域不一致），媒体库 API 通道正常。已在 HANDOFF-LOG 记录，后续如需上传 R2 对象建议走媒体库 API 或 Dashboard。
+
+### 2026-08-03 logo 优化 — 琥珀色 + 放大（batch 35）
+
+- **用户反馈**: 透明 logo 深蓝色在黑色背景上不明显，尺寸太小。要求改琥珀色/橘红色并放大。
+- **分析**: 原透明 logo 主体 99.6% 为蓝色系（主色 `(0,64,128)` 深蓝 + 青蓝渐变），在近黑背景上对比度低。
+- **改动（提交 `ec65402`）**:
+  - `public/assets/logo-amber.png`: 用 HSL 色相替换把蓝色系 → 品牌琥珀色（#d8a35a），保留明暗渐变保持立体感；裁剪内容边界（686×790）去掉周围透明边距。
+  - Header: 引用 `/assets/logo-amber.png`，尺寸 h-10(40px) → **h-12(48px)**。
+- **待部署验证**: 琥珀色在深黑 Header 上的对比度、放大后的观感。
