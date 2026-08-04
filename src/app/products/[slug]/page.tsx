@@ -172,8 +172,22 @@ export default function ProductDetailPage() {
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
         if (!cancelled) {
-          // Merge API data over fallback so partial DB rows still render richly.
-          setProduct((prev) => ({ ...(prev || ({} as Product)), ...data.product }));
+          // Merge API data over fallback so partial DB rows still render richly,
+          // BUT keep the i18n-localized copy fields (name / sub_title /
+          // short_description / price_range) from the fallback so the page
+          // follows the selected language. The D1 rows store English template
+          // copy that would otherwise override the localized text. For slugs
+          // without a fallback (custom products added in admin), the API copy
+          // is the only source, so it's kept.
+          const api = data.product || {};
+          setProduct((prev) => {
+            const hasLocalized = !!(prev && prev.name);
+            if (hasLocalized) {
+              const { name: _n, sub_title: _s, short_description: _sd, price_range: _p, ...structured } = api;
+              return { ...(prev || ({} as Product)), ...structured };
+            }
+            return { ...(prev || ({} as Product)), ...api };
+          });
           setNotFound(false);
         }
       } catch {

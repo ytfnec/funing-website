@@ -381,3 +381,9 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - `?v=2` 版本参数强制浏览器刷新旧 favicon 缓存。
   - 新增 `public/assets/logo-pattern-blue.png`（图案深蓝版，供后续引用）。
 - **说明**: Header/Footer 仍用纯琥珀 logo（用户认可批次 37/38 方案），仅 favicon 改用深蓝图案。
+
+### 2026-08-03 修复产品详情页语言跳变（batch 42）
+
+- **根因（Hermes 诊断）**: 产品中心"获取报价"的产品卡片按钮进的是**产品详情页**（/products/[slug]），非报价页。详情页初始用 i18n fallback 中文渲染，随后 fetch `/api/products/[slug]` 返回 **D1 英文模板数据**覆盖 → 变英文。D1 数据确认: name/sub_title/short_description/price_range 全英文且与 i18n fallback 重复，long_description/specifications/features 全 null，唯一独有=hero_image。
+- **修复**: 详情页 merge 时**跳过文案字段**（name/sub_title/short_description/price_range），仅用 D1 结构化字段（hero_image 等）；有 fallback 时文案走 i18n（随语言切换）。对无 fallback 的自定义产品（后台新增），保留 API 文案。产品列表页不受影响（纯 i18n 静态）。
+- **验证**: tsc 通过。待 Hermes 部署后浏览器确认中文界面产品详情页保持中文。
