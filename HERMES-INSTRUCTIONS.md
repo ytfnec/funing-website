@@ -57,7 +57,7 @@ done
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 验证 | 待执行 | |
-| 4 浏览器验证 | 待执行 | 中文详情页是否保持中文、英文切英文、图片正常 |
+| 1 推代码 | ✅ | `05e3cda` + `b40e4c7` 推送，origin 同步 |
+| 2 构建+部署 | ✅ | build:cf:static 成功 → 部署 v`af47ffd2` |
+| 3 验证 | ✅ | 7 路由全 200（/ /products /products/sauna-controllers /products/jacquard-drivers /admin/login /api/products /api/products/sauna-controllers） |
+| 4 浏览器验证 | ⚠️ 部分通过 | **中文界面 ✅**：详情页 h1=桑拿控制系统、价格=样品价 $12/台起（3s 后仍中文未被覆盖）、hero_image 正常加载（D1 结构化字段生效）、JSON-LD/标题中文。**EN 界面 ❌ 反向 bug**：切 EN 后导航/页脚全英文，但详情页 h1 仍「桑拿控制系统」、价格仍中文——**fallback 文案不随语言切换**。根因：`useState(fallback)` 挂载时物化（useFallbackProduct 每次渲染新对象但 useState 只取首次值），跳过文案字段后文案固定为 hydration 时的中文。**建议修复**：渲染时直接 `fallback.name`（每次渲染重新 t() 求值，响应式）或将 API 结构化数据与 fallback 分开 state，勿把 fallback 存入 useState |
