@@ -295,3 +295,14 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   2. 本地创建 `.env`（git 忽略）写入 `NEXT_PUBLIC_R2_PUBLIC_URL=https://media.fnec.net`。
   3. 批次 29 指令：重新 `build:cf:static`（Next 构建时内联该值）→ 部署 → 上传测试图验证预览。
 - **附带收益**: 产品图、新闻封面可用 `https://media.fnec.net/...` 直链，对 SEO/分享友好。
+
+### 2026-08-03 批次 29 部署完成 — R2 媒体库预览已生效（Hermes 回报）
+
+- **结果**: 部署 v`c35eb2e0`。`.env` 确认已配置 `NEXT_PUBLIC_R2_PUBLIC_URL=https://media.fnec.net`（非注释）；构建时 R2 URL 已内联进媒体页+产品编辑页 bundle。
+- **验证（Hermes，含真实上传）**:
+  - 公开页 5 路由全 200；`media.fnec.net` 可达（自定义域生效）。
+  - 上传测试图 `test-preview.png` → R2 对象公网 200（`https://media.fnec.net/media/media-e6ff...png`）；媒体库 `<img>` 真实加载（naturalWidth 64×64，src 指向 media.fnec.net）→ **缩略图预览生效**。
+  - 删除后 D1 记录清 + R2 对象 404（CDN 边缘缓存已过期）→ 删除链路也正常。
+  - **结论: 之前"无预览"= 配置缺失（R2 URL 未注入），现已修复。**
+- **附带收益**: 产品图、新闻封面可用 `https://media.fnec.net/...` 直链，对 SEO/分享友好。
+- **至此后台功能全部闭环**: 双语化、静态化、询盘删除+ConfirmDialog、媒体库预览。
