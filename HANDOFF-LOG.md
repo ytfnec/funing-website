@@ -362,3 +362,12 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
 - **用户反馈**: 鲜艳橙仍不合适，要求 logo 像其他按键颜色一样（琥珀 #d8a35a）、不要渐变。
 - **改动（提交 `c3aae34`）**: `logo-amber-solid.png` 所有不透明像素统一设为 `#d8a35a`（= `var(--color-amber)` = `.btn-primary` 按钮色），**无渐变**，保留 alpha 形状。裁剪 686×790，h-12 48px。
 - **待部署验证**: 纯琥珀色与按钮一致、无渐变的观感。
+
+### 2026-08-03 logo 全站应用 — Header/Footer/favicon（batch 38）
+
+- **Hermes 确认（batch 37）**: 纯琥珀 logo 已上线 v`08714646`，95.4% 像素为单色 #d8a35a，与首页按钮背景 `rgb(216,163,90)` **完全同色**，无渐变。
+- **改动（提交 `084a8fd`）**:
+  - Header: 纯琥珀 logo（`/assets/logo-amber-solid.png`，h-12 48px），文字仅作 onError 回退。
+  - Footer: 文字 logo → `/assets/logo-amber-solid.png`（h-11）。
+  - favicon: 内联 SVG F 字母 → 品牌 logo PNG（`logo-favicon.png` 64×64 + `logo-favicon-32.png` 32×32，内容裁剪填满）。
+  - 生成 favicon 方法: 从裁剪后的纯琥珀 logo 取中心正方形，LANCZOS 缩放至 64/32。
