@@ -286,3 +286,12 @@ curl -s https://fnec.net/api/products | python -c "import json,sys;d=json.load(s
   - ③ 测试数据已删除，询盘列表干净。
   - **结论: confirm() 卡死问题已解决，自动化可正常操作。**
 - **配套**: 询盘删除（批量 + 单条）全部功能上线；后台双语、静态化优化、i18n 696 keys 均稳定。
+
+### 2026-08-03 启用 R2 媒体库预览（batch 29）
+
+- **背景**: 用户反馈媒体库上传图片不显示预览。排查确认**非 bug，是配置缺失**: 代码已支持预览（`hasPublicUrl` + `R2_PUBLIC_URL`），但 `NEXT_PUBLIC_R2_PUBLIC_URL` 从未注入（项目无 `.env`，示例里注释掉），导致 `hasPublicUrl=false`，图片只显示图标+格式文字。上传/存储本身正常（R2 + D1 记录成功）。
+- **修复步骤**:
+  1. 用户在 Cloudflare Dashboard 给 R2 桶 `funing-storage` 绑定自定义域 `media.fnec.net`（已确认绑定）。
+  2. 本地创建 `.env`（git 忽略）写入 `NEXT_PUBLIC_R2_PUBLIC_URL=https://media.fnec.net`。
+  3. 批次 29 指令：重新 `build:cf:static`（Next 构建时内联该值）→ 部署 → 上传测试图验证预览。
+- **附带收益**: 产品图、新闻封面可用 `https://media.fnec.net/...` 直链，对 SEO/分享友好。
