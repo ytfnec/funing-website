@@ -86,6 +86,29 @@
 
 ---
 
+### 识图方法（给 Claude Code · 2026-08-05）
+
+需要查看图片（设计稿、截图、logo 评审）时，用 Bash 直接调本机 Ollama 视觉模型 `qwen2.5vl:3b`（已装好，勿改）。把 `图片绝对路径` 换成实际路径（如 `D:\Work_Hermes\07_图片素材\...`）：
+
+```bash
+python -c "
+import base64, json, urllib.request
+b64 = base64.b64encode(open(r'图片绝对路径.png','rb').read()).decode()
+req = urllib.request.Request('http://127.0.0.1:11434/api/chat',
+  data=json.dumps({'model':'qwen2.5vl:3b','stream':False,
+    'messages':[{'role':'user','content':'详细描述这张图','images':[b64]}]}).encode(),
+  headers={'Content-Type':'application/json'})
+print(urllib.request.urlopen(req, timeout=120).read().decode())
+"
+```
+
+注意：
+- 图片路径必须是绝对路径
+- **不要**把 CC 主模型切到 Ollama（3B 撑不起 agent 循环）
+- Hermes 侧 vision 已配同款模型，两边都能看图
+
+---
+
 ## 开发循环状态
 
 - ✅ **功能队列（8 项）全部完成**：首页 CTA 真实图片、性能优化、Content 批量操作、
