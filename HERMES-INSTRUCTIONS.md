@@ -88,13 +88,20 @@
 
 ### 识图方法（给 Claude Code · 2026-08-05）
 
-需要查看图片（设计稿、截图、logo 评审）时，用 Bash 直接调本机 Ollama 视觉模型 `qwen2.5vl:3b`（已装好，勿改）。把 `图片绝对路径` 换成实际路径（如 `D:\Work_Hermes\07_图片素材\...`）：
+需要查看图片（设计稿、截图、logo 评审）时，用 Bash 直接调宿主机 Ollama 视觉模型 `qwen2.5vl:3b`（已装好，勿改）。把 `图片绝对路径` 换成实际路径（如 `D:\Work_Hermes\07_图片素材\...`）。
+
+**⚠️ 沙箱环境注意**：`127.0.0.1` 是沙箱自身，不是宿主机。用宿主机 IP 连 Ollama（已开 0.0.0.0 监听）：`http://192.168.124.11:11434` 或 `http://172.16.0.2:11434`（先测哪个通，见下方第 4 步）。
 
 ```bash
+# 1. 测连通性（两个地址试一个通的）
+curl -s --max-time 5 http://192.168.124.11:11434/api/tags
+
+# 2. 把下面命令里的 OLLAMA_HOST 换成实际通的地址，图片路径换成实际路径
+OLLAMA_HOST=http://192.168.124.11:11434
 python -c "
-import base64, json, urllib.request
+import base64, json, urllib.request, os
 b64 = base64.b64encode(open(r'图片绝对路径.png','rb').read()).decode()
-req = urllib.request.Request('http://127.0.0.1:11434/api/chat',
+req = urllib.request.Request(os.environ['OLLAMA_HOST'] + '/api/chat',
   data=json.dumps({'model':'qwen2.5vl:3b','stream':False,
     'messages':[{'role':'user','content':'详细描述这张图','images':[b64]}]}).encode(),
   headers={'Content-Type':'application/json'})
