@@ -1,59 +1,24 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: 第四十三批 · 更新: 2026-08-03 · 来源: Claude Code
-> 说明: 部署产品详情页语言双向切换修复，推代码 + `build:cf:static` + 部署 + 验证。无 schema 变更，**不需要 db:deploy**。
+> 批次: 第四十三批（最新） · 更新: 2026-08-05 · 来源: Claude Code
+> 状态: **功能队列 8 项已全部完成并部署，无待开发批次**
 
 ---
 
-## 背景
+## 开发循环状态
 
-- batch 42 修复了中文界面被英文覆盖，但暴露**反向 bug**: 切 EN 后详情页文案不随语言切换（`useState(fallback)` 物化 t() 文案）。
-- 修复（提交 `4fa006d`）: 拆分 state——`apiData` 只存 API 结构化字段；`product` 用 `useMemo` 从响应式 `fallback`（t()）+ `apiData` 派生，文案始终跟随语言切换。
-- **重要**: 公开页静态化保持，**必须用 `npm run build:cf:static`**。
-
-## 任务 1：推代码（终端）
-
-```bash
-cd C:\Users\xxq\axissaunas-clone
-git push
-```
-
-预期: 推送 `4fa006d` 及前面待推送提交；`git log origin/master..HEAD --oneline` 为空。
-
-## 任务 2：清缓存构建 + 复制 HTML + 部署（终端）
-
-```bash
-cd C:\Users\xxq\axissaunas-clone
-rm -rf .next .open-next
-npm run build:cf:static
-npm run deploy
-```
-
-预期: `build:cf:static` 成功；部署成功。
-
-## 任务 3：验证（终端）
-
-```bash
-for u in "/" "/products" "/products/sauna-controllers" "/products/jacquard-drivers" "/admin/login" "/api/products" "/api/products/sauna-controllers"; do
-  curl -s -o /dev/null -w "$u -> HTTP %{http_code}\n" "https://fnec.net$u"
-done
-```
-
-预期: 全路由 200。
-
-## 任务 4：浏览器验证双向语言切换（浏览器，关键）
-
-- **场景 A**: 中文界面（localStorage fnec-lang=zh 或浏览器中文）→ 访问 `/products` → 点产品卡片进详情页 → 详情页产品名/描述应为**中文**。
-- **场景 B**: 在详情页切换 EN → 详情页产品名/描述应**变为英文**（导航/页脚也英文）。
-- **场景 C**: 再从 EN 切回中文 → 详情页恢复中文。
-- 确认: hero_image 主图在两种语言下都正常（D1 结构化字段不丢失）、JSON-LD/标题跟随语言。
-- 记录: 三个场景下详情页 h1 产品名（中/英）。
-
-> 本批有前端改动；**不要**运行 db:deploy。公开页静态化保持 `build:cf:static`。
+- ✅ **功能队列（8 项）全部完成**：首页 CTA 真实图片、性能优化、Content 批量操作、
+  新闻/资讯、全量回归+JSON-LD、骨架屏+错误边界、产品 hero_image、后台 Media 批量操作。
+- ✅ 批次 43（产品详情页 EN 反向 bug 修复）已部署验证完成（Version `bdaded8e`，
+  中英双向切换三场景全通过），见下方执行回报。
+- ✅ 后续批次 18–43 的收尾项（公开页静态化、后台双语化、询盘删除+ConfirmDialog、
+  R2 媒体预览、SEO JSON-LD、logo 迭代）均已上线。
+- **当前无待执行任务**。建议人工按 `MANUAL-ACCEPTANCE-CHECKLIST.md` 过一遍浏览器验收项。
+- 若用户提出新的开发需求，Claude Code 会下发新批次指令到此文件。
 
 ---
 
-## 执行回报（Hermes 填写）
+## 上一批（第四十三批）执行回报（Hermes 填写，保留存档）
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
@@ -61,3 +26,12 @@ done
 | 2 构建+部署 | ✅ | build:cf:static 成功 → 部署 v`bdaded8e` |
 | 3 验证 | ✅ | 7 路由全 200（/ /products /products/sauna-controllers /products/jacquard-drivers /admin/login /api/products /api/products/sauna-controllers） |
 | 4 浏览器验证 | ✅ 三场景全通过 | **A 中文界面**：详情页 h1=桑拿控制系统、价格=样品价 $12/台起、JSON-LD 中文；**B 切 EN**：h1 变 "Sauna Control Systems"、价格 "From $12/unit (sample)"、导航/页脚/title 全英文；**C 切回中文**：h1 恢复桑拿控制系统、JSON-LD/标题回中文。hero_image 三种语言下均正常加载（D1 结构化字段保留），双向切换修复生效 |
+
+---
+
+## 备注（给 Hermes）
+
+- 本地有一个未推送提交 `f00346f`（删除不再使用的渐变版 logo 文件 + 记录批次 43 完成），
+  属收尾清理，不阻塞使用；下次有推送机会时随 `git push` 同步即可。
+- **不要**执行 db:deploy、不要改动 wrangler.toml、不要动 DNS。
+- 除非 Claude Code 下发新的"批次"指令，否则无需执行任何操作。
