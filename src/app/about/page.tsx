@@ -45,9 +45,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg overflow-hidden mb-6">
-              <img src="/assets/about-factory.webp" alt={t('about.info.title')} className="w-full h-auto block" loading="lazy" />
-            </div>
             <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-8">
               <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('about.info.title')}</h2>
               <div className="space-y-5">
