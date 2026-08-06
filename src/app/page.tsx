@@ -13,6 +13,7 @@ export default function Home() {
       sub: t('p.saunaControllers.sub'),
       desc: t('p.saunaControllers.desc'),
       icon: "⊞",
+      image: "/assets/sauna-controller.webp",
       specs: [t('p.saunaControllers.spec1'), t('p.saunaControllers.spec2'), t('p.saunaControllers.spec3'), t('p.saunaControllers.spec4')],
     },
     {
@@ -21,6 +22,7 @@ export default function Home() {
       sub: t('p.jacquard.sub'),
       desc: t('p.jacquard.desc'),
       icon: "⊟",
+      image: "/assets/jacquard-driver.webp",
       specs: [t('p.jacquard.spec1'), t('p.jacquard.spec2'), t('p.jacquard.spec3'), t('p.jacquard.spec4')],
     },
     {
@@ -175,15 +177,19 @@ export default function Home() {
             <article key={p.key} className="flex flex-col product-card group">
               <div className="flex flex-col">
                 <div className="relative product-panel" style={{ aspectRatio: "4 / 5", background: "#0a0a0a", overflow: "hidden" }}>
-                  <div className="absolute inset-0 flex items-center justify-center tech-panel" style={{ background: "radial-gradient(circle at center, rgba(216,163,90,0.12), transparent 70%)" }}>
-                    <div className="text-center px-6">
-                      <div className="text-[var(--amber)] text-[40px] mb-4 opacity-60 product-icon">
-                        {p.icon}
+                  {p.image ? (
+                    <img src={p.image} alt={p.name} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center tech-panel" style={{ background: "radial-gradient(circle at center, rgba(216,163,90,0.12), transparent 70%)" }}>
+                      <div className="text-center px-6">
+                        <div className="text-[var(--amber)] text-[40px] mb-4 opacity-60 product-icon">
+                          {p.icon}
+                        </div>
+                        <h3 className="text-[15px] tracking-[0.12em] uppercase font-bold mb-2">{p.name}</h3>
+                        <p className="text-[var(--gray)] text-[11px] tracking-[0.16em] uppercase">{p.sub}</p>
                       </div>
-                      <h3 className="text-[15px] tracking-[0.12em] uppercase font-bold mb-2">{p.name}</h3>
-                      <p className="text-[var(--gray)] text-[11px] tracking-[0.16em] uppercase">{p.sub}</p>
                     </div>
-                  </div>
+                  )}
                 </div>
                 <div style={{ paddingTop: "20px" }}>
                   <h3 className="text-[17px] mb-[8px]">{p.name}</h3>
