@@ -1,57 +1,59 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第四十五批（最新）** · 更新: 2026-09-05 · 来源: Claude Code
-> 状态: **网站文案修改 · 待执行部署**
+> 批次: **第四十六批（最新）** · 更新: 2026-09-05 · 来源: Claude Code
+> 状态: **整站配色改浅（Axis 暖白高级风）· 待执行部署**
 
 ---
 
-## 第四十五批：网站文案修改（产品页 + About / 联系 / 报价）
+## 第四十六批：整站配色改浅 — Axis 暖白高级风
 
-用户需求：
-1. **"授权品牌整机"（branded-units）删除 Health Mate / Samick 字样**：产品副标题与两条品牌卖点按用户要求**先留空**（页面渲染已加空值过滤，不会出现空行/空勾）。
-2. **About 沿革 / 联系表单兴趣选项 / 报价页副标题**中的 Health Mate / Samick 一并清除，改为不含具体品牌的泛指说法。
-3. **桑拿控制系统型号 G80F915UL → 1T8051/ARM**：全站统一替换（产品规格 / 首页 FAQ / 配件兼容说明 / 资源 datasheet 标题），en/zh 均已同步。
+用户需求：网站"太暗黑"，希望换成类似 axissaunas.com（Axis by Jacuzzi）的暖白高级风。
 
-改动文件（已本地提交，提交 `dd3733f`）：
-- `src/lib/i18n.tsx`：en/zh 双语言——品牌字样清除或留空、About/联系/报价泛指改写、型号统一替换
-- `src/app/page.tsx`、`src/app/products/page.tsx`：空副标题 / 空卖点渲染保护（filter + 条件渲染）
-- `schema.sql`：branded-units 种子数据 `sub_title` 清空（与前台一致）
+本批次为**整站视觉改版**，已本地提交（提交 `e40f645`，36 个文件）：
 
-## 执行任务（请按序执行，回报表见文末）
+### 新色板
+- 页面底 `cream #f6f2ea`（暖象牙）
+- 交替区 `sand #efe9de`（浅沙）；卡片/输入框 `card #fdfbf7`
+- 标题文字 `ink #201d17`（深棕）；正文 muted `#6f6a5e`
+- 强调色（按钮/眉标/链接）青铜金 `#a8763a`，hover `#8b5f28`
+- 深色照片区文字 `ivory #f5efe4`
+- 组件 CSS 变量 `--amber/--gray/--soft-white/--wood/--line` 已补全定义到 `:root`（此前未定义会退化为继承色），并统一指向浅色体系
+
+### 关键改动
+- `src/app/globals.css`：主题 token 全部重定义 + 新增 `cream/sand/card/ink/ivory/bronze-deep`；按钮/眉标/骨架屏/tech-panel 跟随浅色
+- 全站公开页 + 后台（admin 一并变为浅色 dashboard）：深黑底→暖白系、白字→深棕、白边→暖黑透明边、琥珀辉光→青铜辉光
+- 首页 hero 与 CTA 两个**图片带保留深色遮罩 + 米白文字**（视觉对比），其余区域全部浅色
+- `var(--soft-white)` 语义从"浅色文字"改为"浅底正文深色"，与浅色底匹配
+
+## 执行任务（按序执行，回报表见文末）
 
 ### 任务 1 · 推送代码
 ```
 git push
 ```
-预期：origin/master 同步到最新（含提交 `dd3733f`）。
+预期：origin/master 同步（含提交 `e40f645`）。
 
 ### 任务 2 · 清缓存构建并部署
 ```
 rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 ```
-预期：构建成功并部署（**必须用 `build:cf:static`**，公开页继续走 Cloudflare Static Assets；旧型号/品牌词不再进入产物）。
+预期：构建成功部署（公开页继续走 Static Assets）。**若构建告警未知类名，请把完整日志贴回报表**（怀疑某个新 token 类未生成时用）。
 
-### 任务 3 · D1 数据同步（清除线上 DB 该行副标题里的旧品牌词，保持后台一致）
+### 任务 3 · 构建产物色值抽查
 ```
-npx wrangler d1 execute funing-db --remote --command "UPDATE products SET sub_title = '' WHERE id = 'prod-branded-units';"
+curl -s <ROOT>/ | grep -c "f6f2ea\|a8763a"      # 预期 ≥1（新主题 CSS 已加载）
+curl -s <ROOT>/products | grep -ic "050505"       # 预期 0（旧深色底不再出现）
 ```
-预期：返回 `Success`（受影响行数 1，或 0 = 此前已空，可接受）。
+<ROOT> 按实际站点根域（`https://fnec.net`）。若旧色仍出现说明有缓存，需强刷/CDN 清缓存后重试。
 
-### 任务 4 · 验证
-公开路由应全部 200（`<ROOT>` 按实际站点根域，如 `https://fnec.net`）：
-`/`、`/products`、`/products/branded-units`、`/products/sauna-controllers`、`/about`、`/contact`、`/quote`、`/resources`、`/accessories`
-
-内容验证（应全部通过）：
-1. 上述页面 HTML **不含** `Health Mate`、`Samick`、`G80F915UL`
-2. 产品/首页 HTML **含** `1T8051/ARM`
-3. `/products/branded-units` 页面无品牌词残留
-
-示例命令：
-```
-curl -s <ROOT>/products | grep -c "G80F915UL"      # 预期 0
-curl -s <ROOT>/products | grep -c "1T8051/ARM"     # 预期 ≥1
-curl -s <ROOT>/products/branded-units | grep -ci "health mate\|samick"   # 预期 0
-```
+### 任务 4 · 浏览器目检（中英双语，重点）
+逐项检查并在回报表记录：
+1. 首页：hero 白字在照片上可读、CTA 区 ivory 文字清晰；产品四卡浅色卡片、副标题留空无空行
+2. 公共页：/products /products/sauna-controllers /about /news /contact /quote /accessories /resources /oem 均为浅底深字，无残留大面积黑
+3. 表单：/contact /quote 输入框为白色卡片底、边框清晰、placeholder 可见
+4. 页脚：浅色、文字深色可读；语言切换 EN/ZH 正常
+5. 后台：/admin/login 与登录后各页为浅色且可用（按钮/表格/输入框可读）
+6. **记录任何对比度不足/颜色跳变的具体页面与元素**，便于下一批微调（新主题首次上线，允许按反馈迭代）
 
 ---
 
@@ -59,17 +61,16 @@ curl -s <ROOT>/products/branded-units | grep -ci "health mate\|samick"   # 预�
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推送代码 | ✅ | `991934c..7a3f75b` 推送成功(先 rebase 了远程 8 月商标迭代线,代码零冲突) |
-| 2 构建+部署 | ✅ | build:cf:static 成功(静态资产含 _headers)→ 部署 v`5ed71a93-8adc-4694-9088-2bacc68ce2db` |
-| 3 D1 数据同步 | ✅ | `prod-branded-units` sub_title 已清空(返回 changes:2,查询确认 `sub_title=''`) |
-| 4 验证 | ✅ | 9 路由全 200;旧词(Health Mate/Samick/G80F915UL)9 页 HTML 全 0;1T8051/ARM 出现在首页 FAQ+JSON-LD、/products、sauna-controllers 规格、/accessories、/resources;RSC payload 双语文案均无旧词 |
-| 5 浏览器目检 | ✅ | /products 中英文:品牌整机卡片副标题留空无空行/空勾、间距正常;桑拿控制系统规格含 1T8051/ARM MCU;详情页 KEY FEATURES 正常无 G80F915UL;About 2025 里程碑泛指化。备注:branded-units 主图(media-c8deb666)LED 灯板印有 HEALTH MATE 字样,经用户确认**不处理**——实物为制造商自产代工灯板,保留 |
+| 1 推送代码 | 待执行 | |
+| 2 构建+部署 | 待执行 | |
+| 3 色值抽查 | 待执行 | |
+| 4 浏览器目检 | 待执行 | |
 
 ---
 
 ## 历史备注（供参考，无需执行）
 
-- ✅ 功能队列 8 项已全部完成；批次 43 产品详情页双语修复已上线（v`bdaded8e`）。
-- ✅ 批次 44（企业 Logo 设计）已交付到 `D:\Work_Hermes\07_图片素材\20260805_logo设计_企业logo\`，不涉及网站部署。
-- 保持现有约定：不改 `wrangler.toml`、不动 DNS；除本批次任务 3 外**不要**整库 `db:deploy`。
-- 除非 Claude Code 下发新批次指令，否则执行完本批次后无需继续操作。
+- ✅ 批次45（删除 Health Mate/Samick 品牌字样 + G80F915UL→1T8051/ARM）已完成部署（v`5ed71a93`）。
+- ✅ 批次44（企业 Logo 设计）已交付，不涉及网站部署。
+- 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
+- 本批次为新浅色主题首次上线，如浏览器目检发现局部问题，请记录具体页面/元素，Claude Code 会按反馈出下一批微调。
