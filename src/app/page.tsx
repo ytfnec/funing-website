@@ -98,7 +98,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       {/* Hero Section */}
-      <section className="relative min-h-[100dvh] min-h-[calc(100vh-84px)] flex items-center justify-center overflow-hidden bg-black">
+      <section className="relative min-h-[100dvh] min-h-[calc(100vh-84px)] flex items-center justify-center overflow-hidden bg-[#15120e]">
         <div className="absolute inset-0 z-0">
           <Image
             src="/assets/hero-1920.webp"
@@ -109,10 +109,10 @@ export default function Home() {
             decoding="async"
             placeholder="blur"
             blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAp0lEQVR42q2TWw7DIAwEOQNgDHk1978kZcFGJapUqfAxkuWwgyGJ8dbmGcyzQcC5HIAXSo0e/RKQszXAhUh+gEWGNV8FGq6B4HMKlDduoEYPz54So2NrWIN7DANdpJJB4GTssouGj8T53BqoVYI17NuddAEuSXfX8FWCrz1Wrg9Jn2IQyPi6+ynh+0gV1Oj1KeQYCwWzR5i+xOnXOP0hLfmUl/xM//AGRNI+0LjrUfwAAAAASUVORK5CYII="
-            className="object-cover object-center"
+            className="object-cover object-center brightness-[1.15]"
             sizes="100vw"
           />
-          <div className="absolute inset-0" style={{ background: "rgba(5,5,5,0.55)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(16,13,10,0.50) 0%, rgba(16,13,10,0.26) 45%, rgba(16,13,10,0.40) 100%)" }} />
         </div>
 
         <div className="relative z-10 px-page max-w-[1000px] mx-auto text-ivory">
@@ -133,7 +133,7 @@ export default function Home() {
             <div className="flex gap-4 flex-wrap justify-center w-full">
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-ivory"
                 onClick={() => window.location.href = "/quote"}
               >
                 {t('home.hero.ctaQuote')}
@@ -353,37 +353,19 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="px-page text-center relative overflow-hidden" style={{
+      <section className="px-page relative overflow-hidden bg-sand text-center" style={{
         paddingTop: "clamp(96px, 14vw, 160px)",
         paddingBottom: "clamp(96px, 14vw, 160px)"
       }}>
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/assets/cta-bg.webp"
-            alt=""
-            fill
-            priority={false}
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(rgba(5,5,5,0.78), rgba(5,5,5,0.9))" }} />
-          {/* PCB-style texture overlay to match the electronics brand */}
-          <div
-            className="absolute inset-0 opacity-40"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 120%, rgba(168,118,58,0.12), transparent 55%), linear-gradient(rgba(168,118,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.04) 1px, transparent 1px)",
-              backgroundSize: "100% 100%, 44px 44px, 44px 44px",
-            }}
-          />
-        </div>
-
-        <div className="relative z-10 text-ivory">
-          <p className="eyebrow text-[#d8b47c]" style={{ marginBottom: "32px" }}>{t('home.cta.eyebrow')}</p>
-          <h2 className="section-title mx-auto text-ivory" style={{
+        {/* Subtle bronze radial + PCB grid texture on the light sand */}
+        <div className="absolute inset-0 opacity-70 pointer-events-none" style={{
+          background:
+            "radial-gradient(circle at 50% 120%, rgba(168,118,58,0.14), transparent 55%), linear-gradient(rgba(168,118,58,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.07) 1px, transparent 1px)",
+          backgroundSize: "100% 100%, 44px 44px, 44px 44px",
+        }} />
+        <div className="relative z-10 max-w-[720px] mx-auto">
+          <p className="eyebrow" style={{ marginBottom: "32px" }}>{t('home.cta.eyebrow')}</p>
+          <h2 className="section-title mx-auto" style={{
             fontSize: "clamp(40px,5.6vw,68px)",
             lineHeight: 1.1,
             letterSpacing: "0.04em",
@@ -391,14 +373,14 @@ export default function Home() {
           }}>
             {t('home.cta.title')}
           </h2>
-          <p className="text-ivory/90 mx-auto" style={{ maxWidth: "620px", lineHeight: 1.6, marginBottom: "56px", textAlign: "center" }}>
+          <p className="text-[var(--gray)] mx-auto" style={{ maxWidth: "620px", lineHeight: 1.6, marginBottom: "56px", textAlign: "center", fontSize: "17px" }}>
             {t('home.cta.desc')}
           </p>
           <div className="flex justify-center items-center gap-[16px] flex-wrap">
             <button type="button" className="btn btn-primary" onClick={() => window.location.href = "/quote"}>
               {t('home.cta.btn1')}
             </button>
-            <button type="button" className="btn btn-secondary btn-on-dark" onClick={() => window.location.href = "/contact"}>
+            <button type="button" className="btn btn-secondary" onClick={() => window.location.href = "/contact"}>
               {t('home.cta.btn2')}
             </button>
           </div>

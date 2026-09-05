@@ -7,7 +7,7 @@
   --color-dark-gray: #3b362e;
   --color-white: #f5efe4;       /* ivory — reserved for text sitting on dark image bands */
   --color-soft-white: #2c2821;  /* strong body text on light surfaces */
-  --color-gray: #6f6a5e;        /* muted / secondary text on light surfaces */
+  --color-gray: #4a453c;        /* muted / secondary text on light surfaces (deepened for legibility) */
   --color-line: rgba(32,29,23,0.12);
   --color-wood: #9a6a35;
   --color-amber: #a8763a;       /* bronze accent */
@@ -42,7 +42,7 @@
 :root {
   --amber: #a8763a;
   --amber-light: #c9a66b;
-  --gray: #6f6a5e;
+  --gray: #4a453c;
   --soft-white: #2c2821;
   --wood: #9a6a35;
   --line: rgba(32,29,23,0.12);
@@ -79,11 +79,11 @@
     color: var(--color-ink);
     letter-spacing: 0.04em;
     -webkit-font-smoothing: antialiased;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   p, li {
-    font-weight: 300;
+    font-weight: 400;
   }
 
   a {
@@ -123,17 +123,33 @@
   }
 
   .btn-primary {
-    background: var(--color-amber);
-    color: var(--color-ink);
-    border-color: var(--color-amber);
-    box-shadow: 0 0 0 rgba(168,118,58,0);
+    background: var(--color-ink);
+    color: var(--color-ivory);
+    border-color: var(--color-ink);
+    box-shadow: 0 8px 24px rgba(32,29,23,0.18);
   }
 
   .btn-primary:hover {
-    background: var(--color-bronze-deep);
+    background: var(--color-charcoal);
     color: var(--color-ivory);
-    border-color: var(--color-bronze-deep);
-    box-shadow: 0 8px 32px rgba(168,118,58,0.28);
+    border-color: var(--color-charcoal);
+    box-shadow: 0 10px 30px rgba(32,29,23,0.24);
+    transform: translateY(-1px);
+  }
+
+  /* Solid ivory primary — used on dark photo bands so the call-to-action pops */
+  .btn-ivory {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    border-color: var(--color-ivory);
+    box-shadow: 0 8px 24px rgba(16,13,10,0.25);
+  }
+
+  .btn-ivory:hover {
+    background: #fffdf8;
+    color: var(--color-ink);
+    border-color: #fffdf8;
+    box-shadow: 0 10px 30px rgba(16,13,10,0.3);
     transform: translateY(-1px);
   }
 

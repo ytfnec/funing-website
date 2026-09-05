@@ -75,7 +75,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             disabled={busy}
             className={`btn text-sm py-2 px-4 disabled:opacity-50 ${
-              danger ? 'bg-red-600/90 hover:bg-red-600 text-ink' : 'btn-primary'
+              danger ? 'bg-red-600/90 hover:bg-red-600 text-ivory' : 'btn-primary'
             }`}
           >
             {busy ? (
