@@ -43,13 +43,13 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-cream px-4 relative overflow-hidden">
       {/* PCB-style background texture */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 20% 15%, rgba(216,163,90,0.08), transparent 45%), radial-gradient(circle at 85% 85%, rgba(216,163,90,0.06), transparent 40%), linear-gradient(rgba(216,163,90,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.03) 1px, transparent 1px)",
+            "radial-gradient(circle at 20% 15%, rgba(168,118,58,0.08), transparent 45%), radial-gradient(circle at 85% 85%, rgba(168,118,58,0.06), transparent 40%), linear-gradient(rgba(168,118,58,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.03) 1px, transparent 1px)",
           backgroundSize: "100% 100%, 100% 100%, 40px 40px, 40px 40px",
         }}
       />
@@ -57,8 +57,8 @@ export default function AdminLogin() {
       <div className="w-full max-w-md relative z-10">
         {/* Brand block */}
         <div className="text-center mb-8 animate-fade-in">
-          <div className="mx-auto w-14 h-14 rounded-2xl bg-[var(--amber)] flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(216,163,90,0.3)]">
-            <ShieldCheck className="w-7 h-7 text-[#050505]" />
+          <div className="mx-auto w-14 h-14 rounded-2xl bg-[var(--amber)] flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(168,118,58,0.3)]">
+            <ShieldCheck className="w-7 h-7 text-ink" />
           </div>
           <div className="text-[var(--amber)] text-[20px] tracking-[0.12em] uppercase font-bold">
             {t('admin.brand')}
@@ -69,14 +69,14 @@ export default function AdminLogin() {
         </div>
 
         {/* Login Card */}
-        <div className="bg-[#0a0a0a]/90 backdrop-blur border border-[rgba(255,255,255,0.08)] rounded-xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.5)] animate-fade-in" style={{ animationDelay: '80ms' }}>
+        <div className="bg-card/90 backdrop-blur border border-[rgba(32,29,23,0.08)] rounded-xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.5)] animate-fade-in" style={{ animationDelay: '80ms' }}>
           <div className="mb-8">
             <h1 className="text-xl font-bold tracking-[0.06em] uppercase mb-1">{t('admin.login.signIn')}</h1>
             <p className="text-[var(--gray)] text-sm">{t('admin.login.subtitle')}</p>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-3 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+            <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-3 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -92,7 +92,7 @@ export default function AdminLogin() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-[#050505]/70 border border-[rgba(255,255,255,0.12)] rounded-lg text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all"
+                className="w-full px-4 py-3 bg-cream/70 border border-[rgba(32,29,23,0.12)] rounded-lg text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all"
                 placeholder="admin@fnec.net"
                 required
                 autoComplete="email"
@@ -110,7 +110,7 @@ export default function AdminLogin() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#050505]/70 border border-[rgba(255,255,255,0.12)] rounded-lg text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all pr-12"
+                  className="w-full px-4 py-3 bg-cream/70 border border-[rgba(32,29,23,0.12)] rounded-lg text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all pr-12"
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
@@ -119,7 +119,7 @@ export default function AdminLogin() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray)] hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray)] hover:text-ink transition-colors"
                   aria-label={showPassword ? t('admin.login.hidePassword') : t('admin.login.showPassword')}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}

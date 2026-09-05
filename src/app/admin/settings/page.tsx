@@ -79,7 +79,7 @@ export default function AdminSettings() {
     );
   }
 
-  const inputClass = "w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.2)] focus:outline-none focus:border-[var(--amber)] transition-colors";
+  const inputClass = "w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.2)] focus:outline-none focus:border-[var(--amber)] transition-colors";
   const labelClass = "block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2";
 
   return (
@@ -102,7 +102,7 @@ export default function AdminSettings() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -110,7 +110,7 @@ export default function AdminSettings() {
 
       <div className="max-w-[600px] space-y-6">
         {/* Site Info */}
-        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.settings.siteInfo')}</h2>
           <div className="space-y-4">
             {[
@@ -131,7 +131,7 @@ export default function AdminSettings() {
         </div>
 
         {/* Contact Info */}
-        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.settings.contactInfo')}</h2>
           <div className="space-y-4">
             {[
@@ -152,7 +152,7 @@ export default function AdminSettings() {
         </div>
 
         {/* Analytics */}
-        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.settings.analytics')}</h2>
           <div className="space-y-4">
             {[

@@ -72,11 +72,11 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg overflow-hidden">
+      <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[rgba(255,255,255,0.06)]">
+              <tr className="border-b border-[rgba(32,29,23,0.06)]">
                 <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colProduct')}</th>
                 <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colCategory')}</th>
                 <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colPrice')}</th>
@@ -87,9 +87,9 @@ export default function AdminProducts() {
             </thead>
             <tbody>
               {products.map((p) => (
-                <tr key={p.id} className="border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.02)]">
+                <tr key={p.id} className="border-b border-[rgba(32,29,23,0.03)] hover:bg-[rgba(32,29,23,0.02)]">
                   <td className="p-4">
-                    <div className="text-white text-sm font-medium">{p.name}</div>
+                    <div className="text-ink text-sm font-medium">{p.name}</div>
                     <div className="text-[var(--gray)] text-xs">{p.sub_title}</div>
                   </td>
                   <td className="p-4 text-sm text-[var(--gray)] capitalize">{p.category.replace(/-/g, ' ')}</td>
@@ -98,7 +98,7 @@ export default function AdminProducts() {
                     <button
                       onClick={() => toggleStock(p.id, p.in_stock)}
                       className={`px-2 py-1 rounded-full text-[10px] tracking-[0.14em] uppercase ${
-                        p.in_stock ? 'bg-[rgba(52,211,153,0.2)] text-green-400' : 'bg-[rgba(255,75,75,0.2)] text-red-400'
+                        p.in_stock ? 'bg-[rgba(52,211,153,0.2)] text-green-700' : 'bg-[rgba(255,75,75,0.2)] text-red-400'
                       }`}
                     >
                       {p.in_stock ? t('admin.products.inStock') : t('admin.products.outOfStock')}
@@ -109,7 +109,7 @@ export default function AdminProducts() {
                     <div className="flex items-center justify-end gap-2">
                       <Link
                         href={`/admin/products/${p.slug}`}
-                        className="p-2 text-[var(--gray)] hover:text-white transition-colors"
+                        className="p-2 text-[var(--gray)] hover:text-ink transition-colors"
                       >
                         <Pencil className="w-4 h-4" />
                       </Link>

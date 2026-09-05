@@ -61,7 +61,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-[#050505] border-t border-[rgba(255,255,255,0.06)]">
+    <footer className="bg-cream border-t border-[rgba(32,29,23,0.06)]">
       <div className="px-page py-[clamp(60px,8vw,100px)] mx-auto max-w-[1400px]">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-10">
           {/* Brand */}
@@ -90,7 +90,7 @@ export function Footer() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="text-[14px] text-[var(--soft-white)] hover:text-white transition-colors"
+                    className="text-[14px] text-[var(--soft-white)] hover:text-ink transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -101,10 +101,10 @@ export function Footer() {
         </div>
 
         {/* Newsletter */}
-        <div className="mt-14 pt-10 border-t border-[rgba(255,255,255,0.06)] max-w-[1200px]">
+        <div className="mt-14 pt-10 border-t border-[rgba(32,29,23,0.06)] max-w-[1200px]">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
-              <h3 className="text-[13px] tracking-[0.16em] uppercase font-bold text-white mb-2">
+              <h3 className="text-[13px] tracking-[0.16em] uppercase font-bold text-ink mb-2">
                 {t('footer.newsletter.title')}
               </h3>
               <p className="text-[var(--gray)] text-[13px] max-w-[420px]">
@@ -123,7 +123,7 @@ export function Footer() {
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder={t('footer.newsletter.placeholder')}
-                className="flex-1 lg:w-[280px] px-4 py-3 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-full text-white placeholder-[rgba(255,255,255,0.3)] text-sm focus:outline-none focus:border-[var(--amber)]"
+                className="flex-1 lg:w-[280px] px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-full text-ink placeholder-[rgba(32,29,23,0.3)] text-sm focus:outline-none focus:border-[var(--amber)]"
               />
               <button
                 type="submit"
@@ -142,20 +142,20 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mt-12 pt-8 border-t border-[rgba(255,255,255,0.06)]">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mt-12 pt-8 border-t border-[rgba(32,29,23,0.06)]">
           <div className="flex items-center gap-6 text-[var(--gray)] text-[12px]">
             <span>© {new Date().getFullYear()} Yantai Funing Electronics Co., Ltd. 烟台富宁电子有限公司</span>
             <span className="hidden md:inline">|</span>
             <span>{t('footer.rights')}</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/privacy" className="text-[12px] text-[var(--gray)] hover:text-white transition-colors">
+            <Link href="/privacy" className="text-[12px] text-[var(--gray)] hover:text-ink transition-colors">
               {t('footer.privacy')}
             </Link>
-            <Link href="/terms" className="text-[12px] text-[var(--gray)] hover:text-white transition-colors">
+            <Link href="/terms" className="text-[12px] text-[var(--gray)] hover:text-ink transition-colors">
               {t('footer.terms')}
             </Link>
-            <Link href="/cookies" className="text-[12px] text-[var(--gray)] hover:text-white transition-colors">
+            <Link href="/cookies" className="text-[12px] text-[var(--gray)] hover:text-ink transition-colors">
               {t('footer.cookies')}
             </Link>
           </div>

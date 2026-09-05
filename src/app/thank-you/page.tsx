@@ -7,7 +7,7 @@ export default function ThankYouPage() {
   const { t } = useLang();
 
   return (
-    <section className="px-page py-[clamp(80px,10vw,140px)] min-h-[60vh] flex items-center justify-center bg-[#050505]">
+    <section className="px-page py-[clamp(80px,10vw,140px)] min-h-[60vh] flex items-center justify-center bg-cream">
       <div className="max-w-[500px] text-center">
         <div className="w-16 h-16 bg-[var(--amber)] rounded-full flex items-center justify-center mx-auto mb-6">
           <span className="text-3xl">✓</span>

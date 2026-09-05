@@ -7,7 +7,7 @@ export default function ElevatePage() {
   const { t } = useLang();
 
   return (
-    <section className="px-page py-[clamp(80px,10vw,140px)] bg-[#050505]">
+    <section className="px-page py-[clamp(80px,10vw,140px)] bg-cream">
       <div className="max-w-[1200px] mx-auto text-center">
         <p className="eyebrow mb-6">{t('elevate.eyebrow')}</p>
         <h1 className="text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[0.06em] uppercase font-bold mb-6">

@@ -62,7 +62,7 @@ export default function NewsArticlePage() {
 
   if (notFound || !article) {
     return (
-      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(80px,10vw,140px)] bg-[#050505] min-h-[70vh]">
+      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(80px,10vw,140px)] bg-cream min-h-[70vh]">
         <div className="max-w-[800px] mx-auto text-center">
           <p className="eyebrow mb-6">404</p>
           <h1 className="text-[clamp(28px,4vw,48px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6">
@@ -119,7 +119,7 @@ export default function NewsArticlePage() {
           }),
         }}
       />
-      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(40px,5vw,72px)] bg-[#050505]">
+      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(40px,5vw,72px)] bg-cream">
         <div className="max-w-[860px] mx-auto">
           <Link
             href="/news"
@@ -149,9 +149,9 @@ export default function NewsArticlePage() {
       </section>
 
       {article.cover_image && (
-        <section className="px-page bg-[#050505]">
+        <section className="px-page bg-cream">
           <div className="max-w-[960px] mx-auto">
-            <div className="aspect-[21/9] overflow-hidden rounded-lg border border-[rgba(255,255,255,0.06)]">
+            <div className="aspect-[21/9] overflow-hidden rounded-lg border border-[rgba(32,29,23,0.06)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={article.cover_image} alt={article.title} className="w-full h-full object-cover" />
             </div>
@@ -159,10 +159,10 @@ export default function NewsArticlePage() {
         </section>
       )}
 
-      <section className="px-page py-[clamp(48px,6vw,88px)] bg-[#080808]">
+      <section className="px-page py-[clamp(48px,6vw,88px)] bg-sand">
         <div className="max-w-[860px] mx-auto">
           {article.content ? (
-            <div className="prose-invert text-[clamp(16px,1.2vw,18px)] leading-[1.85] text-[var(--soft-white)] whitespace-pre-line">
+            <div className="prose text-[clamp(16px,1.2vw,18px)] leading-[1.85] text-[var(--soft-white)] whitespace-pre-line">
               {article.content}
             </div>
           ) : (

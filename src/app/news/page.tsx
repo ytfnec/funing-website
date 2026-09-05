@@ -40,7 +40,7 @@ export default function NewsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(60px,8vw,100px)] bg-[#050505]">
+      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(60px,8vw,100px)] bg-cream">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="eyebrow mb-6">{t('news.hero.eyebrow')}</p>
           <h1 className="text-[clamp(40px,6vw,80px)] leading-[1.05] tracking-[0.06em] uppercase font-bold mb-8">
@@ -51,7 +51,7 @@ export default function NewsPage() {
       </section>
 
       {/* Listing */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808] min-h-[40vh]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand min-h-[40vh]">
         <div className="max-w-[1100px] mx-auto">
           {loading ? (
             <NewsListSkeleton />
@@ -69,7 +69,7 @@ export default function NewsPage() {
                 >
                   {/* Cover / placeholder */}
                   <Link href={`/news/${article.slug}`} className="block relative overflow-hidden">
-                    <div className="aspect-[4/3] tech-panel bg-[#0a0a0a] overflow-hidden flex items-center justify-center">
+                    <div className="aspect-[4/3] tech-panel bg-card overflow-hidden flex items-center justify-center">
                       {article.cover_image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -114,7 +114,7 @@ export default function NewsPage() {
                     )}
                     <Link
                       href={`/news/${article.slug}`}
-                      className="inline-flex items-center gap-2 text-[12px] tracking-[0.16em] uppercase text-[var(--amber)] font-bold hover:text-white transition-colors"
+                      className="inline-flex items-center gap-2 text-[12px] tracking-[0.16em] uppercase text-[var(--amber)] font-bold hover:text-ink transition-colors"
                     >
                       {t('news.readMore')}
                       <ArrowUpRight className="w-4 h-4" />

@@ -115,17 +115,17 @@ export default function Home() {
           <div className="absolute inset-0" style={{ background: "rgba(5,5,5,0.55)" }} />
         </div>
 
-        <div className="relative z-10 px-page max-w-[1000px] mx-auto">
+        <div className="relative z-10 px-page max-w-[1000px] mx-auto text-ivory">
           <div className="flex flex-col items-center max-[1000px]:flex max-[1000px]:flex-col max-[1000px]:h-full max-[1000px]:justify-center text-center max-[1000px]:px-4 animate-fade-in">
             <div className="w-full max-w-[620px] mb-[clamp(40px,9vw,56px)]">
-              <p className="eyebrow mb-6" style={{ marginTop: 0, marginBottom: "24px" }}>
+              <p className="eyebrow mb-6 text-[#d8b47c]" style={{ marginTop: 0, marginBottom: "24px" }}>
                 {t('home.hero.eyebrow')}
               </p>
-              <h1 className="section-title" style={{ marginTop: 0, marginBottom: "24px" }}>
+              <h1 className="section-title text-ivory" style={{ marginTop: 0, marginBottom: "24px" }}>
                 {t('home.hero.title1')}{" "}
                 <span className="tracking-[0.04em]">{t('home.hero.title2')}</span>
               </h1>
-              <p className="body-text" style={{ marginTop: 0, marginBottom: "clamp(40px, 9vw, 56px)", maxWidth: "560px" }}>
+              <p className="body-text text-ivory/90" style={{ marginTop: 0, marginBottom: "clamp(40px, 9vw, 56px)", maxWidth: "560px" }}>
                 {t('home.hero.desc')}
               </p>
             </div>
@@ -140,7 +140,7 @@ export default function Home() {
               </button>
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-secondary btn-on-dark"
                 onClick={() => window.location.href = "/contact"}
               >
                 {t('home.hero.ctaContact')}
@@ -151,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* Product Categories */}
-      <section id="products" className="scroll-mt-0 px-page bg-gradient-to-b from-[#060606] to-[#121212]" style={{
+      <section id="products" className="scroll-mt-0 px-page bg-gradient-to-b from-[#f6f2ea] to-[#efe9de]" style={{
         paddingTop: "clamp(80px, 12vw, 140px)",
         paddingBottom: "clamp(80px, 12vw, 140px)"
       }}>
@@ -174,8 +174,8 @@ export default function Home() {
           {products.map((p) => (
             <article key={p.key} className="flex flex-col product-card group">
               <div className="flex flex-col">
-                <div className="relative product-panel" style={{ aspectRatio: "4 / 5", background: "#0a0a0a", overflow: "hidden" }}>
-                  <div className="absolute inset-0 flex items-center justify-center tech-panel" style={{ background: "radial-gradient(circle at center, rgba(216,163,90,0.12), transparent 70%)" }}>
+                <div className="relative product-panel" style={{ aspectRatio: "4 / 5", background: "#fdfbf7", overflow: "hidden" }}>
+                  <div className="absolute inset-0 flex items-center justify-center tech-panel" style={{ background: "radial-gradient(circle at center, rgba(168,118,58,0.12), transparent 70%)" }}>
                     <div className="text-center px-6">
                       <div className="text-[var(--amber)] text-[40px] mb-4 opacity-60 product-icon">
                         {p.icon}
@@ -217,7 +217,7 @@ export default function Home() {
       </section>
 
       {/* Why Funing */}
-      <section id="why-funing" className="scroll-mt-0 px-page bg-[#080808]" style={{
+      <section id="why-funing" className="scroll-mt-0 px-page bg-sand" style={{
         paddingTop: "clamp(96px, 14vw, 160px)",
         paddingBottom: "clamp(96px, 14vw, 160px)"
       }}>
@@ -252,7 +252,7 @@ export default function Home() {
                 <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "14px" }}>
                   {c.bullets.map((b, bi) => (
                     <li key={bi} className="text-[var(--gray)] text-[16px] leading-[1.7]" style={{ position: "relative", paddingLeft: "18px" }}>
-                      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: "10px", width: "6px", height: "6px", backgroundColor: "var(--amber, #d8a35a)", borderRadius: "999px" }} />
+                      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: "10px", width: "6px", height: "6px", backgroundColor: "var(--amber, #a8763a)", borderRadius: "999px" }} />
                       {b}
                     </li>
                   ))}
@@ -264,7 +264,7 @@ export default function Home() {
       </section>
 
       {/* OEM/ODM Services */}
-      <section id="oem" className="scroll-mt-0 px-page bg-[#050505]" style={{
+      <section id="oem" className="scroll-mt-0 px-page bg-cream" style={{
         paddingTop: "clamp(96px, 14vw, 160px)",
         paddingBottom: "clamp(96px, 14vw, 160px)"
       }}>
@@ -290,7 +290,7 @@ export default function Home() {
 
           <div className="grid grid-cols-3 gap-[20px] max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
             {oemServices.map((svc) => (
-              <div key={svc.title} className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors">
+              <div key={svc.title} className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors">
                 <h3 className="text-[15px] tracking-[0.08em] uppercase font-bold mb-3">{svc.title}</h3>
                 <p className="text-[var(--gray)] text-[14px] leading-relaxed">{svc.desc}</p>
               </div>
@@ -309,7 +309,7 @@ export default function Home() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="scroll-mt-0 px-page bg-[#050505]" style={{
+      <section id="faq" className="scroll-mt-0 px-page bg-cream" style={{
         paddingTop: "clamp(96px, 14vw, 160px)",
         paddingBottom: "clamp(96px, 14vw, 160px)"
       }}>
@@ -336,7 +336,7 @@ export default function Home() {
             {faq.map((item, i) => (
               <details key={item.q} className="group faq-item border-t border-[var(--line)]" style={{ paddingTop: "24px", paddingBottom: i === faq.length - 1 ? "0" : "24px" }}>
                 <summary className="flex items-center justify-between cursor-pointer list-none" style={{ paddingRight: "32px" }}>
-                  <span className="text-white font-medium text-[16px] leading-[1.4] pr-8">{item.q}</span>
+                  <span className="text-ink font-medium text-[16px] leading-[1.4] pr-8">{item.q}</span>
                   <svg className="w-5 h-5 text-[var(--amber)] flex-shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -375,15 +375,15 @@ export default function Home() {
             className="absolute inset-0 opacity-40"
             style={{
               background:
-                "radial-gradient(circle at 50% 120%, rgba(216,163,90,0.12), transparent 55%), linear-gradient(rgba(216,163,90,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.04) 1px, transparent 1px)",
+                "radial-gradient(circle at 50% 120%, rgba(168,118,58,0.12), transparent 55%), linear-gradient(rgba(168,118,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.04) 1px, transparent 1px)",
               backgroundSize: "100% 100%, 44px 44px, 44px 44px",
             }}
           />
         </div>
 
-        <div className="relative z-10">
-          <p className="eyebrow" style={{ marginBottom: "32px" }}>{t('home.cta.eyebrow')}</p>
-          <h2 className="section-title mx-auto" style={{
+        <div className="relative z-10 text-ivory">
+          <p className="eyebrow text-[#d8b47c]" style={{ marginBottom: "32px" }}>{t('home.cta.eyebrow')}</p>
+          <h2 className="section-title mx-auto text-ivory" style={{
             fontSize: "clamp(40px,5.6vw,68px)",
             lineHeight: 1.1,
             letterSpacing: "0.04em",
@@ -391,14 +391,14 @@ export default function Home() {
           }}>
             {t('home.cta.title')}
           </h2>
-          <p className="text-[var(--soft-white)] mx-auto" style={{ maxWidth: "620px", lineHeight: 1.6, marginBottom: "56px", textAlign: "center" }}>
+          <p className="text-ivory/90 mx-auto" style={{ maxWidth: "620px", lineHeight: 1.6, marginBottom: "56px", textAlign: "center" }}>
             {t('home.cta.desc')}
           </p>
           <div className="flex justify-center items-center gap-[16px] flex-wrap">
             <button type="button" className="btn btn-primary" onClick={() => window.location.href = "/quote"}>
               {t('home.cta.btn1')}
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => window.location.href = "/contact"}>
+            <button type="button" className="btn btn-secondary btn-on-dark" onClick={() => window.location.href = "/contact"}>
               {t('home.cta.btn2')}
             </button>
           </div>

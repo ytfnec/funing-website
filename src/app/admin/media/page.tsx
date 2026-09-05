@@ -214,21 +214,21 @@ export default function AdminMedia() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {uploaded && (
-        <div className="flex items-center gap-2 text-green-400 text-sm mb-6 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-green-700 text-sm mb-6 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
           <Check className="w-4 h-4 flex-shrink-0" />
           <span>{uploaded}</span>
         </div>
       )}
 
       {media.length === 0 ? (
-        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-8 text-center">
+        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-8 text-center">
           <FolderOpen className="w-12 h-12 text-[var(--gray)] mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">{t('admin.media.empty')}</h2>
           <p className="text-[var(--gray)] text-sm mb-6 max-w-[400px] mx-auto">
@@ -241,7 +241,7 @@ export default function AdminMedia() {
       ) : (
         <>
         {/* Bulk action toolbar */}
-        <div className="mb-4 bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="mb-4 bg-card border border-[rgba(32,29,23,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
           <label className="flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -268,8 +268,8 @@ export default function AdminMedia() {
           {media.map((item) => (
             <div
               key={item.id}
-              className={`relative bg-[#0a0a0a] border rounded-lg overflow-hidden group transition-colors ${
-                selected.has(item.id) ? 'border-[rgba(216,163,90,0.55)]' : 'border-[rgba(255,255,255,0.06)]'
+              className={`relative bg-card border rounded-lg overflow-hidden group transition-colors ${
+                selected.has(item.id) ? 'border-[rgba(168,118,58,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
               }`}
             >
               <div className="absolute top-2 left-2 z-10">
@@ -281,7 +281,7 @@ export default function AdminMedia() {
                   title={t('admin.media.selectTitle').replace('{name}', item.original_name)}
                 />
               </div>
-              <div className="aspect-square bg-[#050505] flex items-center justify-center overflow-hidden">
+              <div className="aspect-square bg-cream flex items-center justify-center overflow-hidden">
                 {item.mime_type.startsWith('image/') && hasPublicUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -300,7 +300,7 @@ export default function AdminMedia() {
                 )}
               </div>
               <div className="p-3">
-                <div className="text-white text-sm font-medium truncate" title={item.original_name}>
+                <div className="text-ink text-sm font-medium truncate" title={item.original_name}>
                   {item.original_name}
                 </div>
                 <div className="flex items-center justify-between mt-1">
@@ -316,18 +316,18 @@ export default function AdminMedia() {
                       value={altDraft}
                       onChange={(e) => setAltDraft(e.target.value)}
                       placeholder={t('admin.media.altPlaceholder')}
-                      className="w-full px-2 py-1.5 bg-[#050505] border border-[rgba(255,255,255,0.15)] rounded text-xs text-white focus:outline-none focus:border-[var(--amber)]"
+                      className="w-full px-2 py-1.5 bg-card border border-[rgba(32,29,23,0.15)] rounded text-xs text-ink focus:outline-none focus:border-[var(--amber)]"
                     />
                     <div className="flex gap-2">
                       <button
                         onClick={() => saveAlt(item)}
-                        className="flex items-center gap-1 text-[11px] text-green-400 hover:text-white transition-colors"
+                        className="flex items-center gap-1 text-[11px] text-green-700 hover:text-ink transition-colors"
                       >
                         <Check className="w-3 h-3" /> {t('admin.media.save')}
                       </button>
                       <button
                         onClick={() => setEditingAlt(null)}
-                        className="flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-white transition-colors"
+                        className="flex items-center gap-1 text-[11px] text-[var(--gray)] hover:text-ink transition-colors"
                       >
                         <X className="w-3 h-3" /> {t('admin.media.cancel')}
                       </button>
@@ -357,7 +357,7 @@ export default function AdminMedia() {
         </>
       )}
 
-      <div className="mt-6 p-6 bg-[rgba(216,163,90,0.05)] border border-[rgba(216,163,90,0.15)] rounded-lg">
+      <div className="mt-6 p-6 bg-[rgba(168,118,58,0.05)] border border-[rgba(168,118,58,0.15)] rounded-lg">
         <h3 className="text-sm font-bold mb-2">{t('admin.media.guideTitle')}</h3>
         <ul className="text-[var(--gray)] text-sm space-y-2">
           <li>• {t('admin.media.guide1')}</li>

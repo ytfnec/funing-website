@@ -28,12 +28,12 @@ export function Header() {
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-300 ${scrolled ? 'bg-[#050505]/95 border-[rgba(255,255,255,0.1)] shadow-[0_8px_32px_rgba(0,0,0,0.4)]' : 'bg-[#050505]/80 border-[rgba(255,255,255,0.06)]'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-300 ${scrolled ? 'bg-cream/95 border-[rgba(32,29,23,0.1)] shadow-[0_8px_24px_rgba(32,29,23,0.08)]' : 'bg-cream/85 border-[rgba(32,29,23,0.08)]'}`}>
       <div className="px-page h-[64px] flex items-center justify-between mx-auto max-w-[1400px]">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3" aria-label="Funing Electronics home">
           {!logoFailed ? (
-            // Solid brand-amber (#d8a35a) logo — same color as the site's
+            // Solid brand-amber (#a8763a) logo — same color as the site's
             // buttons, no gradient, matches the design language.
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -44,7 +44,7 @@ export function Header() {
             />
           ) : (
             <>
-              <div className="text-[var(--amber,#d8a35a)] text-[15px] tracking-[0.12em] uppercase font-bold">
+              <div className="text-[var(--amber,#a8763a)] text-[15px] tracking-[0.12em] uppercase font-bold">
                 {t('brand.funing')}
               </div>
               <span className="text-[11px] tracking-[0.16em] uppercase text-[var(--gray)] hidden sm:inline">
@@ -60,7 +60,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-[13px] tracking-[0.14em] uppercase text-[var(--gray)] hover:text-white transition-colors"
+              className="text-[13px] tracking-[0.14em] uppercase text-[var(--gray)] hover:text-[var(--amber)] transition-colors"
             >
               {link.label}
             </Link>
@@ -72,7 +72,7 @@ export function Header() {
           <LanguageSwitcher />
           <Link
             href="/quote"
-            className="text-[12px] tracking-[0.14em] uppercase text-[var(--amber)] hover:text-white transition-colors font-bold"
+            className="text-[12px] tracking-[0.14em] uppercase text-[var(--amber)] hover:text-[var(--amber-light)] transition-colors font-bold"
           >
             {t('nav.quote')}
           </Link>
@@ -88,7 +88,7 @@ export function Header() {
         <div className="flex md:hidden items-center gap-2">
           <LanguageSwitcher />
           <button
-            className="text-white p-2"
+            className="text-ink p-2"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           >
@@ -99,19 +99,19 @@ export function Header() {
 
       {/* Mobile Nav */}
       {menuOpen && (
-        <div className="md:hidden bg-[#050505] border-b border-[rgba(255,255,255,0.06)]">
+        <div className="md:hidden bg-cream border-b border-[rgba(32,29,23,0.06)]">
           <nav className="px-page py-6 flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[13px] tracking-[0.14em] uppercase text-[var(--gray)] hover:text-white transition-colors py-2"
+                className="text-[13px] tracking-[0.14em] uppercase text-[var(--gray)] hover:text-[var(--amber)] transition-colors py-2"
                 onClick={() => setMenuOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="flex gap-3 pt-4 border-t border-[rgba(255,255,255,0.08)]">
+            <div className="flex gap-3 pt-4 border-t border-[rgba(32,29,23,0.08)]">
               <Link
                 href="/quote"
                 className="btn btn-secondary text-xs flex-1 py-3"

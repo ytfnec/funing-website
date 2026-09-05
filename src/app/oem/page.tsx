@@ -51,7 +51,7 @@ export default function OEMPage() {
   return (
     <>
       {/* Hero */}
-      <section className="px-page py-[clamp(80px,12vw,140px)] bg-[#050505]">
+      <section className="px-page py-[clamp(80px,12vw,140px)] bg-cream">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="eyebrow mb-6">{t('oem.hero.eyebrow')}</p>
           <h1 className="text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[0.06em] uppercase font-bold mb-8">
@@ -68,14 +68,14 @@ export default function OEMPage() {
       </section>
 
       {/* Services Grid */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-center text-[clamp(28px,3.5vw,44px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-16">
             {t('oem.what.title')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((svc) => (
-              <div key={svc.title} className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col">
+              <div key={svc.title} className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col">
                 <h3 className="text-[16px] tracking-[0.08em] uppercase font-bold mb-3">{svc.title}</h3>
                 <p className="text-[var(--gray)] text-[14px] leading-relaxed mb-4">{svc.desc}</p>
                 <ul className="space-y-2 mt-auto">
@@ -93,7 +93,7 @@ export default function OEMPage() {
       </section>
 
       {/* Process */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-cream">
         <div className="max-w-[1000px] mx-auto">
           <h2 className="text-center text-[clamp(28px,3.5vw,44px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6">
             {t('oem.process.title')}
@@ -109,7 +109,7 @@ export default function OEMPage() {
             <div className="space-y-10">
               {process.map((p) => (
                 <div key={p.step} className="flex gap-6 items-start">
-                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-[var(--amber)] text-[#050505] flex items-center justify-center text-sm font-bold">
+                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-[var(--amber)] text-ink flex items-center justify-center text-sm font-bold">
                     {p.step}
                   </div>
                   <div className="pt-2">
@@ -124,7 +124,7 @@ export default function OEMPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808] text-center">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand text-center">
         <h2 className="text-[clamp(28px,3.5vw,44px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6 max-w-[700px] mx-auto">
           {t('oem.cta.title')}
         </h2>

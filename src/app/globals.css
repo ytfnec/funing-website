@@ -1,17 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-black: #050505;
-  --color-charcoal: #101010;
-  --color-dark-gray: #1a1a1a;
-  --color-white: #f7f5ef;
-  --color-soft-white: #ebe7dd;
-  --color-gray: #9a9a9a;
-  --color-line: #ffffff29;
-  --color-wood: #a76532;
-  --color-amber: #d8a35a;
-  --color-amber-light: #d8a35a;
-  --color-soft-black: #080808;
+  /* Warm-light theme (Axis-style): warm ivory base + warm-charcoal ink + bronze accent */
+  --color-black: #201d17;       /* ink — headings / primary text */
+  --color-charcoal: #2a261e;    /* warm charcoal for dark bands (hero overlays, footer) */
+  --color-dark-gray: #3b362e;
+  --color-white: #f5efe4;       /* ivory — reserved for text sitting on dark image bands */
+  --color-soft-white: #2c2821;  /* strong body text on light surfaces */
+  --color-gray: #6f6a5e;        /* muted / secondary text on light surfaces */
+  --color-line: rgba(32,29,23,0.12);
+  --color-wood: #9a6a35;
+  --color-amber: #a8763a;       /* bronze accent */
+  --color-amber-light: #c9a66b;
+  --color-soft-black: #efe9de;
+  --color-cream: #f6f2ea;       /* page base background */
+  --color-sand: #efe9de;        /* alternating section background */
+  --color-card: #fdfbf7;        /* cards / surfaces / inputs */
+  --color-ink: #201d17;
+  --color-ivory: #f5efe4;
+  --color-bronze-deep: #8b5f28;
 
   --font-sans: var(--font-manrope), "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -29,6 +36,16 @@
   --text-clamp-lg: clamp(38px, 5vw, 72px);
   --text-clamp-md: clamp(32px, 4.4vw, 56px);
   --text-clamp-sm: clamp(17px, 1.25vw, 19px);
+}
+
+/* Unprefixed design tokens referenced across components (kept in sync above). */
+:root {
+  --amber: #a8763a;
+  --amber-light: #c9a66b;
+  --gray: #6f6a5e;
+  --soft-white: #2c2821;
+  --wood: #9a6a35;
+  --line: rgba(32,29,23,0.12);
 }
 
 @layer base {
@@ -58,8 +75,8 @@
 
   body {
     font-family: var(--font-sans);
-    background: var(--color-black);
-    color: var(--color-white);
+    background: var(--color-cream);
+    color: var(--color-ink);
     letter-spacing: 0.04em;
     -webkit-font-smoothing: antialiased;
     font-weight: 300;
@@ -107,16 +124,16 @@
 
   .btn-primary {
     background: var(--color-amber);
-    color: var(--color-black);
+    color: var(--color-ink);
     border-color: var(--color-amber);
-    box-shadow: 0 0 0 rgba(216,163,90,0);
+    box-shadow: 0 0 0 rgba(168,118,58,0);
   }
 
   .btn-primary:hover {
-    background: var(--color-white);
-    color: var(--color-black);
-    border-color: var(--color-white);
-    box-shadow: 0 8px 32px rgba(216,163,90,0.25);
+    background: var(--color-bronze-deep);
+    color: var(--color-ivory);
+    border-color: var(--color-bronze-deep);
+    box-shadow: 0 8px 32px rgba(168,118,58,0.28);
     transform: translateY(-1px);
   }
 
@@ -126,18 +143,29 @@
 
   .btn-secondary {
     background: transparent;
-    color: var(--color-white);
-    border-color: rgba(255,255,255,0.3);
+    color: var(--color-ink);
+    border-color: rgba(32,29,23,0.35);
   }
 
   .btn-secondary:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.6);
+    background: rgba(32,29,23,0.05);
+    border-color: rgba(32,29,23,0.6);
     transform: translateY(-1px);
   }
 
   .btn-secondary:active {
     transform: translateY(0);
+  }
+
+  /* Secondary button sitting on a dark photo band — keep legible ivory outline */
+  .btn-on-dark {
+    color: var(--color-ivory);
+    border-color: rgba(245,239,228,0.35);
+  }
+
+  .btn-on-dark:hover {
+    background: rgba(245,239,228,0.1);
+    border-color: rgba(245,239,228,0.7);
   }
 
   /* Accessible keyboard focus across the site */
@@ -190,23 +218,20 @@
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 
-  /* Subtle PCB-style grid for product placeholder panels */
+  /* Subtle PCB-style grid for product placeholder panels (bronze on light) */
   .tech-panel {
     background-image:
-      linear-gradient(rgba(216,163,90,0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(216,163,90,0.045) 1px, transparent 1px);
+      linear-gradient(rgba(168,118,58,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168,118,58,0.08) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
-  /* Skeleton loading primitives (route loading.tsx + client fetch states).
-     A muted dark block with a slow amber shimmer. The global
-     prefers-reduced-motion rule above freezes the animation for
-     reduced-motion users — the base block remains visible. */
+  /* Skeleton loading primitives — muted warm block with a slow bronze shimmer */
   .skeleton {
     position: relative;
     overflow: hidden;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(32,29,23,0.06);
   }
 
   .skeleton::after {
@@ -214,7 +239,7 @@
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(216, 163, 90, 0.10), transparent);
+    background: linear-gradient(90deg, transparent, rgba(168,118,58,0.14), transparent);
     animation: skeleton-shimmer 1.6s ease-in-out infinite;
   }
 
@@ -259,7 +284,7 @@
     }
 
     .product-card:hover .product-panel {
-      box-shadow: inset 0 0 0 1px rgba(216,163,90,0.25), 0 12px 40px -12px rgba(216,163,90,0.18);
+      box-shadow: inset 0 0 0 1px rgba(168,118,58,0.25), 0 12px 40px -12px rgba(168,118,58,0.18);
     }
 
     .product-card .product-cta {

@@ -20,7 +20,7 @@ export default function AccessoriesPage() {
 
   return (
     <>
-      <section className="px-page py-[clamp(80px,10vw,140px)] bg-[#050505]">
+      <section className="px-page py-[clamp(80px,10vw,140px)] bg-cream">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="eyebrow mb-6">{t('acc.hero.eyebrow')}</p>
           <h1 className="text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[0.06em] uppercase font-bold mb-6">{t('acc.hero.title')}</h1>
@@ -35,19 +35,19 @@ export default function AccessoriesPage() {
       </section>
 
       {/* Product Grid */}
-      <section className="px-page py-[clamp(60px,8vw,80px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,80px)] bg-sand">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]">
           {accessories.map((item) => (
             <div
               key={item.name}
-              className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col"
+              className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col"
             >
               <span className="text-[10px] tracking-[0.2em] uppercase text-[var(--amber)] mb-3">{item.cat}</span>
-              <h3 className="text-[16px] font-bold mb-2 text-white">{item.name}</h3>
+              <h3 className="text-[16px] font-bold mb-2 text-ink">{item.name}</h3>
               <p className="text-[var(--gray)] text-[14px] leading-relaxed mb-4 flex-1">{item.desc}</p>
-              <div className="flex items-center justify-between pt-4 border-t border-[rgba(255,255,255,0.06)]">
+              <div className="flex items-center justify-between pt-4 border-t border-[rgba(32,29,23,0.06)]">
                 <span className="text-[14px]" style={{ color: 'var(--wood)' }}>{item.price}</span>
-                <Link href="/quote" className="text-[var(--amber)] text-[12px] tracking-[0.12em] uppercase font-bold hover:text-white transition-colors">
+                <Link href="/quote" className="text-[var(--amber)] text-[12px] tracking-[0.12em] uppercase font-bold hover:text-ink transition-colors">
                   {t('acc.quote')}
                 </Link>
               </div>
@@ -57,7 +57,7 @@ export default function AccessoriesPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-page py-[clamp(60px,8vw,80px)] bg-[#050505] text-center">
+      <section className="px-page py-[clamp(60px,8vw,80px)] bg-cream text-center">
         <h2 className="text-[clamp(24px,3vw,36px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6">
           {t('acc.cta.title')}
         </h2>

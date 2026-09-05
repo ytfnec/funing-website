@@ -71,7 +71,7 @@ export function PageSkeleton() {
 export function NewsListSkeleton() {
   return (
     <>
-      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(60px,8vw,100px)] bg-[#050505]">
+      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(60px,8vw,100px)] bg-cream">
         <div className="max-w-[1200px] mx-auto text-center">
           <Skeleton style={{ width: 150, height: 11, marginBottom: 24, marginInline: 'auto' }} />
           <Skeleton
@@ -88,7 +88,7 @@ export function NewsListSkeleton() {
         </div>
       </section>
 
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808] min-h-[40vh]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand min-h-[40vh]">
         <div className="max-w-[1100px] mx-auto space-y-[clamp(40px,5vw,64px)]">
           {Array.from({ length: 3 }).map((_, i) => (
             <div
@@ -124,7 +124,7 @@ export function NewsListSkeleton() {
 export function NewsArticleSkeleton() {
   return (
     <>
-      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(40px,5vw,72px)] bg-[#050505]">
+      <section className="px-page pt-[clamp(120px,16vw,200px)] pb-[clamp(40px,5vw,72px)] bg-cream">
         <div className="max-w-[860px] mx-auto">
           <Skeleton style={{ width: 110, height: 12, marginBottom: 32 }} />
           <Skeleton style={{ width: 130, height: 11, marginBottom: 20 }} />
@@ -138,13 +138,13 @@ export function NewsArticleSkeleton() {
         </div>
       </section>
 
-      <section className="px-page bg-[#050505]">
+      <section className="px-page bg-cream">
         <div className="max-w-[960px] mx-auto">
           <Skeleton style={{ width: '100%', aspectRatio: '21 / 9', borderRadius: 12 }} />
         </div>
       </section>
 
-      <section className="px-page py-[clamp(48px,6vw,88px)] bg-[#080808]">
+      <section className="px-page py-[clamp(48px,6vw,88px)] bg-sand">
         <div className="max-w-[860px] mx-auto space-y-3">
           {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton
@@ -162,7 +162,7 @@ export function NewsArticleSkeleton() {
 export function ProductsListSkeleton() {
   return (
     <>
-      <section className="px-page pt-[clamp(80px,12vw,140px)] pb-[clamp(60px,8vw,100px)] bg-[#050505]">
+      <section className="px-page pt-[clamp(80px,12vw,140px)] pb-[clamp(60px,8vw,100px)] bg-cream">
         <div className="max-w-[1200px] mx-auto text-center">
           <Skeleton style={{ width: 150, height: 11, marginBottom: 24, marginInline: 'auto' }} />
           <Skeleton
@@ -185,7 +185,7 @@ export function ProductsListSkeleton() {
         </div>
       </section>
 
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1280px] mx-auto">
           <div className="flex flex-wrap justify-center gap-3 mb-[clamp(48px,6vw,72px)]">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -226,7 +226,7 @@ export function ProductsListSkeleton() {
 export function ProductDetailSkeleton() {
   return (
     <>
-      <section className="px-page pt-[clamp(60px,8vw,100px)] pb-[clamp(60px,8vw,100px)] bg-[#050505]">
+      <section className="px-page pt-[clamp(60px,8vw,100px)] pb-[clamp(60px,8vw,100px)] bg-cream">
         <div className="max-w-[1280px] mx-auto">
           <Skeleton style={{ width: 240, height: 12, marginBottom: 32 }} />
 
@@ -255,7 +255,7 @@ export function ProductDetailSkeleton() {
         </div>
       </section>
 
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-[clamp(40px,6vw,80px)]">
           {[0, 1].map((col) => (
             <div key={col}>

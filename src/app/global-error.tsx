@@ -21,11 +21,11 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body className="min-h-screen flex items-center justify-center bg-[#050505] text-[#f7f5ef]">
+      <body className="min-h-screen flex items-center justify-center bg-cream text-ink">
         <div className="text-center px-6 max-w-[540px]">
-          <div className="w-14 h-14 rounded-full border border-[rgba(216,163,90,0.3)] flex items-center justify-center mx-auto mb-6">
+          <div className="w-14 h-14 rounded-full border border-[rgba(168,118,58,0.3)] flex items-center justify-center mx-auto mb-6">
             <svg
-              className="w-6 h-6 text-[#d8a35a]"
+              className="w-6 h-6 text-amber"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"

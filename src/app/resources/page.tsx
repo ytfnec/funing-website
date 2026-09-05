@@ -15,7 +15,7 @@ export default function ResourcesPage() {
 
   return (
     <>
-      <section className="px-page py-[clamp(80px,10vw,140px)] bg-[#050505]">
+      <section className="px-page py-[clamp(80px,10vw,140px)] bg-cream">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="eyebrow mb-6">{t('res.hero.eyebrow')}</p>
           <h1 className="text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[0.06em] uppercase font-bold mb-6">{t('res.hero.title')}</h1>
@@ -26,10 +26,10 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {resources.map((r) => (
-            <div key={r.title} className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6 hover:border-[rgba(255,255,255,0.12)] transition-colors">
+            <div key={r.title} className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[rgba(32,29,23,0.12)] transition-colors">
               <h3 className="text-[16px] tracking-[0.06em] uppercase font-bold mb-3">{r.title}</h3>
               <p className="text-[var(--gray)] text-[14px] leading-relaxed mb-4">{r.desc}</p>
               <ul className="space-y-2">

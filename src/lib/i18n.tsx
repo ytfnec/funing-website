@@ -1600,7 +1600,7 @@ export function LanguageSwitcher() {
         type="button"
         onClick={() => setLang('zh')}
         className={`text-[11px] tracking-[0.08em] rounded-full px-2.5 py-1 transition-colors ${
-          lang === 'zh' ? 'bg-[var(--amber)] text-[#050505] font-bold' : 'text-[var(--gray)] hover:text-white'
+          lang === 'zh' ? 'bg-[var(--amber)] text-ink font-bold' : 'text-[var(--gray)] hover:text-[var(--amber)]'
         }`}
       >
         中文
@@ -1609,7 +1609,7 @@ export function LanguageSwitcher() {
         type="button"
         onClick={() => setLang('en')}
         className={`text-[11px] tracking-[0.08em] rounded-full px-2.5 py-1 transition-colors ${
-          lang === 'en' ? 'bg-[var(--amber)] text-[#050505] font-bold' : 'text-[var(--gray)] hover:text-white'
+          lang === 'en' ? 'bg-[var(--amber)] text-ink font-bold' : 'text-[var(--gray)] hover:text-[var(--amber)]'
         }`}
       >
         EN

@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function TermsPage() {
   return (
-    <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505]">
+    <section className="px-page py-[clamp(60px,8vw,100px)] bg-cream">
       <div className="max-w-[800px] mx-auto">
         <h1 className="text-[clamp(32px,4vw,48px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-8">Terms of Service</h1>
         <p className="text-[var(--gray)] mb-8">Last updated: January 2025</p>

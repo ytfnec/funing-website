@@ -177,7 +177,7 @@ export default function AdminNews() {
   }
 
   const inputClass =
-    'w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.2)] focus:outline-none focus:border-[var(--amber)] transition-colors';
+    'w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.2)] focus:outline-none focus:border-[var(--amber)] transition-colors';
   const labelClass = 'block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2';
 
   return (
@@ -190,13 +190,13 @@ export default function AdminNews() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
       {saved && (
-        <div className="flex items-center gap-2 text-green-400 text-sm mb-6 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-green-700 text-sm mb-6 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
           <Check className="w-4 h-4 flex-shrink-0" />
           <span>{saved}</span>
         </div>
@@ -210,18 +210,18 @@ export default function AdminNews() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t('admin.news.search')}
-          className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.25)] focus:outline-none focus:border-[var(--amber)] text-sm"
+          className="w-full pl-10 pr-4 py-2.5 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.25)] focus:outline-none focus:border-[var(--amber)] text-sm"
         />
       </div>
 
       {/* Editor panel */}
       {editing && (
-        <div className="mb-6 bg-[#0a0a0a] border border-[rgba(216,163,90,0.25)] rounded-lg p-6">
+        <div className="mb-6 bg-card border border-[rgba(168,118,58,0.25)] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg tracking-[0.06em] uppercase font-bold">
               {editing === 'new' ? t('admin.news.newArticle') : t('admin.news.edit').replace('{title}', editing.title)}
             </h2>
-            <button onClick={closeEdit} className="text-[var(--gray)] hover:text-white" aria-label="Close editor">
+            <button onClick={closeEdit} className="text-[var(--gray)] hover:text-ink" aria-label="Close editor">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -332,7 +332,7 @@ export default function AdminNews() {
 
       {/* Article list */}
       {filtered.length === 0 ? (
-        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-10 text-center">
+        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-10 text-center">
           <Newspaper className="w-10 h-10 text-[var(--gray)] mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">
             {articles.length === 0 ? t('admin.news.noArticles') : t('admin.news.noMatch')}
@@ -349,16 +349,16 @@ export default function AdminNews() {
           {filtered.map((a) => (
             <div
               key={a.id}
-              className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-4 flex items-center gap-4"
+              className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-4 flex items-center gap-4"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-white font-medium">{a.title}</span>
+                  <span className="text-ink font-medium">{a.title}</span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] tracking-[0.12em] uppercase flex items-center gap-1 ${
                       a.status === 'published'
-                        ? 'bg-[rgba(52,211,153,0.15)] text-green-400'
-                        : 'bg-[rgba(255,255,255,0.08)] text-[var(--gray)]'
+                        ? 'bg-[rgba(52,211,153,0.15)] text-green-700'
+                        : 'bg-[rgba(32,29,23,0.08)] text-[var(--gray)]'
                     }`}
                   >
                     {a.status === 'published' ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
@@ -380,7 +380,7 @@ export default function AdminNews() {
                 </button>
                 <button
                   onClick={() => openEdit(a)}
-                  className="p-2 text-[var(--gray)] hover:text-white transition-colors"
+                  className="p-2 text-[var(--gray)] hover:text-ink transition-colors"
                   title={t('admin.news.editAction')}
                 >
                   <Pencil className="w-4 h-4" />

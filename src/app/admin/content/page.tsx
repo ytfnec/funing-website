@@ -226,7 +226,7 @@ export default function AdminContent() {
     );
   }
 
-  const inputClass = "w-full px-4 py-3 bg-[#050505] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.2)] focus:outline-none focus:border-[var(--amber)] transition-colors";
+  const inputClass = "w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.2)] focus:outline-none focus:border-[var(--amber)] transition-colors";
   const labelClass = "block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2";
 
   return (
@@ -239,18 +239,18 @@ export default function AdminContent() {
       </div>
 
       {/* How it works */}
-      <div className="mb-6 p-5 bg-[rgba(216,163,90,0.05)] border border-[rgba(216,163,90,0.15)] rounded-lg text-[var(--gray)] text-sm leading-relaxed">
-        <strong className="text-white">{t('admin.content.howTitle')}</strong> {t('admin.content.how1')} <code className="text-[var(--amber)]">&lt;lang&gt;__&lt;key&gt;</code> — e.g. <code className="text-[var(--amber)]">en__home.hero.title1</code> or <code className="text-[var(--amber)]">zh__home.cta.title</code>. {t('admin.content.how2')}
+      <div className="mb-6 p-5 bg-[rgba(168,118,58,0.05)] border border-[rgba(168,118,58,0.15)] rounded-lg text-[var(--gray)] text-sm leading-relaxed">
+        <strong className="text-ink">{t('admin.content.howTitle')}</strong> {t('admin.content.how1')} <code className="text-[var(--amber)]">&lt;lang&gt;__&lt;key&gt;</code> — e.g. <code className="text-[var(--amber)]">en__home.hero.title1</code> or <code className="text-[var(--amber)]">zh__home.cta.title</code>. {t('admin.content.how2')}
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
       {saved && (
-        <div className="flex items-center gap-2 text-green-400 text-sm mb-6 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-green-700 text-sm mb-6 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
           <Check className="w-4 h-4 flex-shrink-0" />
           <span>{saved}</span>
         </div>
@@ -265,13 +265,13 @@ export default function AdminContent() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('admin.content.searchPlaceholder')}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-md text-white placeholder-[rgba(255,255,255,0.25)] focus:outline-none focus:border-[var(--amber)] text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.25)] focus:outline-none focus:border-[var(--amber)] text-sm"
           />
         </div>
         <select
           value={pageFilter}
           onChange={(e) => setPageFilter(e.target.value)}
-          className="px-4 py-2.5 bg-[#0a0a0a] border border-[rgba(255,255,255,0.1)] rounded-md text-white focus:outline-none focus:border-[var(--amber)] text-sm"
+          className="px-4 py-2.5 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)] text-sm"
         >
           <option value="">{t('admin.content.allPages')}</option>
           {KNOWN_PAGES.map((p) => (
@@ -282,12 +282,12 @@ export default function AdminContent() {
 
       {/* Editor panel */}
       {editing && (
-        <div className="mb-6 bg-[#0a0a0a] border border-[rgba(216,163,90,0.25)] rounded-lg p-6">
+        <div className="mb-6 bg-card border border-[rgba(168,118,58,0.25)] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg tracking-[0.06em] uppercase font-bold">
               {editing === 'new' ? t('admin.content.newBlockTitle') : t('admin.content.editTitle').replace('{slug}', editing.slug)}
             </h2>
-            <button onClick={closeEdit} className="text-[var(--gray)] hover:text-white" aria-label={t('admin.content.closeEditor')}>
+            <button onClick={closeEdit} className="text-[var(--gray)] hover:text-ink" aria-label={t('admin.content.closeEditor')}>
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -333,8 +333,8 @@ export default function AdminContent() {
 
             {/* Live preview */}
             {previewDefault !== null && (
-              <div className="rounded-lg border border-[rgba(255,255,255,0.08)] overflow-hidden">
-                <div className="px-4 py-2 bg-[#050505] border-b border-[rgba(255,255,255,0.06)] text-[10px] tracking-[0.18em] uppercase text-[var(--gray)] flex items-center justify-between">
+              <div className="rounded-lg border border-[rgba(32,29,23,0.08)] overflow-hidden">
+                <div className="px-4 py-2 bg-card border-b border-[rgba(32,29,23,0.06)] text-[10px] tracking-[0.18em] uppercase text-[var(--gray)] flex items-center justify-between">
                   <span>{t('admin.content.preview')}</span>
                   <span className="text-[var(--amber)]">{previewLang}</span>
                 </div>
@@ -385,7 +385,7 @@ export default function AdminContent() {
 
       {/* Block list */}
       {filtered.length === 0 ? (
-        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-10 text-center">
+        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-10 text-center">
           <Globe className="w-10 h-10 text-[var(--gray)] mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">{t('admin.content.noBlocks')}</h2>
           <p className="text-[var(--gray)] text-sm mb-6 max-w-[400px] mx-auto">
@@ -398,7 +398,7 @@ export default function AdminContent() {
       ) : (
         <>
         {/* Bulk action toolbar */}
-        <div className="mb-4 bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="mb-4 bg-card border border-[rgba(32,29,23,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
           <label className="flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -439,8 +439,8 @@ export default function AdminContent() {
         </div>
         <div className="space-y-3">
           {filtered.map((block) => (
-            <div key={block.id} className={`bg-[#0a0a0a] border rounded-lg overflow-hidden transition-colors ${
-              selected.has(block.id) ? 'border-[rgba(216,163,90,0.5)]' : 'border-[rgba(255,255,255,0.06)]'
+            <div key={block.id} className={`bg-card border rounded-lg overflow-hidden transition-colors ${
+              selected.has(block.id) ? 'border-[rgba(168,118,58,0.5)]' : 'border-[rgba(32,29,23,0.06)]'
             }`}>
               <div className="p-4 flex items-center gap-4">
                 <input
@@ -455,7 +455,7 @@ export default function AdminContent() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <code className="text-[13px] text-[var(--amber)]">{block.slug}</code>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] tracking-[0.12em] uppercase ${
-                      block.is_active ? 'bg-[rgba(52,211,153,0.15)] text-green-400' : 'bg-[rgba(255,255,255,0.08)] text-[var(--gray)]'
+                      block.is_active ? 'bg-[rgba(52,211,153,0.15)] text-green-700' : 'bg-[rgba(32,29,23,0.08)] text-[var(--gray)]'
                     }`}>
                       {block.is_active ? t('admin.content.activeLabel') : t('admin.content.pausedLabel')}
                     </span>
@@ -474,7 +474,7 @@ export default function AdminContent() {
                   </button>
                   <button
                     onClick={() => openEdit(block)}
-                    className="p-2 text-[var(--gray)] hover:text-white transition-colors"
+                    className="p-2 text-[var(--gray)] hover:text-ink transition-colors"
                     title={t('admin.content.editAction')}
                   >
                     <Pencil className="w-4 h-4" />

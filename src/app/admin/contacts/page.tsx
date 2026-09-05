@@ -172,10 +172,10 @@ export default function AdminContacts() {
 
   const statusBadge = (status: string) => {
     const colors: Record<string, string> = {
-      new: 'bg-[rgba(216,163,90,0.2)] text-[var(--amber)]',
-      contacted: 'bg-[rgba(96,165,250,0.2)] text-blue-400',
-      quoted: 'bg-[rgba(168,85,247,0.2)] text-purple-400',
-      closed: 'bg-[rgba(52,211,153,0.2)] text-green-400',
+      new: 'bg-[rgba(168,118,58,0.2)] text-[var(--amber)]',
+      contacted: 'bg-[rgba(96,165,250,0.2)] text-blue-700',
+      quoted: 'bg-[rgba(168,85,247,0.2)] text-purple-700',
+      closed: 'bg-[rgba(52,211,153,0.2)] text-green-700',
     };
     return `px-2 py-1 rounded-full text-[10px] tracking-[0.14em] uppercase ${colors[status] || colors.new}`;
   };
@@ -185,13 +185,13 @@ export default function AdminContacts() {
       <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">{t('admin.contacts.title')}</h1>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-4 p-4 bg-[rgba(216,163,90,0.1)] border border-[rgba(216,163,90,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-4 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
       {deleted && (
-        <div className="flex items-center gap-2 text-green-400 text-sm mb-4 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-green-700 text-sm mb-4 p-4 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.3)] rounded-lg">
           <Check className="w-4 h-4 flex-shrink-0" />
           <span>{deleted}</span>
         </div>
@@ -203,7 +203,7 @@ export default function AdminContacts() {
         ) : (
           <>
           {/* Bulk delete toolbar */}
-          <div className="mb-4 bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="mb-4 bg-card border border-[rgba(32,29,23,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
             <label className="flex items-center gap-3 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -234,12 +234,12 @@ export default function AdminContacts() {
             </div>
           </div>
           {contacts.map((c) => (
-            <div key={c.id} className={`bg-[#0a0a0a] border rounded-lg overflow-hidden transition-colors ${
-              selected.has(c.id) ? 'border-[rgba(216,163,90,0.55)]' : 'border-[rgba(255,255,255,0.06)]'
+            <div key={c.id} className={`bg-card border rounded-lg overflow-hidden transition-colors ${
+              selected.has(c.id) ? 'border-[rgba(168,118,58,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
             }`}>
               <button
                 onClick={() => setExpanded(expanded === c.id ? null : c.id)}
-                className="w-full p-5 flex items-center justify-between text-left hover:bg-[rgba(255,255,255,0.02)] transition-colors"
+                className="w-full p-5 flex items-center justify-between text-left hover:bg-[rgba(32,29,23,0.02)] transition-colors"
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <span onClick={(e) => e.stopPropagation()}>
@@ -251,14 +251,14 @@ export default function AdminContacts() {
                     />
                   </span>
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                    c.type === 'call' ? 'bg-blue-500/20 text-blue-400' :
-                    c.type === 'quote' ? 'bg-[rgba(216,163,90,0.2)] text-[var(--amber)]' :
-                    'bg-[rgba(255,255,255,0.1)] text-white'
+                    c.type === 'call' ? 'bg-blue-500/20 text-blue-700' :
+                    c.type === 'quote' ? 'bg-[rgba(168,118,58,0.2)] text-[var(--amber)]' :
+                    'bg-[rgba(32,29,23,0.1)] text-ink'
                   }`}>
                     {c.name[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white text-sm font-medium truncate">{c.name}</div>
+                    <div className="text-ink text-sm font-medium truncate">{c.name}</div>
                     <div className="text-[var(--gray)] text-xs">{c.email} · {new Date(c.submitted_at).toLocaleDateString()}</div>
                   </div>
                 </div>
@@ -270,7 +270,7 @@ export default function AdminContacts() {
               </button>
 
               {expanded === c.id && (
-                <div className="px-5 pb-5 border-t border-[rgba(255,255,255,0.06)] pt-4 space-y-4">
+                <div className="px-5 pb-5 border-t border-[rgba(32,29,23,0.06)] pt-4 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     {c.company && (
                       <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
@@ -304,7 +304,7 @@ export default function AdminContacts() {
                     )}
                   </div>
                   {c.message && (
-                    <div className="bg-[#050505] rounded p-4 text-sm text-[var(--soft-white)] leading-relaxed">
+                    <div className="bg-cream rounded p-4 text-sm text-[var(--soft-white)] leading-relaxed">
                       {c.message}
                     </div>
                   )}
@@ -316,8 +316,8 @@ export default function AdminContacts() {
                         onClick={() => updateStatus(c.id, s)}
                         className={`px-3 py-1 rounded-full text-[10px] tracking-[0.14em] uppercase border transition-colors ${
                           c.status === s
-                            ? 'border-white text-white'
-                            : 'border-[rgba(255,255,255,0.1)] text-[var(--gray)] hover:border-[rgba(255,255,255,0.3)]'
+                            ? 'border-white text-ink'
+                            : 'border-[rgba(32,29,23,0.1)] text-[var(--gray)] hover:border-[rgba(32,29,23,0.3)]'
                         }`}
                       >
                         {t(`admin.contacts.status.${s}` as any)}
@@ -326,13 +326,13 @@ export default function AdminContacts() {
                   </div>
 
                   {/* Internal notes */}
-                  <div className="pt-2 border-t border-[rgba(255,255,255,0.06)]">
+                  <div className="pt-2 border-t border-[rgba(32,29,23,0.06)]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] tracking-[0.18em] uppercase text-[var(--gray)]">
                         {t('admin.contacts.internalNotes')}
                       </span>
                       {savedNotes && (
-                        <span className="flex items-center gap-1 text-[11px] text-green-400">
+                        <span className="flex items-center gap-1 text-[11px] text-green-700">
                           <Check className="w-3 h-3" /> {t('admin.contacts.saved')}
                         </span>
                       )}
@@ -344,18 +344,18 @@ export default function AdminContacts() {
                           onChange={(e) => setNotesDraft(e.target.value)}
                           rows={3}
                           placeholder="Add follow-up notes for this lead…"
-                          className="w-full px-3 py-2 bg-[#050505] border border-[rgba(255,255,255,0.12)] rounded text-sm text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
+                          className="w-full px-3 py-2 bg-card border border-[rgba(32,29,23,0.12)] rounded text-sm text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
                         />
                         <div className="flex gap-3">
                           <button
                             onClick={() => saveNotes(c)}
-                            className="flex items-center gap-1 text-[12px] text-[var(--amber)] hover:text-white transition-colors"
+                            className="flex items-center gap-1 text-[12px] text-[var(--amber)] hover:text-ink transition-colors"
                           >
                             <Save className="w-3.5 h-3.5" /> {t('admin.contacts.saveNotes')}
                           </button>
                           <button
                             onClick={() => setEditingNotes(null)}
-                            className="text-[12px] text-[var(--gray)] hover:text-white transition-colors"
+                            className="text-[12px] text-[var(--gray)] hover:text-ink transition-colors"
                           >
                             {t('admin.contacts.cancel')}
                           </button>
@@ -364,7 +364,7 @@ export default function AdminContacts() {
                     ) : (
                       <button
                         onClick={() => startEditNotes(c)}
-                        className="w-full text-left text-sm leading-relaxed hover:bg-[rgba(255,255,255,0.02)] rounded p-2 transition-colors"
+                        className="w-full text-left text-sm leading-relaxed hover:bg-[rgba(32,29,23,0.02)] rounded p-2 transition-colors"
                       >
                         {c.notes ? (
                           <span className="text-[var(--soft-white)]">{c.notes}</span>
@@ -376,7 +376,7 @@ export default function AdminContacts() {
                   </div>
 
                   {/* Delete this submission */}
-                  <div className="pt-2 border-t border-[rgba(255,255,255,0.06)] flex justify-end">
+                  <div className="pt-2 border-t border-[rgba(32,29,23,0.06)] flex justify-end">
                     <button
                       onClick={() => setConfirmState({ type: 'single', contact: c })}
                       className="flex items-center gap-1 text-[12px] text-[var(--gray)] hover:text-red-400 transition-colors"

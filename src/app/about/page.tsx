@@ -25,7 +25,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <section className="px-page py-[clamp(80px,12vw,140px)] bg-[#050505]">
+      <section className="px-page py-[clamp(80px,12vw,140px)] bg-cream">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-[clamp(40px,6vw,80px)] items-center">
             <div>
@@ -45,14 +45,14 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-8">
+            <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-8">
               <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('about.info.title')}</h2>
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
                   <MapPin className="w-5 h-5 text-[var(--amber)] mt-0.5" />
                   <div>
                     <div className="text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-1">{t('about.info.address')}</div>
-                    <div className="text-white">{t('about.info.addr1')}</div>
+                    <div className="text-ink">{t('about.info.addr1')}</div>
                     <div className="text-[var(--gray)] text-sm">{t('about.info.addr2')}</div>
                   </div>
                 </div>
@@ -60,14 +60,14 @@ export default function AboutPage() {
                   <Phone className="w-5 h-5 text-[var(--amber)] mt-0.5" />
                   <div>
                     <div className="text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-1">{t('about.info.phone')}</div>
-                    <div className="text-white">+86 535-6778069</div>
+                    <div className="text-ink">+86 535-6778069</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <Mail className="w-5 h-5 text-[var(--amber)] mt-0.5" />
                   <div>
                     <div className="text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mb-1">{t('about.info.email')}</div>
-                    <div className="text-white">info@fnec.net</div>
+                    <div className="text-ink">info@fnec.net</div>
                   </div>
                 </div>
               </div>
@@ -77,10 +77,10 @@ export default function AboutPage() {
       </section>
 
       {/* Team Stats */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {team.map((item) => (
-            <div key={item.title} className="text-center p-8 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg">
+            <div key={item.title} className="text-center p-8 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg">
               <div className="text-[clamp(40px,5vw,56px)] font-bold mb-2" style={{ color: 'var(--amber)' }}>{item.count}</div>
               <h3 className="text-[14px] tracking-[0.14em] uppercase font-bold mb-3">{item.title}</h3>
               <p className="text-[var(--gray)] text-[14px] leading-relaxed">{item.desc}</p>
@@ -90,7 +90,7 @@ export default function AboutPage() {
       </section>
 
       {/* Timeline */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-cream">
         <div className="max-w-[900px] mx-auto">
           <h2 className="text-center text-[clamp(28px,3.5vw,44px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-16">
             {t('about.timeline.title')}
@@ -108,7 +108,7 @@ export default function AboutPage() {
                   {/* Mobile year */}
                   <span className="md:hidden flex-shrink-0 w-[60px] text-[var(--amber)] text-[12px] tracking-[0.12em] font-bold pt-1">{m.year}</span>
 
-                  <div className="flex-1 bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-5 hover:border-[rgba(255,255,255,0.12)] transition-colors">
+                  <div className="flex-1 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-5 hover:border-[rgba(32,29,23,0.12)] transition-colors">
                     <h3 className="text-[16px] tracking-[0.06em] uppercase font-bold mb-2">{m.title}</h3>
                     <p className="text-[var(--gray)] text-[14px] leading-relaxed">{m.desc}</p>
                   </div>
@@ -120,7 +120,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808] text-center">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand text-center">
         <h2 className="text-[clamp(28px,3.5vw,44px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6 max-w-[600px] mx-auto">
           {t('about.cta.title')}
         </h2>

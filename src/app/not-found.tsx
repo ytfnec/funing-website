@@ -7,7 +7,7 @@ export default function NotFound() {
   const { t } = useLang();
 
   return (
-    <section className="px-page py-[clamp(80px,10vw,140px)] min-h-[60vh] flex items-center justify-center bg-[#050505]">
+    <section className="px-page py-[clamp(80px,10vw,140px)] min-h-[60vh] flex items-center justify-center bg-cream">
       <div className="max-w-[500px] text-center">
         <p className="eyebrow mb-4">{t('notfound.eyebrow')}</p>
         <h1 className="text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[0.06em] uppercase font-bold mb-6">{t('notfound.title')}</h1>

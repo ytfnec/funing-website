@@ -238,7 +238,7 @@ export default function ProductDetailPage() {
 
   if (notFound || !product) {
     return (
-      <section className="px-page py-32 text-center bg-[#050505] min-h-[60vh] flex flex-col items-center justify-center">
+      <section className="px-page py-32 text-center bg-cream min-h-[60vh] flex flex-col items-center justify-center">
         <p className="eyebrow mb-4">404</p>
         <h1 className="text-[clamp(32px,4vw,52px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6">
           Product Not Found
@@ -265,7 +265,7 @@ export default function ProductDetailPage() {
   return (
     <>
       {/* Hero */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-cream">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -316,11 +316,11 @@ export default function ProductDetailPage() {
           <nav aria-label="Breadcrumb" className="mb-8 text-[12px] tracking-[0.12em] uppercase text-[var(--gray)]">
             <ol className="flex items-center gap-2 flex-wrap">
               <li>
-                <Link href="/" className="hover:text-white transition-colors">Home</Link>
+                <Link href="/" className="hover:text-ink transition-colors">Home</Link>
               </li>
               <li aria-hidden="true" className="text-[var(--gray)]/50">/</li>
               <li>
-                <Link href="/products" className="hover:text-white transition-colors">
+                <Link href="/products" className="hover:text-ink transition-colors">
                   {t('nav.products')}
                 </Link>
               </li>
@@ -368,7 +368,7 @@ export default function ProductDetailPage() {
 
             {/* Visual panel: real hero image when available, otherwise the
                 amber grid placeholder texture (kept as a graceful fallback). */}
-            <div className="aspect-[4/3] bg-[#0a0a0a] rounded-lg overflow-hidden relative border border-[rgba(255,255,255,0.06)]">
+            <div className="aspect-[4/3] bg-card rounded-lg overflow-hidden relative border border-[rgba(32,29,23,0.06)]">
               {heroImage && !heroFailed ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -383,7 +383,7 @@ export default function ProductDetailPage() {
                 <div
                   className="absolute inset-0 flex items-center justify-center"
                   style={{
-                    background: "radial-gradient(circle at center, rgba(216,163,90,0.10), transparent 70%), linear-gradient(rgba(216,163,90,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.04) 1px, transparent 1px)",
+                    background: "radial-gradient(circle at center, rgba(168,118,58,0.10), transparent 70%), linear-gradient(rgba(168,118,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.04) 1px, transparent 1px)",
                     backgroundSize: "100% 100%, 32px 32px, 32px 32px",
                   }}
                 >
@@ -401,7 +401,7 @@ export default function ProductDetailPage() {
       </section>
 
       {/* Features & Specs */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-[clamp(40px,6vw,80px)]">
           <div>
             <h2 className="text-[clamp(24px,3vw,36px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6">
@@ -443,24 +443,24 @@ export default function ProductDetailPage() {
 
       {/* Additional info */}
       {(product.warranty_info || product.installation_info || product.electrical_requirements || product.lead_time) && (
-        <section className="px-page py-[clamp(48px,6vw,80px)] bg-[#050505]">
+        <section className="px-page py-[clamp(48px,6vw,80px)] bg-cream">
           <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             {product.warranty_info && (
-              <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
+              <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
                 <Shield className="w-5 h-5 text-[var(--amber)] mb-3" />
                 <h3 className="text-[13px] tracking-[0.14em] uppercase font-bold mb-2">Warranty</h3>
                 <p className="text-[var(--gray)] text-sm leading-relaxed">{product.warranty_info}</p>
               </div>
             )}
             {product.electrical_requirements && (
-              <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
+              <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
                 <Zap className="w-5 h-5 text-[var(--amber)] mb-3" />
                 <h3 className="text-[13px] tracking-[0.14em] uppercase font-bold mb-2">Electrical</h3>
                 <p className="text-[var(--gray)] text-sm leading-relaxed">{product.electrical_requirements}</p>
               </div>
             )}
             {product.lead_time && (
-              <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.06)] rounded-lg p-6">
+              <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
                 <Clock className="w-5 h-5 text-[var(--amber)] mb-3" />
                 <h3 className="text-[13px] tracking-[0.14em] uppercase font-bold mb-2">Lead Time</h3>
                 <p className="text-[var(--gray)] text-sm leading-relaxed">{product.lead_time}</p>
@@ -471,7 +471,7 @@ export default function ProductDetailPage() {
       )}
 
       {/* CTA */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808] text-center">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand text-center">
         <h2 className="text-[clamp(28px,3.5vw,42px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-6 max-w-[600px] mx-auto">
           Ready to Order {product.name}?
         </h2>

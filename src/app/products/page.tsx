@@ -71,7 +71,7 @@ export default function ProductsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="px-page py-[clamp(80px,12vw,140px)] bg-[#050505]">
+      <section className="px-page py-[clamp(80px,12vw,140px)] bg-cream">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="eyebrow mb-6">{t('prod.hero.eyebrow')}</p>
           <h1 className="text-[clamp(40px,6vw,80px)] leading-[1.05] tracking-[0.06em] uppercase font-bold mb-8">
@@ -88,7 +88,7 @@ export default function ProductsPage() {
       </section>
 
       {/* Product Listing */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#080808]">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1280px] mx-auto">
           {/* Category filter */}
           <div className="flex flex-wrap justify-center gap-3 mb-[clamp(48px,6vw,72px)]">
@@ -99,8 +99,8 @@ export default function ProductsPage() {
                 onClick={() => setActiveCategory(cat.key)}
                 className={`px-5 py-2 rounded-full text-[12px] tracking-[0.14em] uppercase border transition-all duration-200 ${
                   activeCategory === cat.key
-                    ? 'bg-[var(--amber)] text-[#050505] border-[var(--amber)] font-bold'
-                    : 'border-[rgba(255,255,255,0.15)] text-[var(--gray)] hover:border-[var(--amber)] hover:text-white'
+                    ? 'bg-[var(--amber)] text-ink border-[var(--amber)] font-bold'
+                    : 'border-[rgba(32,29,23,0.15)] text-[var(--gray)] hover:border-[var(--amber)] hover:text-ink'
                 }`}
               >
                 {cat.label}
@@ -118,8 +118,8 @@ export default function ProductsPage() {
               <div
                 className={`block relative overflow-hidden ${i % 2 === 1 ? 'md:order-2' : ''}`}
               >
-                <div className="aspect-[4/3] bg-[#0a0a0a] overflow-hidden flex items-center justify-center" style={{
-                  background: "radial-gradient(circle at center, rgba(216,163,90,0.08), transparent 70%), linear-gradient(rgba(216,163,90,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.04) 1px, transparent 1px)",
+                <div className="aspect-[4/3] bg-card overflow-hidden flex items-center justify-center" style={{
+                  background: "radial-gradient(circle at center, rgba(168,118,58,0.08), transparent 70%), linear-gradient(rgba(168,118,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.04) 1px, transparent 1px)",
                   backgroundSize: "100% 100%, 32px 32px, 32px 32px"
                 }}>
                   <div className="text-center p-8">
@@ -184,7 +184,7 @@ export default function ProductsPage() {
       </section>
 
       {/* OEM/ODM CTA */}
-      <section className="px-page py-[clamp(60px,8vw,100px)] bg-[#050505] text-center">
+      <section className="px-page py-[clamp(60px,8vw,100px)] bg-cream text-center">
         <p className="eyebrow mb-6">{t('prod.cta.eyebrow')}</p>
         <h2 className="text-[clamp(24px,3vw,40px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-8 max-w-[700px] mx-auto">
           {t('prod.cta.title')}

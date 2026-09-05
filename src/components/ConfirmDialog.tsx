@@ -48,15 +48,15 @@ export function ConfirmDialog({
         onClick={busy ? undefined : onCancel}
       />
       {/* Card */}
-      <div className="relative bg-[#0a0a0a] border border-[rgba(255,255,255,0.12)] rounded-xl shadow-2xl w-full max-w-[420px] p-6">
+      <div className="relative bg-card border border-[rgba(32,29,23,0.12)] rounded-xl shadow-2xl w-full max-w-[420px] p-6">
         <div className="flex items-start gap-4">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-            danger ? 'bg-red-500/15 text-red-400' : 'bg-[rgba(216,163,90,0.15)] text-[var(--amber)]'
+            danger ? 'bg-red-500/15 text-red-400' : 'bg-[rgba(168,118,58,0.15)] text-[var(--amber)]'
           }`}>
             <AlertTriangle className="w-5 h-5" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-white font-bold text-base leading-snug">{title}</h3>
+            <h3 className="text-ink font-bold text-base leading-snug">{title}</h3>
             <p className="text-[var(--gray)] text-sm mt-1.5 leading-relaxed">{message}</p>
           </div>
         </div>
@@ -75,7 +75,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             disabled={busy}
             className={`btn text-sm py-2 px-4 disabled:opacity-50 ${
-              danger ? 'bg-red-600/90 hover:bg-red-600 text-white' : 'btn-primary'
+              danger ? 'bg-red-600/90 hover:bg-red-600 text-ink' : 'btn-primary'
             }`}
           >
             {busy ? (
