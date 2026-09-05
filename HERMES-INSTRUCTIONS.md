@@ -1,7 +1,38 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第四十八批（最新）** · 更新: 2026-09-05 · 来源: Claude Code
-> 状态: **采纳批次47反馈的视觉优化 · 待执行部署**
+> 批次: **第四十九批（最新）** · 更新: 2026-09-05 · 来源: 用户经 Hermes 提交（第 48 批视觉微调反馈 + 素材实测,**供 CC 参考,由 CC 统筹决策**）
+> 状态: **待 CC 查看第 48 批反馈**
+
+---
+
+## 第四十九批（给 Claude Code · 参考建议）：第 48 批上线后用户反馈（换图 + logo 科技蓝 + 按钮回琥珀）
+
+> **性质**：用户看第 48 批（深墨按钮/提亮 hero/浅色 CTA）后的新反馈。Hermes 已实测确认素材可用性与色值出处。**供 CC 参考,是否调整、如何调整由 CC 统筹决定**。
+
+### 用户原话反馈（3 点）
+
+1. **hero、CTA 图片色调不对,换新图** —— 经 Hermes 确认:现有 hero-1920.webp(1920×1317,健身房+桑拿房场景)**85% 像素为深暗色**,与新暖白主题冲突;cta-bg.webp 亦偏暗(49% 暗)。**用户明确:axissaunas.com / symmetrysauna.com 素材可直接使用(系客户,非竞品)** → 建议从本地图库挑明亮暖调桑拿房图替换。
+2. **logo 用科技蓝** —— 品牌主色科技蓝 `#1E5EFF`(见设计简报 20260810:科技蓝主色 #1E5EFF/橘红 #FF5A1F/琥珀 #FFB000)。当前 logo-ink-solid.png(深墨 #201d17)需生成科技蓝版。
+3. **按钮统一成原先琥珀色** —— 46 批前深色主题时代按钮为琥珀 `#d8a35a`(旧 globals.css `--color-amber: #d8a35a`);46 批改青铜金 `#a8763a`、48 批改深墨 `#201d17`。用户要求回到琥珀系。候选:`#d8a35a`(旧琥珀,偏金)或品牌琥珀 `#FFB000`(更亮),CC 可视浅底对比度取舍(浅底上琥珀按钮建议配深墨字)。
+
+### Hermes 实测素材（本地图库,已确认可用）
+
+**hero 候选(明亮暖调桑拿房,均 ≥5770px 原图)**:
+- `D:\Work_Hermes\07_图片素材\axissaunas_com\legacy\Fla23IRorD2dndqh_Axis_Traditional.webp`(传统桑拿,明亮暖木色,对称构图适合叠字,亮度 90%)
+- `D:\Work_Hermes\07_图片素材\axissaunas_com\ignite\jg5gGdgIUVyDiZn3_Axis_Infrared.webp`(单人红外,玻璃门+木座,亮度 87%)
+- `D:\Work_Hermes\07_图片素材\axissaunas_com\fusion\dBt_T_JKxv57xAqT_Axis_Hybrid.webp`(红外内部,暖木色,亮度 86%)
+
+**CTA 候选**:
+- `D:\Work_Hermes\07_图片素材\symmetrysaunastudio_com\pages\aQE4vrpReVYa3xoX_Symmetry_Infrared-2.png`(1866×1082)
+- `D:\Work_Hermes\07_图片素材\symmetrysaunastudio_com\pages\aRJk6LpReVYa4Ucr_IMG_90162.png`(1887×1089,桑拿房内人物,暖黄调)
+- `D:\Work_Hermes\07_图片素材\symmetrysauna_com\products\aYKZFN0YXLCxVVav_Saunas-2.png`(3750×2297)
+
+> Hermes 已视检:cand_1(cand_1.jpg 存于 axissaunas-clone 工作目录)等图明亮暖调、内容=桑拿房、适合叠白字/深字。若 CC 需要 Hermes 把选定素材裁成 hero-1920 规格(1920 宽、裁切目标 ~2.3:1)或转 webp,可让 Hermes 预加工。
+
+### 落地范围参考(CC 取舍)
+- 图片:替换 `public/assets/hero-1920.webp`(与/或新增文件名+改 page.tsx 引用);CTA 若恢复照片背景需加回图片引用(当前 48 批为浅沙底无图,是否改回照片由 CC 判断)
+- logo:`public/assets/logo-ink-solid.png` → 生成 `logo-blue-solid.png`(琥珀像素换 #1E5EFF,参照 ink 版生成方式),Header/Footer 引用替换
+- 按钮:globals.css 按钮 token(`--amber`/`--color-amber` 等)统一回琥珀系;hero 上 .btn-ivory 是否需要保留由 CC 判断(若按钮回琥珀,hero 照片上可能琥珀更醒目,ivory 可退场)
 
 ---
 
