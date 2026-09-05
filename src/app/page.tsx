@@ -181,16 +181,20 @@ export default function Home() {
                         {p.icon}
                       </div>
                       <h3 className="text-[15px] tracking-[0.12em] uppercase font-bold mb-2">{p.name}</h3>
-                      <p className="text-[var(--gray)] text-[11px] tracking-[0.16em] uppercase">{p.sub}</p>
+                      {p.sub && (
+                        <p className="text-[var(--gray)] text-[11px] tracking-[0.16em] uppercase">{p.sub}</p>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div style={{ paddingTop: "20px" }}>
                   <h3 className="text-[17px] mb-[8px]">{p.name}</h3>
-                  <p className="text-[var(--gray)] text-[15px]" style={{ marginBottom: "6px" }}>{p.sub}</p>
+                  {p.sub && (
+                    <p className="text-[var(--gray)] text-[15px]" style={{ marginBottom: "6px" }}>{p.sub}</p>
+                  )}
                   <p className="text-[var(--gray)] text-[13px] leading-relaxed mt-3">{p.desc}</p>
                   <ul className="mt-4 space-y-1">
-                    {p.specs.map((s, i) => (
+                    {p.specs.filter(Boolean).map((s, i) => (
                       <li key={i} className="text-[12px] text-[var(--gray)] flex items-start gap-2">
                         <span className="text-[var(--amber)] mt-0.5 shrink-0">•</span>
                         {s}

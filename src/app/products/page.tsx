@@ -135,9 +135,11 @@ export default function ProductsPage() {
 
               {/* Content */}
               <div className={i % 2 === 1 ? 'md:order-1' : ''}>
-                <p className="text-[11px] tracking-[0.22em] uppercase text-[var(--amber)] mb-4">
-                  {s.tagline}
-                </p>
+                {s.tagline && (
+                  <p className="text-[11px] tracking-[0.22em] uppercase text-[var(--amber)] mb-4">
+                    {s.tagline}
+                  </p>
+                )}
                 <h2 className="text-[clamp(28px,3.5vw,48px)] leading-[1.1] tracking-[0.06em] uppercase font-bold mb-4">
                   <Link href={`/products/${s.slug}`} className="hover:text-[var(--amber)] transition-colors">
                     {s.name}
@@ -149,7 +151,7 @@ export default function ProductsPage() {
 
                 {/* Specs */}
                 <ul className="grid grid-cols-2 gap-3 mb-8 max-w-[400px]">
-                  {s.specs.map((spec) => (
+                  {s.specs.filter(Boolean).map((spec) => (
                     <li key={spec} className="flex items-center gap-2 text-[14px] text-[var(--gray)]">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20 6 9 17 4 12" />
