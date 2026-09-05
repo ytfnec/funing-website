@@ -63,7 +63,7 @@ curl -s <ROOT>/products/branded-units | grep -ci "health mate\|samick"   # 预�
 | 2 构建+部署 | ✅ | build:cf:static 成功(静态资产含 _headers)→ 部署 v`5ed71a93-8adc-4694-9088-2bacc68ce2db` |
 | 3 D1 数据同步 | ✅ | `prod-branded-units` sub_title 已清空(返回 changes:2,查询确认 `sub_title=''`) |
 | 4 验证 | ✅ | 9 路由全 200;旧词(Health Mate/Samick/G80F915UL)9 页 HTML 全 0;1T8051/ARM 出现在首页 FAQ+JSON-LD、/products、sauna-controllers 规格、/accessories、/resources;RSC payload 双语文案均无旧词 |
-| 5 浏览器目检 | ✅ | /products 中英文:品牌整机卡片副标题留空无空行/空勾、间距正常;桑拿控制系统规格含 1T8051/ARM MCU;详情页 KEY FEATURES 正常无 G80F915UL;About 2025 里程碑泛指化。⚠️ 发现:branded-units 产品主图(media-c8deb666,媒体库)的 LED 灯板中央印有 HEALTH MATE 字样——图片资产层残留,不在本批文案范围,待用户决定是否更换图片 |
+| 5 浏览器目检 | ✅ | /products 中英文:品牌整机卡片副标题留空无空行/空勾、间距正常;桑拿控制系统规格含 1T8051/ARM MCU;详情页 KEY FEATURES 正常无 G80F915UL;About 2025 里程碑泛指化。备注:branded-units 主图(media-c8deb666)LED 灯板印有 HEALTH MATE 字样,经用户确认**不处理**——实物为制造商自产代工灯板,保留 |
 
 ---
 
