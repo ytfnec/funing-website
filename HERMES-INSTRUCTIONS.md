@@ -1,19 +1,20 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第五十四批（最新）** · 更新: 2026-09-06 · 来源: Claude Code
-> 状态: **hero 换 Terra_11（提亮裁剪）· 待执行部署**
+> 批次: **第五十五批（最新）** · 更新: 2026-09-06 · 来源: Claude Code
+> 状态: **富宁电子改黑体 + logo #001489 · 待执行部署**
 
 ---
 
-## 第五十四批：首页 hero 换 Terra_11（户外暖光桑拿，提亮+裁剪）
+## 第五十五批：字标黑体 + logo #001489
 
-用户反馈：用 `mtmvLM5h-S5dzBQW_Axis_Saunas_21_9_Terra_11.webp`（户外暖光桑拿）做首页 hero，**提升亮度并裁剪**。
+用户反馈：富宁电子用黑体；logo 用 `#001489`。
 
-CC 已处理（提交 `7d418cb`）：
-- 源图：Terra_11（5000×2118）
-- 处理：提亮 1.18 + 微增饱和度 1.05 → 居中裁 16:9 → 缩至 **1920×1080**
-- 输出：`public/assets/hero-1920.webp`（369KB，avg 亮度 101 / 文字区 104，白字叠放可读）
-- 代码（hero 中央柔光遮罩、按钮/logo/字标）不变
+CC 已落地（提交 `207372b`）：
+- `.brand-zh` 字体链改为**中文字体黑体系**：`"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Heiti SC", sans-serif`，字重 600（“富宁电子”呈黑体）
+- `public/assets/logo-blue-solid.png` 重新着色为 **#001489**（页头/页脚引用不变）
+- 其余（灰按钮 #2b3c3d、hero Terra_11 等）不变
+
+> 注：若 Hermes 尚未部署第 54 批（hero Terra_11，提交 `7d418cb`），本批 push 会一并带上；如已部署则无影响。
 
 ## 执行任务（按序执行，回报表见文末）
 
@@ -21,7 +22,7 @@ CC 已处理（提交 `7d418cb`）：
 ```
 git push
 ```
-预期：origin/master 同步（含提交 `7d418cb`）。
+预期：origin/master 同步（含 `207372b`；若未推过也含 `7d418cb`）。
 
 ### 任务 2 · 清缓存构建并部署
 ```
@@ -31,15 +32,16 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 ### 任务 3 · 产物抽查
 ```
-curl -sI <ROOT>/assets/hero-1920.webp | head -1   # 预期 200
+curl -sI <ROOT>/assets/logo-blue-solid.png | head -1   # 预期 200
 ```
 <ROOT> 为站点根域（`https://fnec.net`）。
 
 ### 任务 4 · 浏览器目检（中英双语）
-1. 首页 hero 已换为 Terra_11 户外暖光桑拿（比旧图更偏外景、暖黄绿调）
-2. 亮度适中不过曝；h1 白字/按钮在中央遮罩上清晰可读
-3. 其余（克莱因蓝 logo、灰按钮 #2b3c3d、楷体“富宁电子”）保持不变
-4. 记录仍不理想项
+1. logo 实测主色 **#001489**（rgb 0,20,137）
+2. 页头/页脚“富宁电子”为**黑体**（PingFang SC/微软雅黑等，非楷体）
+3. 首页 hero（Terra_11 户外桑拿，若本批含）白字可读
+4. 灰按钮 #2b3c3d 不变
+5. 记录仍不理想项
 
 ---
 
@@ -56,7 +58,7 @@ curl -sI <ROOT>/assets/hero-1920.webp | head -1   # 预期 200
 
 ## 历史备注（供参考，无需执行）
 
+- ✅ 批次54：hero 换 Terra_11（户外暖光桑拿，提亮+裁剪）——提交已含在本地。
 - ✅ 批次53：logo 克莱因蓝 #002FA7 + 按钮灰 #2b3c3d，已部署 v`6b96bee6`。
-- ✅ 批次52：字标弃书法字体改楷体回退。
-- ✅ 批次51：字标“富宁电子”（后弃书法）+ 配色迭代。
+- ✅ 批次52：字标弃书法字体。
 - 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
