@@ -61,10 +61,17 @@ curl -sI <ROOT>/assets/logo-blue-solid.png | head -1 # 预期 200（已换 #1828
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 下载+子集化字体 | 待执行 | |
-| 2 推送代码 | 待执行 | |
-| 3 构建+部署 | 待执行 | |
-| 4 抽查+目检 | 待执行 | |
+| 1 下载+子集化字体 | ✅ **篆书→隶书(按用户指示)** | 篆书开源无可覆盖"富宁电子"者(LxgwSeal 仅 75 字;方正/汉仪需商业授权),用户指示换隶书。选用**阿里妈妈刀隶体**(基于爨宝子碑方笔风格,GB2312 全 6763 字,官方"永久免费正版商用"+可嵌入式使用)——iconfont 官方下载,四字齐全,fonttools 子集化出 `public/fonts/funing-zhuan.woff2`(**1.6KB**,字体名 Alimama DaoLiTi)。注:CC 的 @font-face 名 FuningSeal/.brand-zh 保留(内部标识),实际渲染为隶书 |
+| 2 推送代码 | ✅ | `1042f28..81a1b29`(910d81b 代码 + 字体素材) |
+| 3 构建+部署 | ✅ | build:cf:static 成功(无告警)→ 部署 v`df64f5ba-36ee-4b38-92a7-83a5a7e1d1e0` |
+| 4 抽查+目检 | ✅ 见明细 | 字体 200 / 火星橙 CSS / 深蓝 logo 全部实测确认 |
+
+### 任务 4 目检明细(双语)
+- **字体**:`/fonts/funing-zhuan.woff2` HTTP 200;CSS 含 `@font-face FuningSeal→url(/fonts/funing-zhuan.woff2)` + `.brand-zh{font-family:FuningSeal,Kaiti...}`;浏览器实测页头(22px)/页脚(20px)"富宁电子" computed font = **FuningSeal**(woff2 已生效,非楷体 fallback);子集文件字体名核实为 **Alimama DaoLiTi**
+- **字标观感(中/EN)**:深蓝 logo 右侧黑色"富宁电子"方笔碑刻风(爨宝子碑意),与 logo 大小对齐协调
+- **按钮**:hero 主按钮实测 `#eb6127`(rgb 235,97,39)火星橙
+- **logo**:实测像素主色 `(24,40,118)` = **#182876 深蓝精确命中**
+- **无发现仍不理想项**
 
 ---
 
