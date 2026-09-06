@@ -204,11 +204,11 @@
     font-weight: 700;
   }
 
-  /* Chinese brand wordmark beside the logo (black, 楷体/system regular) */
+  /* Chinese brand wordmark beside the logo (black, 黑体/system sans) */
   .brand-zh {
-    font-family: "Kaiti SC", "STKaiti", "KaiTi", "Noto Serif SC", serif;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Heiti SC", sans-serif;
     color: #000;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1;
     letter-spacing: 0.04em;
   }
