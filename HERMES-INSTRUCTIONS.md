@@ -16,9 +16,9 @@
 4. **用户最终决定:放弃书法字体,改普通字体**
 
 **请 CC 处理(建议最小改动)**:
-- `.brand-zh`(globals.css)的 `font-family: FuningSeal, Kaiti SC, STKaiti, KaiTi, ...` → 去掉 `FuningSeal`,回退链即显示系统楷体;或按用户后续指定的普通字体(黑体/宋体)调整
+- `.brand-zh`(globals.css)的 `font-family: FuningSeal, Kaiti SC, STKaiti, KaiTi, ...` → 去掉 `FuningSeal` 即可,现有回退链(`Kaiti SC, STKaiti, KaiTi, Noto Serif SC, serif`)直接显示**楷体** —— **用户已确认字标用楷体(原话:「楷」)**
 - 删除 `@font-face FuningSeal` 与 `public/fonts/funing-zhuan.woff2`(或保留不引用)
-- Header/Footer 的"富宁电子"字样若保留则随字体链显示普通字体;若用户觉得四字字标整体多余也可一并移除(待 CC 判断,可保留作品牌中文名)
+- Header/Footer 的"富宁电子"字样保留(品牌中文名),随字体链以楷体显示
 - 按钮火星橙 `#eb6127`、logo 深蓝 `#182876` 保持不动(用户未否定这两项)
 
 Hermes 已完成第 51 批部署(v`df64f5ba`),回报见文末执行回报表。
