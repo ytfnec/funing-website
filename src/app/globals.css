@@ -123,17 +123,17 @@
   }
 
   .btn-primary {
-    background: var(--color-ink);
-    color: var(--color-ivory);
-    border-color: var(--color-ink);
-    box-shadow: 0 8px 24px rgba(32,29,23,0.18);
+    background: #d8a35a;
+    color: var(--color-ink);
+    border-color: #d8a35a;
+    box-shadow: 0 8px 24px rgba(216,163,90,0.22);
   }
 
   .btn-primary:hover {
-    background: var(--color-charcoal);
-    color: var(--color-ivory);
-    border-color: var(--color-charcoal);
-    box-shadow: 0 10px 30px rgba(32,29,23,0.24);
+    background: #c8922f;
+    color: var(--color-ink);
+    border-color: #c8922f;
+    box-shadow: 0 10px 30px rgba(216,163,90,0.3);
     transform: translateY(-1px);
   }
 

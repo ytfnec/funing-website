@@ -37,7 +37,7 @@ export function Header() {
             // buttons, no gradient, matches the design language.
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src="/assets/logo-ink-solid.png"
+              src="/assets/logo-blue-solid.png"
               alt="Funing Electronics"
               className="h-12 w-auto object-contain"
               onError={() => setLogoFailed(true)}

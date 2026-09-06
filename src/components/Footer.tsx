@@ -69,7 +69,7 @@ export function Footer() {
             <Link href="/" aria-label="Funing Electronics home">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/logo-ink-solid.png"
+                src="/assets/logo-blue-solid.png"
                 alt="Funing Electronics"
                 className="h-11 w-auto object-contain"
               />

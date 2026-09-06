@@ -109,10 +109,10 @@ export default function Home() {
             decoding="async"
             placeholder="blur"
             blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAp0lEQVR42q2TWw7DIAwEOQNgDHk1978kZcFGJapUqfAxkuWwgyGJ8dbmGcyzQcC5HIAXSo0e/RKQszXAhUh+gEWGNV8FGq6B4HMKlDduoEYPz54So2NrWIN7DANdpJJB4GTssouGj8T53BqoVYI17NuddAEuSXfX8FWCrz1Wrg9Jn2IQyPi6+ynh+0gV1Oj1KeQYCwWzR5i+xOnXOP0hLfmUl/xM//AGRNI+0LjrUfwAAAAASUVORK5CYII="
-            className="object-cover object-center brightness-[1.15]"
+            className="object-cover object-center"
             sizes="100vw"
           />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(16,13,10,0.50) 0%, rgba(16,13,10,0.26) 45%, rgba(16,13,10,0.40) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 62% 55% at 50% 50%, rgba(16,13,10,0.48) 0%, rgba(16,13,10,0.16) 55%, rgba(16,13,10,0.04) 75%)" }} />
         </div>
 
         <div className="relative z-10 px-page max-w-[1000px] mx-auto text-ivory">
@@ -133,7 +133,7 @@ export default function Home() {
             <div className="flex gap-4 flex-wrap justify-center w-full">
               <button
                 type="button"
-                className="btn btn-ivory"
+                className="btn btn-primary"
                 onClick={() => window.location.href = "/quote"}
               >
                 {t('home.hero.ctaQuote')}
@@ -353,19 +353,26 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="px-page relative overflow-hidden bg-sand text-center" style={{
+      <section className="px-page relative overflow-hidden text-center text-ivory" style={{
         paddingTop: "clamp(96px, 14vw, 160px)",
         paddingBottom: "clamp(96px, 14vw, 160px)"
       }}>
-        {/* Subtle bronze radial + PCB grid texture on the light sand */}
-        <div className="absolute inset-0 opacity-70 pointer-events-none" style={{
-          background:
-            "radial-gradient(circle at 50% 120%, rgba(168,118,58,0.14), transparent 55%), linear-gradient(rgba(168,118,58,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.07) 1px, transparent 1px)",
-          backgroundSize: "100% 100%, 44px 44px, 44px 44px",
-        }} />
+        <Image
+          src="/assets/cta-bg.webp"
+          alt=""
+          fill
+          priority={false}
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        {/* Soft radial scrim keeps the centered call-to-action readable on a bright photo */}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(16,13,10,0.5) 0%, rgba(16,13,10,0.2) 60%, rgba(16,13,10,0.06) 80%)" }} />
         <div className="relative z-10 max-w-[720px] mx-auto">
-          <p className="eyebrow" style={{ marginBottom: "32px" }}>{t('home.cta.eyebrow')}</p>
-          <h2 className="section-title mx-auto" style={{
+          <p className="eyebrow text-[#e8bb77]" style={{ marginBottom: "32px" }}>{t('home.cta.eyebrow')}</p>
+          <h2 className="section-title mx-auto text-ivory" style={{
             fontSize: "clamp(40px,5.6vw,68px)",
             lineHeight: 1.1,
             letterSpacing: "0.04em",
@@ -373,14 +380,14 @@ export default function Home() {
           }}>
             {t('home.cta.title')}
           </h2>
-          <p className="text-[var(--gray)] mx-auto" style={{ maxWidth: "620px", lineHeight: 1.6, marginBottom: "56px", textAlign: "center", fontSize: "17px" }}>
+          <p className="text-ivory/90 mx-auto" style={{ maxWidth: "620px", lineHeight: 1.6, marginBottom: "56px", textAlign: "center", fontSize: "17px" }}>
             {t('home.cta.desc')}
           </p>
           <div className="flex justify-center items-center gap-[16px] flex-wrap">
             <button type="button" className="btn btn-primary" onClick={() => window.location.href = "/quote"}>
               {t('home.cta.btn1')}
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => window.location.href = "/contact"}>
+            <button type="button" className="btn btn-secondary btn-on-dark" onClick={() => window.location.href = "/contact"}>
               {t('home.cta.btn2')}
             </button>
           </div>
