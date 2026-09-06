@@ -66,13 +66,14 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" aria-label="Funing Electronics home">
+            <Link href="/" aria-label="Funing Electronics home" className="flex items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/assets/logo-blue-solid.png"
                 alt="Funing Electronics"
                 className="h-11 w-auto object-contain"
               />
+              <span className="brand-zh text-[20px]">富宁电子</span>
             </Link>
             <p className="text-[var(--gray)] text-[13px] leading-relaxed mt-6 max-w-[220px]">
               {t('brand.tagline')}

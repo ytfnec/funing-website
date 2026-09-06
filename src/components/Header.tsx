@@ -33,8 +33,6 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3" aria-label="Funing Electronics home">
           {!logoFailed ? (
-            // Solid brand-amber (#a8763a) logo — same color as the site's
-            // buttons, no gradient, matches the design language.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src="/assets/logo-blue-solid.png"
@@ -52,6 +50,7 @@ export function Header() {
               </span>
             </>
           )}
+          <span className="brand-zh hidden sm:inline text-[22px]">富宁电子</span>
         </Link>
 
         {/* Desktop Nav */}

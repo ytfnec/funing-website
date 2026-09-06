@@ -48,6 +48,16 @@
   --line: rgba(32,29,23,0.12);
 }
 
+/* Self-hosted 小篆 (small seal script) wordmark for the Chinese brand name.
+   Subset font (富宁电子) is added to public/fonts/funing-zhuan.woff2 by Hermes. */
+@font-face {
+  font-family: "FuningSeal";
+  src: url("/fonts/funing-zhuan.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -123,17 +133,17 @@
   }
 
   .btn-primary {
-    background: #d8a35a;
+    background: #eb6127;
     color: var(--color-ink);
-    border-color: #d8a35a;
-    box-shadow: 0 8px 24px rgba(216,163,90,0.22);
+    border-color: #eb6127;
+    box-shadow: 0 8px 24px rgba(235,97,39,0.22);
   }
 
   .btn-primary:hover {
-    background: #c8922f;
+    background: #d14f17;
     color: var(--color-ink);
-    border-color: #c8922f;
-    box-shadow: 0 10px 30px rgba(216,163,90,0.3);
+    border-color: #d14f17;
+    box-shadow: 0 10px 30px rgba(235,97,39,0.3);
     transform: translateY(-1px);
   }
 
@@ -202,6 +212,15 @@
     text-transform: uppercase;
     color: var(--color-amber);
     font-weight: 700;
+  }
+
+  /* Chinese seal-script wordmark beside the logo (black, 小篆) */
+  .brand-zh {
+    font-family: "FuningSeal", "Kaiti SC", "STKaiti", "KaiTi", "Noto Serif SC", serif;
+    color: #000;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.04em;
   }
 
   .section-title {
