@@ -73,7 +73,7 @@ export function Footer() {
                 alt="Funing Electronics"
                 className="h-11 w-auto object-contain"
               />
-              <span className="brand-zh text-[20px]">富宁电子</span>
+              <span className="brand-zh text-[20px]">烟台富宁电子</span>
             </Link>
             <p className="text-[var(--gray)] text-[13px] leading-relaxed mt-6 max-w-[220px]">
               {t('brand.tagline')}

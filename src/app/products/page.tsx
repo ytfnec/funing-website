@@ -99,8 +99,8 @@ export default function ProductsPage() {
                 onClick={() => setActiveCategory(cat.key)}
                 className={`px-5 py-2 rounded-full text-[12px] tracking-[0.14em] uppercase border transition-all duration-200 ${
                   activeCategory === cat.key
-                    ? 'bg-[var(--amber)] text-ink border-[var(--amber)] font-bold'
-                    : 'border-[rgba(32,29,23,0.15)] text-[var(--gray)] hover:border-[var(--amber)] hover:text-ink'
+                    ? 'bg-[var(--btn-bg)] text-[var(--btn-fg)] border-[var(--btn-bg)] font-bold'
+                    : 'border-[rgba(32,29,23,0.15)] text-[var(--gray)] hover:border-[var(--btn-bg)] hover:text-ink'
                 }`}
               >
                 {cat.label}

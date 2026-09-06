@@ -132,7 +132,7 @@ export default function QuotePage() {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border ${
                   i <= step
-                    ? 'bg-[var(--amber)] border-[var(--amber)] text-ink'
+                    ? 'bg-[var(--btn-bg)] border-[var(--btn-bg)] text-[var(--btn-fg)]'
                     : 'border-[var(--line)] text-[var(--gray)]'
                 }`}
               >
@@ -148,7 +148,7 @@ export default function QuotePage() {
               {i < STEPS.length - 1 && (
                 <div
                   className={`w-[clamp(20px,6vw,60px)] h-px mx-2 ${
-                    i < step ? 'bg-[var(--amber)]' : 'bg-[var(--line)]'
+                    i < step ? 'bg-[var(--btn-bg)]' : 'bg-[var(--line)]'
                   }`}
                 />
               )}
@@ -172,7 +172,7 @@ export default function QuotePage() {
                     onClick={() => selectProduct(s.slug)}
                     className={`text-left p-5 border rounded-md transition-all duration-200 w-full ${
                       form.product === s.slug
-                        ? 'border-[var(--amber)] bg-[rgba(168,118,58,0.08)] shadow-[0_0_0_1px_var(--amber)]'
+                        ? 'border-[var(--btn-bg)] bg-[rgba(43,60,61,0.08)] shadow-[0_0_0_1px_var(--btn-bg)]'
                         : 'border-[rgba(32,29,23,0.06)] hover:border-[rgba(32,29,23,0.2)] hover:bg-[rgba(32,29,23,0.02)]'
                     }`}
                   >
@@ -201,7 +201,7 @@ export default function QuotePage() {
                         onClick={() => selectQuantity(qty)}
                         className={`p-4 border rounded-md text-center transition-all duration-200 ${
                           form.quantity === qty
-                            ? 'border-[var(--amber)] bg-[rgba(168,118,58,0.08)] text-ink shadow-[0_0_0_1px_var(--amber)]'
+                            ? 'border-[var(--btn-bg)] bg-[rgba(43,60,61,0.08)] text-ink shadow-[0_0_0_1px_var(--btn-bg)]'
                             : 'border-[rgba(32,29,23,0.06)] text-[var(--gray)] hover:border-[rgba(32,29,23,0.2)] hover:bg-[rgba(32,29,23,0.02)]'
                         }`}
                       >

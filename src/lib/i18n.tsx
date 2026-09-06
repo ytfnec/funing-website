@@ -1595,12 +1595,12 @@ export function useLang() {
 export function LanguageSwitcher() {
   const { lang, setLang } = useLang();
   return (
-    <div className="flex items-center gap-1 border border-[rgba(255,255,255,0.15)] rounded-full px-1 py-0.5">
+    <div className="flex items-center gap-1 border border-[rgba(32,29,23,0.2)] rounded-full px-1 py-0.5">
       <button
         type="button"
         onClick={() => setLang('zh')}
         className={`text-[11px] tracking-[0.08em] rounded-full px-2.5 py-1 transition-colors ${
-          lang === 'zh' ? 'bg-[var(--amber)] text-ink font-bold' : 'text-[var(--gray)] hover:text-[var(--amber)]'
+          lang === 'zh' ? 'bg-[var(--btn-bg)] text-[var(--btn-fg)] font-bold' : 'text-[var(--gray)] hover:text-[var(--btn-bg)]'
         }`}
       >
         中文
@@ -1609,7 +1609,7 @@ export function LanguageSwitcher() {
         type="button"
         onClick={() => setLang('en')}
         className={`text-[11px] tracking-[0.08em] rounded-full px-2.5 py-1 transition-colors ${
-          lang === 'en' ? 'bg-[var(--amber)] text-ink font-bold' : 'text-[var(--gray)] hover:text-[var(--amber)]'
+          lang === 'en' ? 'bg-[var(--btn-bg)] text-[var(--btn-fg)] font-bold' : 'text-[var(--gray)] hover:text-[var(--btn-bg)]'
         }`}
       >
         EN

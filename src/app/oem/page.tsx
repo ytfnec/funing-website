@@ -109,7 +109,7 @@ export default function OEMPage() {
             <div className="space-y-10">
               {process.map((p) => (
                 <div key={p.step} className="flex gap-6 items-start">
-                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-[var(--amber)] text-ink flex items-center justify-center text-sm font-bold">
+                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-[var(--btn-bg)] text-[var(--btn-fg)] flex items-center justify-center text-sm font-bold">
                     {p.step}
                   </div>
                   <div className="pt-2">

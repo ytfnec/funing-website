@@ -46,6 +46,9 @@
   --soft-white: #2c2821;
   --wood: #9a6a35;
   --line: rgba(32,29,23,0.12);
+  --btn-bg: #2b3c3d;
+  --btn-hover: #222e2f;
+  --btn-fg: #f5efe4;
 }
 
 @layer base {
@@ -204,13 +207,13 @@
     font-weight: 700;
   }
 
-  /* Chinese brand wordmark beside the logo (black, 黑体/system sans) */
+  /* Chinese brand wordmark beside the logo — font follows the page */
   .brand-zh {
-    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Heiti SC", sans-serif;
+    font-family: inherit;
     color: #000;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
   }
 
   .section-title {

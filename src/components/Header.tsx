@@ -50,7 +50,7 @@ export function Header() {
               </span>
             </>
           )}
-          <span className="brand-zh hidden sm:inline text-[22px]">富宁电子</span>
+          <span className="brand-zh hidden md:inline text-[20px]">烟台富宁电子</span>
         </Link>
 
         {/* Desktop Nav */}
