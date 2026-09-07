@@ -108,7 +108,7 @@ export default function Home() {
             fetchPriority="high"
             decoding="async"
             placeholder="blur"
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAp0lEQVR42q2TWw7DIAwEOQNgDHk1978kZcFGJapUqfAxkuWwgyGJ8dbmGcyzQcC5HIAXSo0e/RKQszXAhUh+gEWGNV8FGq6B4HMKlDduoEYPz54So2NrWIN7DANdpJJB4GTssouGj8T53BqoVYI17NuddAEuSXfX8FWCrz1Wrg9Jn2IQyPi6+ynh+0gV1Oj1KeQYCwWzR5i+xOnXOP0hLfmUl/xM//AGRNI+0LjrUfwAAAAASUVORK5CYII="
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAOCAIAAAC6mkspAAACs0lEQVR42iXGWXLcVBQA0Ds9PUndie0kxkMBa6YqC2BJ8E1RwSFhSFyOB0mtN9yBD87XwZ/f/4SERBiI+P8QEXnI45t3l9e3N+M8Pz4//fHp493Huw93Hz59/nPbXoQEPEo9lV6QgEXk/rdfmBCZNFCBHAWQAzmN43J1DbqdX7wptUDZ2C2zTDlrH8LDwUlowIGYWVgefv9VhCVRB94jNRgckwVJ4vbtr7T93d699cCy7va4UCuTJJhfBYS5mk+IxCJIJKf1ZczMkCRlRgpARTJz2k/9/mlr/6SvE6AsBV92qMazTOeX5zwkNY2AnMchT0golkYYeDgMw+EgfEbxqsAQteb6cNCHtDxABXXei6x9tOny/Pb66vsf8zztpUTA2fnF67NzSUk8j5EJxszTlNIh4VnEEEMZeZ/60wF9Yiuhbto74zGdXby7uf0hjePy8hwel1dX313djPMsGzkgotleW/fapAQhggUj0zDm6ZCMWiSN6OiATqQAodZ6j/CuqmEOKI/W9k7rSbGqkoYUkiweEUVHpDEPY6g4b2rhy2n98vXfSETEp20BgKWsj9vTOB/l5NEstqbuqlGDVgJOTiHwFmidcHAuYdWtdn0uT+Xz3bf1AQF6r0g43R+m43HIk0AaglExPEzdrPXo0A1XkUdKX5hr59b9effavWvXZam9eKhaAwp+YcqDJBGZEjMhoptRU20aFsmQnGqNl81dwyz2BhgypUnGo+RUrTj0blW7Q5ywoQRrsBAxEUFIOFLAiDwTzhIzw4RgBAemYxZJc359wXNe26JrbaWYqzcLdCl1JRLhgUDCw9wBEBlH4Vc53oxwTGEeXWPpBELC6ODN+t7rXot6C1MLlbJvgJJYE2cIVA02zEQANDBODLOAGowMCQPceivFYjk9r+uy15OZhqm7/Qei4+K2C+892QAAAABJRU5ErkJggg=="
             className="object-cover object-center"
             sizes="100vw"
           />
