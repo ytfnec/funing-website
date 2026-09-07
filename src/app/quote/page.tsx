@@ -172,7 +172,7 @@ export default function QuotePage() {
                     onClick={() => selectProduct(s.slug)}
                     className={`text-left p-5 border rounded-md transition-all duration-200 w-full ${
                       form.product === s.slug
-                        ? 'border-[var(--btn-bg)] bg-[rgba(43,60,61,0.08)] shadow-[0_0_0_1px_var(--btn-bg)]'
+                        ? 'border-[var(--btn-bg)] bg-[rgba(23,23,23,0.08)] shadow-[0_0_0_1px_var(--btn-bg)]'
                         : 'border-[rgba(23,23,23,0.06)] hover:border-[rgba(23,23,23,0.2)] hover:bg-[rgba(23,23,23,0.02)]'
                     }`}
                   >
@@ -201,7 +201,7 @@ export default function QuotePage() {
                         onClick={() => selectQuantity(qty)}
                         className={`p-4 border rounded-md text-center transition-all duration-200 ${
                           form.quantity === qty
-                            ? 'border-[var(--btn-bg)] bg-[rgba(43,60,61,0.08)] text-ink shadow-[0_0_0_1px_var(--btn-bg)]'
+                            ? 'border-[var(--btn-bg)] bg-[rgba(23,23,23,0.08)] text-ink shadow-[0_0_0_1px_var(--btn-bg)]'
                             : 'border-[rgba(23,23,23,0.06)] text-[var(--gray)] hover:border-[rgba(23,23,23,0.2)] hover:bg-[rgba(23,23,23,0.02)]'
                         }`}
                       >
