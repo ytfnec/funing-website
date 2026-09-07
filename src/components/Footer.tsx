@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useLang } from '@/lib/i18n';
 
 export function Footer() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribing, setSubscribing] = useState(false);
   const [newsletterStatus, setNewsletterStatus] = useState('');
@@ -73,7 +73,11 @@ export function Footer() {
                 alt="Funing Electronics"
                 className="h-11 w-auto object-contain"
               />
-              <span className="brand-zh text-[20px]">烟台富宁电子</span>
+              {lang === 'zh' ? (
+                <span className="brand-zh text-[20px]">烟台富宁</span>
+              ) : (
+                <span className="text-[18px] font-semibold tracking-[0.14em] text-[#171717]">YANTAI FUNING</span>
+              )}
             </Link>
             <p className="text-[var(--gray)] text-[13px] leading-relaxed mt-6 max-w-[220px]">
               {t('brand.tagline')}

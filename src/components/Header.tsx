@@ -9,7 +9,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -50,7 +50,11 @@ export function Header() {
               </span>
             </>
           )}
-          <span className="brand-zh hidden md:inline text-[20px]">烟台富宁电子</span>
+          {lang === 'zh' ? (
+            <span className="brand-zh hidden md:inline text-[20px]">烟台富宁</span>
+          ) : (
+            <span className="hidden md:inline text-[16px] font-semibold tracking-[0.14em] text-[#171717]">YANTAI FUNING</span>
+          )}
         </Link>
 
         {/* Desktop Nav */}
