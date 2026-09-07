@@ -102,7 +102,7 @@ export default function AdminDashboard() {
                     <td className="p-4 text-sm text-[var(--gray)]">{new Date(c.submitted_at).toLocaleDateString()}</td>
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded-full text-[10px] tracking-[0.14em] uppercase ${
-                        c.status === 'new' ? 'bg-[rgba(168,118,58,0.2)] text-[var(--amber)]' :
+                        c.status === 'new' ? 'bg-[rgba(111,90,65,0.2)] text-[var(--amber)]' :
                         c.status === 'contacted' ? 'bg-[rgba(96,165,250,0.2)] text-blue-700' :
                         'bg-[rgba(52,211,153,0.2)] text-green-700'
                       }`}>

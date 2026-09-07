@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  /* Warm-light theme (Axis-style): warm ivory base + warm-charcoal ink + bronze accent */
-  --color-black: #201d17;       /* ink — headings / primary text */
+  /* Scheme 3 "Tan + Near-Black" (Symmetry-style): near-white base + tan bands + near-black accents */
+  --color-black: #171717;       /* ink — headings / primary text */
   --color-charcoal: #2a261e;    /* warm charcoal for dark bands (hero overlays, footer) */
   --color-dark-gray: #3b362e;
   --color-white: #f5efe4;       /* ivory — reserved for text sitting on dark image bands */
-  --color-soft-white: #2c2821;  /* strong body text on light surfaces */
-  --color-gray: #4a453c;        /* muted / secondary text on light surfaces (deepened for legibility) */
-  --color-line: rgba(32,29,23,0.12);
-  --color-wood: #9a6a35;
-  --color-amber: #a8763a;       /* bronze accent */
-  --color-amber-light: #c9a66b;
+  --color-soft-white: #171717;  /* strong body text on light surfaces */
+  --color-gray: #4a453c;        /* muted / secondary text on light surfaces */
+  --color-line: rgba(23,23,23,0.12);
+  --color-wood: #171717;        /* price emphasis — near-black (Symmetry style) */
+  --color-amber: #6f5a41;       /* deep tan accent (eyebrow / icons / hover) */
+  --color-amber-light: #171717; /* hover deepening */
   --color-soft-black: #efe9de;
-  --color-cream: #f6f2ea;       /* page base background */
-  --color-sand: #efe9de;        /* alternating section background */
-  --color-card: #fdfbf7;        /* cards / surfaces / inputs */
-  --color-ink: #201d17;
+  --color-cream: #fcfbf8;       /* page base background — near-white */
+  --color-sand: #e5dac9;        /* alternating section background — tan band */
+  --color-card: #ffffff;        /* cards / surfaces / inputs */
+  --color-ink: #171717;
   --color-ivory: #f5efe4;
-  --color-bronze-deep: #8b5f28;
+  --color-bronze-deep: #171717;
 
   --font-sans: var(--font-manrope), "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -40,14 +40,14 @@
 
 /* Unprefixed design tokens referenced across components (kept in sync above). */
 :root {
-  --amber: #a8763a;
-  --amber-light: #c9a66b;
+  --amber: #6f5a41;
+  --amber-light: #171717;
   --gray: #4a453c;
-  --soft-white: #2c2821;
-  --wood: #9a6a35;
-  --line: rgba(32,29,23,0.12);
-  --btn-bg: #2b3c3d;
-  --btn-hover: #222e2f;
+  --soft-white: #171717;
+  --wood: #171717;
+  --line: rgba(23,23,23,0.12);
+  --btn-bg: #171717;
+  --btn-hover: #000000;
   --btn-fg: #f5efe4;
 }
 
@@ -126,17 +126,17 @@
   }
 
   .btn-primary {
-    background: #2b3c3d;
+    background: #171717;
     color: var(--color-ivory);
-    border-color: #2b3c3d;
-    box-shadow: 0 8px 24px rgba(43,60,61,0.22);
+    border-color: #171717;
+    box-shadow: 0 8px 24px rgba(23,23,23,0.18);
   }
 
   .btn-primary:hover {
-    background: #222e2f;
+    background: #000000;
     color: var(--color-ivory);
-    border-color: #222e2f;
-    box-shadow: 0 10px 30px rgba(43,60,61,0.28);
+    border-color: #000000;
+    box-shadow: 0 10px 30px rgba(23,23,23,0.24);
     transform: translateY(-1px);
   }
 
@@ -149,9 +149,9 @@
   }
 
   .btn-ivory:hover {
-    background: #fffdf8;
+    background: #ffffff;
     color: var(--color-ink);
-    border-color: #fffdf8;
+    border-color: #ffffff;
     box-shadow: 0 10px 30px rgba(16,13,10,0.3);
     transform: translateY(-1px);
   }
@@ -163,12 +163,12 @@
   .btn-secondary {
     background: transparent;
     color: var(--color-ink);
-    border-color: rgba(32,29,23,0.35);
+    border-color: rgba(23,23,23,0.35);
   }
 
   .btn-secondary:hover {
-    background: rgba(32,29,23,0.05);
-    border-color: rgba(32,29,23,0.6);
+    background: rgba(23,23,23,0.05);
+    border-color: rgba(23,23,23,0.6);
     transform: translateY(-1px);
   }
 
@@ -187,16 +187,22 @@
     border-color: rgba(245,239,228,0.7);
   }
 
-  /* Accessible keyboard focus across the site */
+  /* Accessible keyboard focus across the site — near-black on light, ivory on dark bands */
   a:focus-visible,
   button:focus-visible,
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
   summary:focus-visible {
-    outline: 2px solid var(--color-amber);
+    outline: 2px solid #171717;
     outline-offset: 2px;
     border-radius: 4px;
+  }
+
+  .btn-ivory:focus-visible,
+  .btn-on-dark:focus-visible,
+  .hero-link:focus-visible {
+    outline-color: rgba(245,239,228,0.9);
   }
 
   .eyebrow {
@@ -246,20 +252,20 @@
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 
-  /* Subtle PCB-style grid for product placeholder panels (bronze on light) */
+  /* Subtle PCB-style grid for product placeholder panels (near-black on light) */
   .tech-panel {
     background-image:
-      linear-gradient(rgba(168,118,58,0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(168,118,58,0.08) 1px, transparent 1px);
+      linear-gradient(rgba(23,23,23,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23,23,23,0.05) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
-  /* Skeleton loading primitives — muted warm block with a slow bronze shimmer */
+  /* Skeleton loading primitives — muted neutral block with a near-black shimmer */
   .skeleton {
     position: relative;
     overflow: hidden;
     border-radius: 6px;
-    background: rgba(32,29,23,0.06);
+    background: rgba(23,23,23,0.06);
   }
 
   .skeleton::after {
@@ -267,7 +273,7 @@
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(168,118,58,0.14), transparent);
+    background: linear-gradient(90deg, transparent, rgba(23,23,23,0.1), transparent);
     animation: skeleton-shimmer 1.6s ease-in-out infinite;
   }
 
@@ -312,7 +318,7 @@
     }
 
     .product-card:hover .product-panel {
-      box-shadow: inset 0 0 0 1px rgba(168,118,58,0.25), 0 12px 40px -12px rgba(168,118,58,0.18);
+      box-shadow: inset 0 0 0 1px rgba(23,23,23,0.15), 0 12px 40px -12px rgba(23,23,23,0.12);
     }
 
     .product-card .product-cta {

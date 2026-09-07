@@ -104,7 +104,7 @@ export default function ContactPage() {
           <h2 className="text-xl tracking-[0.06em] uppercase font-bold mb-6">{t('contact.form.title')}</h2>
 
           {error && (
-            <div className="mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded text-[var(--amber)] text-sm">
+            <div className="mb-6 p-4 bg-[rgba(111,90,65,0.1)] border border-[rgba(111,90,65,0.3)] rounded text-[var(--amber)] text-sm">
               {error}
             </div>
           )}

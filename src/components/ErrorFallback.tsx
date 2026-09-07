@@ -14,7 +14,7 @@ export function ErrorFallback({ reset }: { reset: () => void }) {
   return (
     <section className="px-page py-[clamp(80px,12vw,160px)] bg-cream min-h-[70vh] flex items-center justify-center">
       <div className="max-w-[540px] mx-auto text-center">
-        <div className="w-14 h-14 rounded-full border border-[rgba(168,118,58,0.3)] flex items-center justify-center mx-auto mb-6">
+        <div className="w-14 h-14 rounded-full border border-[rgba(111,90,65,0.3)] flex items-center justify-center mx-auto mb-6">
           <TriangleAlert className="w-6 h-6 text-[var(--amber)]" />
         </div>
         <p className="eyebrow mb-4">{t('error.eyebrow')}</p>

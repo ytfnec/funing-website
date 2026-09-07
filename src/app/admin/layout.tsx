@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       `}>
         <div className="p-6 border-b border-[rgba(32,29,23,0.06)]">
           <Link href="/admin" className="flex items-center gap-3">
-            <span className="text-[var(--amber,#a8763a)] text-[15px] tracking-[0.12em] uppercase font-bold">
+            <span className="text-[var(--amber,#6f5a41)] text-[15px] tracking-[0.12em] uppercase font-bold">
               {t('admin.brand')}
             </span>
             <span className="text-[var(--gray)] text-[10px] tracking-[0.16em] uppercase hidden sm:inline">
@@ -99,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 text-[14px] rounded-md transition-colors ${
                   isActive
-                    ? 'bg-[rgba(168,118,58,0.1)] text-[var(--amber)] font-medium'
+                    ? 'bg-[rgba(111,90,65,0.1)] text-[var(--amber)] font-medium'
                     : 'text-[var(--gray)] hover:text-ink hover:bg-[rgba(32,29,23,0.03)]'
                 }`}
               >

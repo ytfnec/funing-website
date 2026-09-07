@@ -42,7 +42,7 @@ export function Header() {
             />
           ) : (
             <>
-              <div className="text-[var(--amber,#a8763a)] text-[15px] tracking-[0.12em] uppercase font-bold">
+              <div className="text-[var(--amber,#6f5a41)] text-[15px] tracking-[0.12em] uppercase font-bold">
                 {t('brand.funing')}
               </div>
               <span className="text-[11px] tracking-[0.16em] uppercase text-[var(--gray)] hidden sm:inline">

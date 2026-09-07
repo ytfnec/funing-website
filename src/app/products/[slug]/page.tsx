@@ -383,7 +383,7 @@ export default function ProductDetailPage() {
                 <div
                   className="absolute inset-0 flex items-center justify-center"
                   style={{
-                    background: "radial-gradient(circle at center, rgba(168,118,58,0.10), transparent 70%), linear-gradient(rgba(168,118,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.04) 1px, transparent 1px)",
+                    background: "radial-gradient(circle at center, rgba(111,90,65,0.10), transparent 70%), linear-gradient(rgba(111,90,65,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(111,90,65,0.04) 1px, transparent 1px)",
                     backgroundSize: "100% 100%, 32px 32px, 32px 32px",
                   }}
                 >

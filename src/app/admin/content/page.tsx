@@ -239,12 +239,12 @@ export default function AdminContent() {
       </div>
 
       {/* How it works */}
-      <div className="mb-6 p-5 bg-[rgba(168,118,58,0.05)] border border-[rgba(168,118,58,0.15)] rounded-lg text-[var(--gray)] text-sm leading-relaxed">
+      <div className="mb-6 p-5 bg-[rgba(111,90,65,0.05)] border border-[rgba(111,90,65,0.15)] rounded-lg text-[var(--gray)] text-sm leading-relaxed">
         <strong className="text-ink">{t('admin.content.howTitle')}</strong> {t('admin.content.how1')} <code className="text-[var(--amber)]">&lt;lang&gt;__&lt;key&gt;</code> — e.g. <code className="text-[var(--amber)]">en__home.hero.title1</code> or <code className="text-[var(--amber)]">zh__home.cta.title</code>. {t('admin.content.how2')}
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(111,90,65,0.1)] border border-[rgba(111,90,65,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -282,7 +282,7 @@ export default function AdminContent() {
 
       {/* Editor panel */}
       {editing && (
-        <div className="mb-6 bg-card border border-[rgba(168,118,58,0.25)] rounded-lg p-6">
+        <div className="mb-6 bg-card border border-[rgba(111,90,65,0.25)] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg tracking-[0.06em] uppercase font-bold">
               {editing === 'new' ? t('admin.content.newBlockTitle') : t('admin.content.editTitle').replace('{slug}', editing.slug)}
@@ -440,7 +440,7 @@ export default function AdminContent() {
         <div className="space-y-3">
           {filtered.map((block) => (
             <div key={block.id} className={`bg-card border rounded-lg overflow-hidden transition-colors ${
-              selected.has(block.id) ? 'border-[rgba(168,118,58,0.5)]' : 'border-[rgba(32,29,23,0.06)]'
+              selected.has(block.id) ? 'border-[rgba(111,90,65,0.5)]' : 'border-[rgba(32,29,23,0.06)]'
             }`}>
               <div className="p-4 flex items-center gap-4">
                 <input

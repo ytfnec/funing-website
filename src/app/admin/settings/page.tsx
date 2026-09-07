@@ -102,7 +102,7 @@ export default function AdminSettings() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(111,90,65,0.1)] border border-[rgba(111,90,65,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>

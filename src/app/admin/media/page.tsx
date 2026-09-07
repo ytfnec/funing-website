@@ -214,7 +214,7 @@ export default function AdminMedia() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(111,90,65,0.1)] border border-[rgba(111,90,65,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -269,7 +269,7 @@ export default function AdminMedia() {
             <div
               key={item.id}
               className={`relative bg-card border rounded-lg overflow-hidden group transition-colors ${
-                selected.has(item.id) ? 'border-[rgba(168,118,58,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
+                selected.has(item.id) ? 'border-[rgba(111,90,65,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
               }`}
             >
               <div className="absolute top-2 left-2 z-10">
@@ -357,7 +357,7 @@ export default function AdminMedia() {
         </>
       )}
 
-      <div className="mt-6 p-6 bg-[rgba(168,118,58,0.05)] border border-[rgba(168,118,58,0.15)] rounded-lg">
+      <div className="mt-6 p-6 bg-[rgba(111,90,65,0.05)] border border-[rgba(111,90,65,0.15)] rounded-lg">
         <h3 className="text-sm font-bold mb-2">{t('admin.media.guideTitle')}</h3>
         <ul className="text-[var(--gray)] text-sm space-y-2">
           <li>• {t('admin.media.guide1')}</li>

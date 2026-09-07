@@ -236,7 +236,7 @@ export default function QuotePage() {
               <p className="text-[var(--gray)] mb-8">{t('quote.s3.desc')}</p>
 
               {error && (
-                <div className="mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded text-[var(--amber)] text-sm">
+                <div className="mb-6 p-4 bg-[rgba(111,90,65,0.1)] border border-[rgba(111,90,65,0.3)] rounded text-[var(--amber)] text-sm">
                   {error}
                 </div>
               )}

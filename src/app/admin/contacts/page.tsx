@@ -172,7 +172,7 @@ export default function AdminContacts() {
 
   const statusBadge = (status: string) => {
     const colors: Record<string, string> = {
-      new: 'bg-[rgba(168,118,58,0.2)] text-[var(--amber)]',
+      new: 'bg-[rgba(111,90,65,0.2)] text-[var(--amber)]',
       contacted: 'bg-[rgba(96,165,250,0.2)] text-blue-700',
       quoted: 'bg-[rgba(168,85,247,0.2)] text-purple-700',
       closed: 'bg-[rgba(52,211,153,0.2)] text-green-700',
@@ -185,7 +185,7 @@ export default function AdminContacts() {
       <h1 className="text-2xl tracking-[0.06em] uppercase font-bold mb-8">{t('admin.contacts.title')}</h1>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-4 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-4 p-4 bg-[rgba(111,90,65,0.1)] border border-[rgba(111,90,65,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -235,7 +235,7 @@ export default function AdminContacts() {
           </div>
           {contacts.map((c) => (
             <div key={c.id} className={`bg-card border rounded-lg overflow-hidden transition-colors ${
-              selected.has(c.id) ? 'border-[rgba(168,118,58,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
+              selected.has(c.id) ? 'border-[rgba(111,90,65,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
             }`}>
               <button
                 onClick={() => setExpanded(expanded === c.id ? null : c.id)}
@@ -252,7 +252,7 @@ export default function AdminContacts() {
                   </span>
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
                     c.type === 'call' ? 'bg-blue-500/20 text-blue-700' :
-                    c.type === 'quote' ? 'bg-[rgba(168,118,58,0.2)] text-[var(--amber)]' :
+                    c.type === 'quote' ? 'bg-[rgba(111,90,65,0.2)] text-[var(--amber)]' :
                     'bg-[rgba(32,29,23,0.1)] text-ink'
                   }`}>
                     {c.name[0]?.toUpperCase()}

@@ -49,7 +49,7 @@ export default function AdminLogin() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 20% 15%, rgba(168,118,58,0.08), transparent 45%), radial-gradient(circle at 85% 85%, rgba(168,118,58,0.06), transparent 40%), linear-gradient(rgba(168,118,58,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.03) 1px, transparent 1px)",
+            "radial-gradient(circle at 20% 15%, rgba(216,163,90,0.09), transparent 45%), radial-gradient(circle at 85% 85%, rgba(216,163,90,0.07), transparent 40%), linear-gradient(rgba(216,163,90,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(216,163,90,0.05) 1px, transparent 1px)",
           backgroundSize: "100% 100%, 100% 100%, 40px 40px, 40px 40px",
         }}
       />
@@ -57,10 +57,10 @@ export default function AdminLogin() {
       <div className="w-full max-w-md relative z-10">
         {/* Brand block */}
         <div className="text-center mb-8 animate-fade-in">
-          <div className="mx-auto w-14 h-14 rounded-2xl bg-[var(--amber)] flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(168,118,58,0.3)]">
+          <div className="mx-auto w-14 h-14 rounded-2xl bg-[#d8a35a] flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(216,163,90,0.28)]">
             <ShieldCheck className="w-7 h-7 text-ink" />
           </div>
-          <div className="text-[var(--amber)] text-[20px] tracking-[0.12em] uppercase font-bold">
+          <div className="text-[#d8a35a] text-[20px] tracking-[0.12em] uppercase font-bold">
             {t('admin.brand')}
           </div>
           <div className="text-[11px] tracking-[0.22em] uppercase text-[var(--gray)] mt-1">
@@ -76,7 +76,7 @@ export default function AdminLogin() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-3 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
+            <div className="flex items-center gap-2 text-[#d8a35a] text-sm mb-6 p-3 bg-[rgba(216,163,90,0.12)] border border-[rgba(216,163,90,0.28)] rounded-lg">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -92,7 +92,7 @@ export default function AdminLogin() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-cream/70 border border-[rgba(32,29,23,0.12)] rounded-lg text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all"
+                className="w-full px-4 py-3 bg-cream/70 border border-[rgba(32,29,23,0.12)] rounded-lg text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[#d8a35a] focus:ring-1 focus:ring-[#d8a35a] transition-all"
                 placeholder="admin@fnec.net"
                 required
                 autoComplete="email"
@@ -110,7 +110,7 @@ export default function AdminLogin() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-cream/70 border border-[rgba(32,29,23,0.12)] rounded-lg text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] focus:ring-1 focus:ring-[var(--amber)] transition-all pr-12"
+                  className="w-full px-4 py-3 bg-cream/70 border border-[rgba(32,29,23,0.12)] rounded-lg text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[#d8a35a] focus:ring-1 focus:ring-[#d8a35a] transition-all pr-12"
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
@@ -150,7 +150,7 @@ export default function AdminLogin() {
 
         <p className="text-center text-[var(--gray)] text-sm mt-6">
           {t('admin.login.funingAdmin')} • {' '}
-          <a href="/" className="text-[var(--amber)] hover:underline">{t('admin.viewSite')}</a>
+          <a href="/" className="text-[#d8a35a] hover:underline">{t('admin.viewSite')}</a>
         </p>
       </div>
     </div>

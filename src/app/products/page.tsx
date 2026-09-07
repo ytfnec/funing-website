@@ -119,7 +119,7 @@ export default function ProductsPage() {
                 className={`block relative overflow-hidden ${i % 2 === 1 ? 'md:order-2' : ''}`}
               >
                 <div className="aspect-[4/3] bg-card overflow-hidden flex items-center justify-center" style={{
-                  background: "radial-gradient(circle at center, rgba(168,118,58,0.08), transparent 70%), linear-gradient(rgba(168,118,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,118,58,0.04) 1px, transparent 1px)",
+                  background: "radial-gradient(circle at center, rgba(111,90,65,0.08), transparent 70%), linear-gradient(rgba(111,90,65,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(111,90,65,0.04) 1px, transparent 1px)",
                   backgroundSize: "100% 100%, 32px 32px, 32px 32px"
                 }}>
                   <div className="text-center p-8">

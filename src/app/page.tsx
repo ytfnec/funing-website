@@ -151,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* Product Categories */}
-      <section id="products" className="scroll-mt-0 px-page bg-gradient-to-b from-[#f6f2ea] to-[#efe9de]" style={{
+      <section id="products" className="scroll-mt-0 px-page bg-gradient-to-b from-[#fcfbf8] to-[#efe9de]" style={{
         paddingTop: "clamp(80px, 12vw, 140px)",
         paddingBottom: "clamp(80px, 12vw, 140px)"
       }}>
@@ -175,7 +175,7 @@ export default function Home() {
             <article key={p.key} className="flex flex-col product-card group">
               <div className="flex flex-col">
                 <div className="relative product-panel" style={{ aspectRatio: "4 / 5", background: "#fdfbf7", overflow: "hidden" }}>
-                  <div className="absolute inset-0 flex items-center justify-center tech-panel" style={{ background: "radial-gradient(circle at center, rgba(168,118,58,0.12), transparent 70%)" }}>
+                  <div className="absolute inset-0 flex items-center justify-center tech-panel" style={{ background: "radial-gradient(circle at center, rgba(111,90,65,0.12), transparent 70%)" }}>
                     <div className="text-center px-6">
                       <div className="text-[var(--amber)] text-[40px] mb-4 opacity-60 product-icon">
                         {p.icon}
@@ -252,7 +252,7 @@ export default function Home() {
                 <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "14px" }}>
                   {c.bullets.map((b, bi) => (
                     <li key={bi} className="text-[var(--gray)] text-[16px] leading-[1.7]" style={{ position: "relative", paddingLeft: "18px" }}>
-                      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: "10px", width: "6px", height: "6px", backgroundColor: "var(--amber, #a8763a)", borderRadius: "999px" }} />
+                      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: "10px", width: "6px", height: "6px", backgroundColor: "var(--amber, #6f5a41)", borderRadius: "999px" }} />
                       {b}
                     </li>
                   ))}

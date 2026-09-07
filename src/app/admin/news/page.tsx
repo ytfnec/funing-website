@@ -190,7 +190,7 @@ export default function AdminNews() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(168,118,58,0.1)] border border-[rgba(168,118,58,0.3)] rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--amber)] text-sm mb-6 p-4 bg-[rgba(111,90,65,0.1)] border border-[rgba(111,90,65,0.3)] rounded-lg">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -216,7 +216,7 @@ export default function AdminNews() {
 
       {/* Editor panel */}
       {editing && (
-        <div className="mb-6 bg-card border border-[rgba(168,118,58,0.25)] rounded-lg p-6">
+        <div className="mb-6 bg-card border border-[rgba(111,90,65,0.25)] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg tracking-[0.06em] uppercase font-bold">
               {editing === 'new' ? t('admin.news.newArticle') : t('admin.news.edit').replace('{title}', editing.title)}
