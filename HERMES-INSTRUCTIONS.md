@@ -1,52 +1,53 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第五十九批（最新）** · 更新: 2026-09-07 · 来源: Hermes
-> 状态: **✅ 方案3「米褐·近黑高定」整站换色 · 已部署上线 v2318fe02**
+> 批次: **第六十批（最新）** · 更新: 2026-09-07 · 来源: Claude Code
+> 状态: **授权品牌整机：加品牌与卖点 · 待执行部署**
 
 ---
 
-## 第五十九批：方案3 整站换色（CC 复查补全完成）
+## 第六十批：授权品牌整机内容补充
 
-Hermes 初稿（`57b9192`，20 文件）+ 任务书（`8690efb`）已在库；CC 已按任务书完成复查与补全（提交 `498009c`，26 文件）。
+用户要求给"授权品牌整机"(branded-units)补充品牌与卖点。CC 已改（提交 `6e4f1d0`）：
 
-### CC 补全内容
-1. **旧色全清**：全站已无 `#a8763a / #c9a66b / #2b3c3d / #f6f2ea / #d8a35a / rgba(168,118,58 / rgba(216,163,90 / #fdfbf7 / #efe9de / #201d17`
-2. **rgba 统一近黑**：旧暖黑半透明 `rgba(32,29,23,…)`（145 处，原 ink #201d17 残留）→ `rgba(23,23,23,…)`（与方案3 #171717 对齐）
-3. **admin 登录页修正（重要）**：任务书原写"登录页深黑底保留亮金"，但**实际登录页是浅色 bg-cream**（批次46 起已是浅色）。已将浅底上的硬编码亮金 `#d8a35a` 全部改掉——品牌块/错误提示/输入焦点/返回链接统一为深褐 `var(--amber)=#6f5a41` 或近黑 `--btn-bg`，避免浅底发糊
-4. **杂项对齐**：page.tsx products 渐变终点 `#efe9de→#e5dac9`、产品占位卡 `#fdfbf7→#ffffff`；`--color-soft-black→#e5dac9`；后台头像/thank-you 成功圈 → `--btn-bg` 近黑底 + `--btn-fg` 米白字
-5. 深底保留区确认未误伤：home hero `#15120e`、眉标 `#d8b47c`、CTA 眉标 `#e8bb77` 均在 page.tsx 原位
+- **副标题 sub**
+  - 中：授权经销商 · NEWGENSAUNA · AXISSAUNA
+  - EN：Authorized Distributor · NEWGENSAUNA · AXISSAUNA
+- **卖点 spec1/spec2**（原空位，en/zh）
+  - 中：日本·韩国 COSTCO 同步销售 / 富宁专属折扣优惠
+  - EN：Available at Costco Japan & Korea / Funing exclusive discount offers
+- **spec3/spec4 保留**：完整质保支持 / 门到门物流（Full warranty support / Door-to-door logistics）
+- `schema.sql` branded-units 种子 `sub_title` 同步为英文新副标题
 
-### 本地验证
-- tsc `--noEmit` 通过
-
-## 执行任务（Hermes，按序执行，回报表见文末）
+## 执行任务（按序执行，回报表见文末）
 
 ### 任务 1 · 推送代码
 ```
 git push
 ```
-预期：origin/master 同步（含 **批次58** `004258d`/`2845aea` + **批次59** `57b9192`/`8690efb`/`498009c`——若 58 未上线，本批一并推送上线）。
+预期：origin/master 同步（含提交 `6e4f1d0`）。
 
-### 任务 2 · 清缓存构建并部署
+### 任务 2 · D1 数据同步（线上 DB 该行副标题，保持后台列表一致）
+```
+npx wrangler d1 execute funing-db --remote --command "UPDATE products SET sub_title = 'Authorized Distributor · NEWGENSAUNA · AXISSAUNA' WHERE id = 'prod-branded-units';"
+```
+预期：返回 Success（受影响行数 1）。
+
+### 任务 3 · 清缓存构建并部署
 ```
 rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 ```
-预期：构建成功部署。有告警贴完整日志。
+预期：构建成功部署。
 
-### 任务 3 · 浏览器目检（中英双语首页 + 关键页，逐项回报）
-1. 页面底 = 近白 `#fcfbf8`（rgb 252,251,248）；交替段 = 米褐 `#e5dac9`（rgb 229,218,201）
-2. 主按钮 = 近黑 `#171717`（rgb 23,23,23），hover 纯黑；按钮字 ivory `#f5efe4`
-3. 眉标小字 = 深褐 `#6f5a41`；图标/圆点 = 深褐/近黑
-4. 输入框 focus = 深褐描边；链接 hover 变深
-5. hero 深咖首屏：按钮 ivory、眉标亮金 `#d8b47c`（未受影响）
-6. 后台登录页（实际浅色）：品牌块近黑底 ivory 盾标、品牌字近黑、错误/焦点/链接深褐——不再有浅底亮金发糊
-7. 后台管理：侧栏激活/提示框深褐系，头像近黑底 ivory 字
-8. footer 年份/法律链接暖灰 `#4a453c`
-9. 产品占位面板 tech-panel 网格、首页 CTA 照片区正常
-10. 记录仍不理想项（如某处对比不足/残留色）
-
-### 任务 4 · 收尾
-发现问题 → 修复 → commit（信息含"批次59"）→ push → 重新构建部署 → 更新回报表。
+### 任务 4 · 产物抽查 + 浏览器目检（中英双语）
+```
+curl -s <ROOT>/products | grep -c "NEWGENSAUNA"       # 预期 ≥1
+curl -s <ROOT>/products | grep -c "COSTCO"            # 预期 ≥1
+```
+目检：
+1. /products 与产品详情页“授权品牌整机”：副标题 = 授权经销商 · NEWGENSAUNA · AXISSAUNA
+2. 卖点含：日本·韩国 COSTCO 同步销售 / 富宁专属折扣优惠 / 完整质保支持 / 门到门物流
+3. EN 页面对应英文
+4. 记录仍不理想项
 
 ---
 
@@ -54,16 +55,15 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 代码复查与补全 | ✅ 完成 | CC 提交 `498009c`(全仓暖黑rgba→近黑、登录页浅底修正、渐变/占位卡/头像对齐)+ Hermes 抽查发现 quote 页残留 `rgba(43,60,61,0.08)` 已补修(`0c6079f`) |
-| 2 推送+构建部署 | ✅ 完成 | 两次:首发 v`5014f94d` + quote 修复后重发 v`2318fe02`(当前线上);52 assets,worker 10.9s |
-| 3 浏览器目检 | ✅ 通过 | 双语首页+quote+admin/login 全检:body底 rgb(252,251,248)=#fcfbf8、按钮 rgb(23,23,23)=#171717、交替段 #e5dac9、眉标浅底深褐 #6f5a41×4 + hero亮金 #d8b47c + CTA #e8bb77、footer 年份 #4a453c、quote 选中态近黑边框、admin 登录近白底+近黑按钮 |
-| 4 收尾修复 | ✅ 完成 | 无残留旧色(CSS 终检仅 #171717/#6f5a41/#e5dac9/#fcfbf8);深底保留区(hero #15120e/登录页)未误伤 |
+| 1 推送代码 | 待执行 | |
+| 2 D1 数据同步 | 待执行 | |
+| 3 构建+部署 | 待执行 | |
+| 4 抽查+目检 | 待执行 | |
 
 ---
 
 ## 历史备注（供参考，无需执行）
 
-- ✅ 批次58：logo #2257c9 + 字标烟台富宁电子 + 控件灰，CC 已提交（`004258d`），**部署待本批一并执行**。
-- ✅ 批次57：蓝牙音响 + 全站 8051/ARM，已部署 v`6484d886`。
-- ✅ 批次56：桑拿控制系统文案更新。
+- ✅ 批次59：方案3「米褐·近黑高定」整站换色，已部署 v`2318fe02`（含批次58 logo/字标/控件灰）。
+- ✅ 批次58、57、56 均已完成。
 - 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
