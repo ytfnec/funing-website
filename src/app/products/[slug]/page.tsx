@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useLang } from '@/lib/i18n';
+import { useLang, type TKey } from '@/lib/i18n';
 import { resolveImageSrc } from '@/lib/image';
 import { ArrowRight, Check, Shield, Clock, Zap, Package } from 'lucide-react';
 import { ProductDetailSkeleton } from '@/components/Skeleton';
@@ -254,10 +254,19 @@ export default function ProductDetailPage() {
     );
   }
 
+  const SPEC_PREFIX: Record<string, string> = {
+    'sauna-controllers': 'p.saunaControllers',
+    'jacquard-drivers': 'p.jacquard',
+    'branded-units': 'p.branded',
+    accessories: 'p.accessories',
+  };
+  // Fallback feature bullets come from this product line's own i18n specs
+  // (not sauna's) when the DB has no structured `features` yet.
+  const prefix = fallback ? SPEC_PREFIX[slug] : '';
   const features = parseList(product.features).length > 0
     ? parseList(product.features)
-    : fallback
-      ? [t('p.saunaControllers.spec1'), t('p.saunaControllers.spec2'), t('p.saunaControllers.spec3'), t('p.saunaControllers.spec4')].filter(Boolean)
+    : prefix
+      ? ([1, 2, 3, 4] as const).map((n) => t(`${prefix}.spec${n}` as TKey)).filter(Boolean)
       : [];
   const specs = parseList(product.specifications);
   const Icon = ICONS[slug] || Package;
