@@ -71,11 +71,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-cream flex">
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-[rgba(32,29,23,0.06)] flex flex-col transition-transform duration-300
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-[rgba(23,23,23,0.06)] flex flex-col transition-transform duration-300
         lg:relative lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="p-6 border-b border-[rgba(32,29,23,0.06)]">
+        <div className="p-6 border-b border-[rgba(23,23,23,0.06)]">
           <Link href="/admin" className="flex items-center gap-3">
             <span className="text-[var(--amber,#6f5a41)] text-[15px] tracking-[0.12em] uppercase font-bold">
               {t('admin.brand')}
@@ -100,7 +100,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 className={`flex items-center gap-3 px-4 py-3 text-[14px] rounded-md transition-colors ${
                   isActive
                     ? 'bg-[rgba(111,90,65,0.1)] text-[var(--amber)] font-medium'
-                    : 'text-[var(--gray)] hover:text-ink hover:bg-[rgba(32,29,23,0.03)]'
+                    : 'text-[var(--gray)] hover:text-ink hover:bg-[rgba(23,23,23,0.03)]'
                 }`}
               >
                 <link.icon className="w-4 h-4" />
@@ -110,9 +110,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="p-4 border-t border-[rgba(32,29,23,0.06)]">
+        <div className="p-4 border-t border-[rgba(23,23,23,0.06)]">
           <div className="flex items-center gap-3 px-4 py-2 mb-3">
-            <div className="w-8 h-8 rounded-full bg-[var(--amber)] flex items-center justify-center text-ink text-xs font-bold">
+            <div className="w-8 h-8 rounded-full bg-[var(--btn-bg)] flex items-center justify-center text-[var(--btn-fg)] text-xs font-bold">
               {user.email?.[0]?.toUpperCase() || t('admin.layout.avatarFallback')}
             </div>
             <div className="flex-1 min-w-0">
@@ -122,7 +122,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 text-[14px] text-[var(--gray)] hover:text-ink hover:bg-[rgba(32,29,23,0.03)] rounded-md transition-colors w-full"
+            className="flex items-center gap-3 px-4 py-3 text-[14px] text-[var(--gray)] hover:text-ink hover:bg-[rgba(23,23,23,0.03)] rounded-md transition-colors w-full"
           >
             <LogOut className="w-4 h-4" />
             {t('admin.signOut')}
@@ -140,7 +140,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main Content */}
       <div className="flex-1 min-w-0">
-        <header className="h-16 border-b border-[rgba(32,29,23,0.06)] flex items-center justify-between px-6 bg-cream sticky top-0 z-30">
+        <header className="h-16 border-b border-[rgba(23,23,23,0.06)] flex items-center justify-between px-6 bg-cream sticky top-0 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden p-2 text-[var(--gray)] hover:text-ink"

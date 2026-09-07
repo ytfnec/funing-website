@@ -72,11 +72,11 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg overflow-hidden">
+      <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[rgba(32,29,23,0.06)]">
+              <tr className="border-b border-[rgba(23,23,23,0.06)]">
                 <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colProduct')}</th>
                 <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colCategory')}</th>
                 <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.products.colPrice')}</th>
@@ -87,7 +87,7 @@ export default function AdminProducts() {
             </thead>
             <tbody>
               {products.map((p) => (
-                <tr key={p.id} className="border-b border-[rgba(32,29,23,0.03)] hover:bg-[rgba(32,29,23,0.02)]">
+                <tr key={p.id} className="border-b border-[rgba(23,23,23,0.03)] hover:bg-[rgba(23,23,23,0.02)]">
                   <td className="p-4">
                     <div className="text-ink text-sm font-medium">{p.name}</div>
                     <div className="text-[var(--gray)] text-xs">{p.sub_title}</div>

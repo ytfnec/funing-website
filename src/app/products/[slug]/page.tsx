@@ -368,7 +368,7 @@ export default function ProductDetailPage() {
 
             {/* Visual panel: real hero image when available, otherwise the
                 amber grid placeholder texture (kept as a graceful fallback). */}
-            <div className="aspect-[4/3] bg-card rounded-lg overflow-hidden relative border border-[rgba(32,29,23,0.06)]">
+            <div className="aspect-[4/3] bg-card rounded-lg overflow-hidden relative border border-[rgba(23,23,23,0.06)]">
               {heroImage && !heroFailed ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -446,21 +446,21 @@ export default function ProductDetailPage() {
         <section className="px-page py-[clamp(48px,6vw,80px)] bg-cream">
           <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             {product.warranty_info && (
-              <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+              <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
                 <Shield className="w-5 h-5 text-[var(--amber)] mb-3" />
                 <h3 className="text-[13px] tracking-[0.14em] uppercase font-bold mb-2">Warranty</h3>
                 <p className="text-[var(--gray)] text-sm leading-relaxed">{product.warranty_info}</p>
               </div>
             )}
             {product.electrical_requirements && (
-              <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+              <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
                 <Zap className="w-5 h-5 text-[var(--amber)] mb-3" />
                 <h3 className="text-[13px] tracking-[0.14em] uppercase font-bold mb-2">Electrical</h3>
                 <p className="text-[var(--gray)] text-sm leading-relaxed">{product.electrical_requirements}</p>
               </div>
             )}
             {product.lead_time && (
-              <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+              <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
                 <Clock className="w-5 h-5 text-[var(--amber)] mb-3" />
                 <h3 className="text-[13px] tracking-[0.14em] uppercase font-bold mb-2">Lead Time</h3>
                 <p className="text-[var(--gray)] text-sm leading-relaxed">{product.lead_time}</p>

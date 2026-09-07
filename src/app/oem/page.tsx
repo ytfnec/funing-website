@@ -75,7 +75,7 @@ export default function OEMPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((svc) => (
-              <div key={svc.title} className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col">
+              <div key={svc.title} className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col">
                 <h3 className="text-[16px] tracking-[0.08em] uppercase font-bold mb-3">{svc.title}</h3>
                 <p className="text-[var(--gray)] text-[14px] leading-relaxed mb-4">{svc.desc}</p>
                 <ul className="space-y-2 mt-auto">

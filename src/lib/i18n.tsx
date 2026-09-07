@@ -1595,7 +1595,7 @@ export function useLang() {
 export function LanguageSwitcher() {
   const { lang, setLang } = useLang();
   return (
-    <div className="flex items-center gap-1 border border-[rgba(32,29,23,0.2)] rounded-full px-1 py-0.5">
+    <div className="flex items-center gap-1 border border-[rgba(23,23,23,0.2)] rounded-full px-1 py-0.5">
       <button
         type="button"
         onClick={() => setLang('zh')}

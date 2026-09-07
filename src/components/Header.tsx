@@ -28,7 +28,7 @@ export function Header() {
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-300 ${scrolled ? 'bg-cream/95 border-[rgba(32,29,23,0.1)] shadow-[0_8px_24px_rgba(32,29,23,0.08)]' : 'bg-cream/85 border-[rgba(32,29,23,0.08)]'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-300 ${scrolled ? 'bg-cream/95 border-[rgba(23,23,23,0.1)] shadow-[0_8px_24px_rgba(23,23,23,0.08)]' : 'bg-cream/85 border-[rgba(23,23,23,0.08)]'}`}>
       <div className="px-page h-[64px] flex items-center justify-between mx-auto max-w-[1400px]">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3" aria-label="Funing Electronics home">
@@ -98,7 +98,7 @@ export function Header() {
 
       {/* Mobile Nav */}
       {menuOpen && (
-        <div className="md:hidden bg-cream border-b border-[rgba(32,29,23,0.06)]">
+        <div className="md:hidden bg-cream border-b border-[rgba(23,23,23,0.06)]">
           <nav className="px-page py-6 flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link
@@ -110,7 +110,7 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <div className="flex gap-3 pt-4 border-t border-[rgba(32,29,23,0.08)]">
+            <div className="flex gap-3 pt-4 border-t border-[rgba(23,23,23,0.08)]">
               <Link
                 href="/quote"
                 className="btn btn-secondary text-xs flex-1 py-3"

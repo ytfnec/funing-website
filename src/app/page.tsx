@@ -151,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* Product Categories */}
-      <section id="products" className="scroll-mt-0 px-page bg-gradient-to-b from-[#fcfbf8] to-[#efe9de]" style={{
+      <section id="products" className="scroll-mt-0 px-page bg-gradient-to-b from-[#fcfbf8] to-[#e5dac9]" style={{
         paddingTop: "clamp(80px, 12vw, 140px)",
         paddingBottom: "clamp(80px, 12vw, 140px)"
       }}>
@@ -174,7 +174,7 @@ export default function Home() {
           {products.map((p) => (
             <article key={p.key} className="flex flex-col product-card group">
               <div className="flex flex-col">
-                <div className="relative product-panel" style={{ aspectRatio: "4 / 5", background: "#fdfbf7", overflow: "hidden" }}>
+                <div className="relative product-panel" style={{ aspectRatio: "4 / 5", background: "#ffffff", overflow: "hidden" }}>
                   <div className="absolute inset-0 flex items-center justify-center tech-panel" style={{ background: "radial-gradient(circle at center, rgba(111,90,65,0.12), transparent 70%)" }}>
                     <div className="text-center px-6">
                       <div className="text-[var(--amber)] text-[40px] mb-4 opacity-60 product-icon">
@@ -290,7 +290,7 @@ export default function Home() {
 
           <div className="grid grid-cols-3 gap-[20px] max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
             {oemServices.map((svc) => (
-              <div key={svc.title} className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors">
+              <div key={svc.title} className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors">
                 <h3 className="text-[15px] tracking-[0.08em] uppercase font-bold mb-3">{svc.title}</h3>
                 <p className="text-[var(--gray)] text-[14px] leading-relaxed">{svc.desc}</p>
               </div>

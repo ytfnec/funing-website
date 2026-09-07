@@ -58,7 +58,7 @@ export default function AdminDashboard() {
           <Link
             key={stat.label}
             href={stat.href}
-            className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[rgba(32,29,23,0.15)] transition-colors group"
+            className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6 hover:border-[rgba(23,23,23,0.15)] transition-colors group"
           >
             <div className="flex items-center justify-between mb-4">
               <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
@@ -72,8 +72,8 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Contacts */}
-      <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg overflow-hidden">
-        <div className="p-6 border-b border-[rgba(32,29,23,0.06)] flex items-center justify-between">
+      <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg overflow-hidden">
+        <div className="p-6 border-b border-[rgba(23,23,23,0.06)] flex items-center justify-between">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold">{t('admin.dash.recentContacts')}</h2>
           <Link href="/admin/contacts" className="text-[var(--amber)] text-sm hover:underline">{t('admin.dash.viewAll')} →</Link>
         </div>
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[rgba(32,29,23,0.06)]">
+                <tr className="border-b border-[rgba(23,23,23,0.06)]">
                   <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.name')}</th>
                   <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.type')}</th>
                   <th className="text-left p-4 text-[10px] tracking-[0.22em] uppercase text-[var(--gray)]">{t('admin.dash.email')}</th>
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 {recentContacts.map((c: any) => (
-                  <tr key={c.id} className="border-b border-[rgba(32,29,23,0.03)] hover:bg-[rgba(32,29,23,0.02)]">
+                  <tr key={c.id} className="border-b border-[rgba(23,23,23,0.03)] hover:bg-[rgba(23,23,23,0.02)]">
                     <td className="p-4 text-ink text-sm">{c.name}</td>
                     <td className="p-4 text-sm text-[var(--gray)] capitalize">{c.type}</td>
                     <td className="p-4 text-sm text-[var(--gray)]">{c.email}</td>
@@ -122,28 +122,28 @@ export default function AdminDashboard() {
         <Link
           href="/"
           target="_blank"
-          className="flex items-center justify-between p-5 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg hover:border-[rgba(32,29,23,0.15)] transition-colors"
+          className="flex items-center justify-between p-5 bg-card border border-[rgba(23,23,23,0.06)] rounded-lg hover:border-[rgba(23,23,23,0.15)] transition-colors"
         >
           <span className="text-ink text-sm">{t('admin.viewLiveSite')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
         <Link
           href="/admin/content"
-          className="flex items-center justify-between p-5 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg hover:border-[rgba(32,29,23,0.15)] transition-colors"
+          className="flex items-center justify-between p-5 bg-card border border-[rgba(23,23,23,0.06)] rounded-lg hover:border-[rgba(23,23,23,0.15)] transition-colors"
         >
           <span className="text-ink text-sm">{t('admin.dash.editHomepage')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
         <Link
           href="/admin/products"
-          className="flex items-center justify-between p-5 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg hover:border-[rgba(32,29,23,0.15)] transition-colors"
+          className="flex items-center justify-between p-5 bg-card border border-[rgba(23,23,23,0.06)] rounded-lg hover:border-[rgba(23,23,23,0.15)] transition-colors"
         >
           <span className="text-ink text-sm">{t('admin.dash.manageProducts')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />
         </Link>
         <Link
           href="/admin/news"
-          className="flex items-center justify-between p-5 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg hover:border-[rgba(32,29,23,0.15)] transition-colors"
+          className="flex items-center justify-between p-5 bg-card border border-[rgba(23,23,23,0.06)] rounded-lg hover:border-[rgba(23,23,23,0.15)] transition-colors"
         >
           <span className="text-ink text-sm">{t('admin.dash.manageNews')}</span>
           <ArrowUpRight className="w-4 h-4 text-[var(--gray)]" />

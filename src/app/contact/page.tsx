@@ -100,7 +100,7 @@ export default function ContactPage() {
         </div>
 
         {/* Right: Form */}
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-8">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-8">
           <h2 className="text-xl tracking-[0.06em] uppercase font-bold mb-6">{t('contact.form.title')}</h2>
 
           {error && (
@@ -130,7 +130,7 @@ export default function ContactPage() {
                 name="type"
                 value={form.type}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
+                className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
               >
                 <option value="quote">{t('contact.form.type1')}</option>
                 <option value="oem">{t('contact.form.type2')}</option>
@@ -149,7 +149,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder={t('contact.form.name')}
-                  className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                  className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
                 />
               </div>
               <div>
@@ -161,7 +161,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder="you@company.com"
-                  className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                  className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
                 />
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function ContactPage() {
                 value={form.company}
                 onChange={handleChange}
                 placeholder=""
-                className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
               />
             </div>
 
@@ -187,7 +187,7 @@ export default function ContactPage() {
                   value={form.phone}
                   onChange={handleChange}
                   placeholder="+86 138 XXXX XXXX"
-                  className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                  className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
                 />
               </div>
               <div>
@@ -198,7 +198,7 @@ export default function ContactPage() {
                   value={form.country}
                   onChange={handleChange}
                   placeholder={t('contact.form.countryPh')}
-                  className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                  className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
                 />
               </div>
             </div>
@@ -209,7 +209,7 @@ export default function ContactPage() {
                 name="productInterest"
                 value={form.productInterest}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
+                className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
               >
                 <option value="">{t('contact.form.interest0')}</option>
                 <option value="sauna-controllers">{t('contact.form.interest1')}</option>
@@ -228,7 +228,7 @@ export default function ContactPage() {
                   name="preferredContact"
                   value={form.preferredContact}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
+                  className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
                 >
                   <option value="">{t('contact.form.preferred0')}</option>
                   <option value="email">{t('contact.form.preferredEmail')}</option>
@@ -244,7 +244,7 @@ export default function ContactPage() {
                   value={form.bestTime}
                   onChange={handleChange}
                   placeholder={t('contact.form.bestTimePh')}
-                  className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                  className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
                 />
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function ContactPage() {
                 onChange={handleChange}
                 rows={4}
                 placeholder={t('contact.form.msgPh')}
-                className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
+                className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
               />
             </div>
 

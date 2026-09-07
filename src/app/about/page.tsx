@@ -45,7 +45,7 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-8">
+            <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-8">
               <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('about.info.title')}</h2>
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
@@ -80,7 +80,7 @@ export default function AboutPage() {
       <section className="px-page py-[clamp(60px,8vw,100px)] bg-sand">
         <div className="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {team.map((item) => (
-            <div key={item.title} className="text-center p-8 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg">
+            <div key={item.title} className="text-center p-8 bg-card border border-[rgba(23,23,23,0.06)] rounded-lg">
               <div className="text-[clamp(40px,5vw,56px)] font-bold mb-2" style={{ color: 'var(--amber)' }}>{item.count}</div>
               <h3 className="text-[14px] tracking-[0.14em] uppercase font-bold mb-3">{item.title}</h3>
               <p className="text-[var(--gray)] text-[14px] leading-relaxed">{item.desc}</p>
@@ -108,7 +108,7 @@ export default function AboutPage() {
                   {/* Mobile year */}
                   <span className="md:hidden flex-shrink-0 w-[60px] text-[var(--amber)] text-[12px] tracking-[0.12em] font-bold pt-1">{m.year}</span>
 
-                  <div className="flex-1 bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-5 hover:border-[rgba(32,29,23,0.12)] transition-colors">
+                  <div className="flex-1 bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-5 hover:border-[rgba(23,23,23,0.12)] transition-colors">
                     <h3 className="text-[16px] tracking-[0.06em] uppercase font-bold mb-2">{m.title}</h3>
                     <p className="text-[var(--gray)] text-[14px] leading-relaxed">{m.desc}</p>
                   </div>

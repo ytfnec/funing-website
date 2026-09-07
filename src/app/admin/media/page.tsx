@@ -228,7 +228,7 @@ export default function AdminMedia() {
       )}
 
       {media.length === 0 ? (
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-8 text-center">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-8 text-center">
           <FolderOpen className="w-12 h-12 text-[var(--gray)] mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">{t('admin.media.empty')}</h2>
           <p className="text-[var(--gray)] text-sm mb-6 max-w-[400px] mx-auto">
@@ -241,7 +241,7 @@ export default function AdminMedia() {
       ) : (
         <>
         {/* Bulk action toolbar */}
-        <div className="mb-4 bg-card border border-[rgba(32,29,23,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="mb-4 bg-card border border-[rgba(23,23,23,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
           <label className="flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -269,7 +269,7 @@ export default function AdminMedia() {
             <div
               key={item.id}
               className={`relative bg-card border rounded-lg overflow-hidden group transition-colors ${
-                selected.has(item.id) ? 'border-[rgba(111,90,65,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
+                selected.has(item.id) ? 'border-[rgba(111,90,65,0.55)]' : 'border-[rgba(23,23,23,0.06)]'
               }`}
             >
               <div className="absolute top-2 left-2 z-10">
@@ -316,7 +316,7 @@ export default function AdminMedia() {
                       value={altDraft}
                       onChange={(e) => setAltDraft(e.target.value)}
                       placeholder={t('admin.media.altPlaceholder')}
-                      className="w-full px-2 py-1.5 bg-card border border-[rgba(32,29,23,0.15)] rounded text-xs text-ink focus:outline-none focus:border-[var(--amber)]"
+                      className="w-full px-2 py-1.5 bg-card border border-[rgba(23,23,23,0.15)] rounded text-xs text-ink focus:outline-none focus:border-[var(--amber)]"
                     />
                     <div className="flex gap-2">
                       <button

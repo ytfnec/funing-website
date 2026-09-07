@@ -203,7 +203,7 @@ export default function AdminContacts() {
         ) : (
           <>
           {/* Bulk delete toolbar */}
-          <div className="mb-4 bg-card border border-[rgba(32,29,23,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="mb-4 bg-card border border-[rgba(23,23,23,0.08)] rounded-lg px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
             <label className="flex items-center gap-3 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -235,11 +235,11 @@ export default function AdminContacts() {
           </div>
           {contacts.map((c) => (
             <div key={c.id} className={`bg-card border rounded-lg overflow-hidden transition-colors ${
-              selected.has(c.id) ? 'border-[rgba(111,90,65,0.55)]' : 'border-[rgba(32,29,23,0.06)]'
+              selected.has(c.id) ? 'border-[rgba(111,90,65,0.55)]' : 'border-[rgba(23,23,23,0.06)]'
             }`}>
               <button
                 onClick={() => setExpanded(expanded === c.id ? null : c.id)}
-                className="w-full p-5 flex items-center justify-between text-left hover:bg-[rgba(32,29,23,0.02)] transition-colors"
+                className="w-full p-5 flex items-center justify-between text-left hover:bg-[rgba(23,23,23,0.02)] transition-colors"
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <span onClick={(e) => e.stopPropagation()}>
@@ -253,7 +253,7 @@ export default function AdminContacts() {
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
                     c.type === 'call' ? 'bg-blue-500/20 text-blue-700' :
                     c.type === 'quote' ? 'bg-[rgba(111,90,65,0.2)] text-[var(--amber)]' :
-                    'bg-[rgba(32,29,23,0.1)] text-ink'
+                    'bg-[rgba(23,23,23,0.1)] text-ink'
                   }`}>
                     {c.name[0]?.toUpperCase()}
                   </div>
@@ -270,7 +270,7 @@ export default function AdminContacts() {
               </button>
 
               {expanded === c.id && (
-                <div className="px-5 pb-5 border-t border-[rgba(32,29,23,0.06)] pt-4 space-y-4">
+                <div className="px-5 pb-5 border-t border-[rgba(23,23,23,0.06)] pt-4 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     {c.company && (
                       <div className="flex items-center gap-2 text-sm text-[var(--gray)]">
@@ -317,7 +317,7 @@ export default function AdminContacts() {
                         className={`px-3 py-1 rounded-full text-[10px] tracking-[0.14em] uppercase border transition-colors ${
                           c.status === s
                             ? 'border-white text-ink'
-                            : 'border-[rgba(32,29,23,0.1)] text-[var(--gray)] hover:border-[rgba(32,29,23,0.3)]'
+                            : 'border-[rgba(23,23,23,0.1)] text-[var(--gray)] hover:border-[rgba(23,23,23,0.3)]'
                         }`}
                       >
                         {t(`admin.contacts.status.${s}` as any)}
@@ -326,7 +326,7 @@ export default function AdminContacts() {
                   </div>
 
                   {/* Internal notes */}
-                  <div className="pt-2 border-t border-[rgba(32,29,23,0.06)]">
+                  <div className="pt-2 border-t border-[rgba(23,23,23,0.06)]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] tracking-[0.18em] uppercase text-[var(--gray)]">
                         {t('admin.contacts.internalNotes')}
@@ -344,7 +344,7 @@ export default function AdminContacts() {
                           onChange={(e) => setNotesDraft(e.target.value)}
                           rows={3}
                           placeholder="Add follow-up notes for this lead…"
-                          className="w-full px-3 py-2 bg-card border border-[rgba(32,29,23,0.12)] rounded text-sm text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
+                          className="w-full px-3 py-2 bg-card border border-[rgba(23,23,23,0.12)] rounded text-sm text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
                         />
                         <div className="flex gap-3">
                           <button
@@ -364,7 +364,7 @@ export default function AdminContacts() {
                     ) : (
                       <button
                         onClick={() => startEditNotes(c)}
-                        className="w-full text-left text-sm leading-relaxed hover:bg-[rgba(32,29,23,0.02)] rounded p-2 transition-colors"
+                        className="w-full text-left text-sm leading-relaxed hover:bg-[rgba(23,23,23,0.02)] rounded p-2 transition-colors"
                       >
                         {c.notes ? (
                           <span className="text-[var(--soft-white)]">{c.notes}</span>
@@ -376,7 +376,7 @@ export default function AdminContacts() {
                   </div>
 
                   {/* Delete this submission */}
-                  <div className="pt-2 border-t border-[rgba(32,29,23,0.06)] flex justify-end">
+                  <div className="pt-2 border-t border-[rgba(23,23,23,0.06)] flex justify-end">
                     <button
                       onClick={() => setConfirmState({ type: 'single', contact: c })}
                       className="flex items-center gap-1 text-[12px] text-[var(--gray)] hover:text-red-400 transition-colors"

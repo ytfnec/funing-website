@@ -151,7 +151,7 @@ export default function NewsArticlePage() {
       {article.cover_image && (
         <section className="px-page bg-cream">
           <div className="max-w-[960px] mx-auto">
-            <div className="aspect-[21/9] overflow-hidden rounded-lg border border-[rgba(32,29,23,0.06)]">
+            <div className="aspect-[21/9] overflow-hidden rounded-lg border border-[rgba(23,23,23,0.06)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={article.cover_image} alt={article.title} className="w-full h-full object-cover" />
             </div>

@@ -48,7 +48,7 @@ export function ConfirmDialog({
         onClick={busy ? undefined : onCancel}
       />
       {/* Card */}
-      <div className="relative bg-card border border-[rgba(32,29,23,0.12)] rounded-xl shadow-2xl w-full max-w-[420px] p-6">
+      <div className="relative bg-card border border-[rgba(23,23,23,0.12)] rounded-xl shadow-2xl w-full max-w-[420px] p-6">
         <div className="flex items-start gap-4">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
             danger ? 'bg-red-500/15 text-red-400' : 'bg-[rgba(111,90,65,0.15)] text-[var(--amber)]'

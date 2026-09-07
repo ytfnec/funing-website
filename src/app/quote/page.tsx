@@ -157,7 +157,7 @@ export default function QuotePage() {
         </div>
 
         {/* Step Content */}
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-8">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-8">
           {/* Step 0: Select Product */}
           {step === 0 && (
             <>
@@ -173,7 +173,7 @@ export default function QuotePage() {
                     className={`text-left p-5 border rounded-md transition-all duration-200 w-full ${
                       form.product === s.slug
                         ? 'border-[var(--btn-bg)] bg-[rgba(43,60,61,0.08)] shadow-[0_0_0_1px_var(--btn-bg)]'
-                        : 'border-[rgba(32,29,23,0.06)] hover:border-[rgba(32,29,23,0.2)] hover:bg-[rgba(32,29,23,0.02)]'
+                        : 'border-[rgba(23,23,23,0.06)] hover:border-[rgba(23,23,23,0.2)] hover:bg-[rgba(23,23,23,0.02)]'
                     }`}
                   >
                     <div className="text-ink text-lg font-bold mb-1">{s.name}</div>
@@ -202,7 +202,7 @@ export default function QuotePage() {
                         className={`p-4 border rounded-md text-center transition-all duration-200 ${
                           form.quantity === qty
                             ? 'border-[var(--btn-bg)] bg-[rgba(43,60,61,0.08)] text-ink shadow-[0_0_0_1px_var(--btn-bg)]'
-                            : 'border-[rgba(32,29,23,0.06)] text-[var(--gray)] hover:border-[rgba(32,29,23,0.2)] hover:bg-[rgba(32,29,23,0.02)]'
+                            : 'border-[rgba(23,23,23,0.06)] text-[var(--gray)] hover:border-[rgba(23,23,23,0.2)] hover:bg-[rgba(23,23,23,0.02)]'
                         }`}
                       >
                         <div className="text-lg font-bold">{qty}</div>
@@ -220,7 +220,7 @@ export default function QuotePage() {
                     onChange={(e) => updateForm('specifications', e.target.value)}
                     rows={4}
                     placeholder={t('quote.s2.specPh')}
-                    className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
+                    className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
                   />
                 </div>
               </div>
@@ -249,7 +249,7 @@ export default function QuotePage() {
                       type="text"
                       value={form.name}
                       onChange={(e) => { updateForm('name', e.target.value); if (fieldErrors.name) setFieldErrors(prev => ({ ...prev, name: undefined })); }}
-                      className={`w-full px-4 py-3 bg-card border rounded-md text-ink focus:outline-none focus:border-[var(--amber)] ${fieldErrors.name ? 'border-red-400/60' : 'border-[rgba(32,29,23,0.1)]'}`}
+                      className={`w-full px-4 py-3 bg-card border rounded-md text-ink focus:outline-none focus:border-[var(--amber)] ${fieldErrors.name ? 'border-red-400/60' : 'border-[rgba(23,23,23,0.1)]'}`}
                     />
                     {fieldErrors.name && <p className="text-red-400 text-xs mt-1">{fieldErrors.name}</p>}
                   </div>
@@ -259,7 +259,7 @@ export default function QuotePage() {
                       type="email"
                       value={form.email}
                       onChange={(e) => { updateForm('email', e.target.value); if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined })); }}
-                      className={`w-full px-4 py-3 bg-card border rounded-md text-ink focus:outline-none focus:border-[var(--amber)] ${fieldErrors.email ? 'border-red-400/60' : 'border-[rgba(32,29,23,0.1)]'}`}
+                      className={`w-full px-4 py-3 bg-card border rounded-md text-ink focus:outline-none focus:border-[var(--amber)] ${fieldErrors.email ? 'border-red-400/60' : 'border-[rgba(23,23,23,0.1)]'}`}
                     />
                     {fieldErrors.email && <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>}
                   </div>
@@ -271,7 +271,7 @@ export default function QuotePage() {
                       type="text"
                       value={form.company}
                       onChange={(e) => updateForm('company', e.target.value)}
-                      className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
+                      className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink focus:outline-none focus:border-[var(--amber)]"
                     />
                   </div>
                   <div>
@@ -281,7 +281,7 @@ export default function QuotePage() {
                       value={form.country}
                       onChange={(e) => updateForm('country', e.target.value)}
                       placeholder={t('quote.s3.countryPh')}
-                      className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                      className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
                     />
                   </div>
                 </div>
@@ -292,7 +292,7 @@ export default function QuotePage() {
                     value={form.phone}
                     onChange={(e) => updateForm('phone', e.target.value)}
                     placeholder="+86 138 XXXX XXXX"
-                    className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
+                    className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)]"
                   />
                 </div>
                 <div>
@@ -302,12 +302,12 @@ export default function QuotePage() {
                     onChange={(e) => updateForm('message', e.target.value)}
                     rows={3}
                     placeholder={t('quote.s3.notesPh')}
-                    className="w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
+                    className="w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)] resize-none"
                   />
                 </div>
 
                 {/* Review */}
-                <div className="mt-6 p-4 bg-card border border-[rgba(32,29,23,0.06)] rounded-md space-y-2">
+                <div className="mt-6 p-4 bg-card border border-[rgba(23,23,23,0.06)] rounded-md space-y-2">
                   <h3 className="text-sm tracking-[0.14em] uppercase text-[var(--gray)] mb-2">{t('quote.s3.summary')}</h3>
                   <div className="text-sm text-[var(--soft-white)]">
                     <span className="text-[var(--gray)]">{t('quote.s3.product')}</span> {products.find(p => p.slug === form.product)?.name || t('quote.s3.notSelected')}
@@ -321,7 +321,7 @@ export default function QuotePage() {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between mt-10 pt-6 border-t border-[rgba(32,29,23,0.06)]">
+          <div className="flex justify-between mt-10 pt-6 border-t border-[rgba(23,23,23,0.06)]">
             {step > 0 ? (
               <button onClick={handleBack} className="btn btn-secondary text-sm">
                 {t('quote.back')}

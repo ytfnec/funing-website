@@ -100,7 +100,7 @@ export default function ProductsPage() {
                 className={`px-5 py-2 rounded-full text-[12px] tracking-[0.14em] uppercase border transition-all duration-200 ${
                   activeCategory === cat.key
                     ? 'bg-[var(--btn-bg)] text-[var(--btn-fg)] border-[var(--btn-bg)] font-bold'
-                    : 'border-[rgba(32,29,23,0.15)] text-[var(--gray)] hover:border-[var(--btn-bg)] hover:text-ink'
+                    : 'border-[rgba(23,23,23,0.15)] text-[var(--gray)] hover:border-[var(--btn-bg)] hover:text-ink'
                 }`}
               >
                 {cat.label}

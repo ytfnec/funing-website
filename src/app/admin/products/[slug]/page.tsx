@@ -129,7 +129,7 @@ export default function EditProduct() {
     );
   }
 
-  const inputClass = "w-full px-4 py-3 bg-card border border-[rgba(32,29,23,0.1)] rounded-md text-ink placeholder-[rgba(32,29,23,0.3)] focus:outline-none focus:border-[var(--amber)] transition-colors";
+  const inputClass = "w-full px-4 py-3 bg-card border border-[rgba(23,23,23,0.1)] rounded-md text-ink placeholder-[rgba(23,23,23,0.3)] focus:outline-none focus:border-[var(--amber)] transition-colors";
   const labelClass = "block text-[10px] tracking-[0.22em] uppercase text-[var(--gray)] mb-2";
 
   return (
@@ -165,7 +165,7 @@ export default function EditProduct() {
 
       <div className="max-w-[800px] space-y-6">
         {/* Basic Info */}
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.product.basicInfo')}</h2>
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -238,7 +238,7 @@ export default function EditProduct() {
         </div>
 
         {/* Descriptions */}
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.product.descriptions')}</h2>
           <div className="space-y-4">
             <div>
@@ -263,7 +263,7 @@ export default function EditProduct() {
         </div>
 
         {/* Product Image */}
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-2">{t('admin.product.productImage')}</h2>
           <p className="text-[var(--gray)] text-xs mb-4">
             {t('admin.product.imageHint')}
@@ -292,7 +292,7 @@ export default function EditProduct() {
               <img
                 src={resolveImageSrc(form.hero_image)}
                 alt="Hero image preview"
-                className="w-40 aspect-[4/3] object-cover rounded-md border border-[rgba(32,29,23,0.12)] bg-cream"
+                className="w-40 aspect-[4/3] object-cover rounded-md border border-[rgba(23,23,23,0.12)] bg-cream"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = '0.25'; }}
               />
               <div className="text-[var(--gray)] text-xs">
@@ -305,7 +305,7 @@ export default function EditProduct() {
           {showMediaPicker && (
             <div className="mt-4">
               {mediaItems.length === 0 ? (
-                <div className="text-[var(--gray)] text-sm p-4 border border-dashed border-[rgba(32,29,23,0.15)] rounded-md">
+                <div className="text-[var(--gray)] text-sm p-4 border border-dashed border-[rgba(23,23,23,0.15)] rounded-md">
                   {t('admin.product.noMediaHint')}
                 </div>
               ) : (
@@ -315,7 +315,7 @@ export default function EditProduct() {
                       key={item.id}
                       type="button"
                       onClick={() => update('hero_image', item.r2_key)}
-                      className="bg-card border border-[rgba(32,29,23,0.1)] rounded-md p-2 text-left hover:border-[var(--amber)] transition-colors group"
+                      className="bg-card border border-[rgba(23,23,23,0.1)] rounded-md p-2 text-left hover:border-[var(--amber)] transition-colors group"
                       title={item.original_name || item.r2_key}
                     >
                       <div className="aspect-[4/3] bg-card rounded overflow-hidden mb-2 flex items-center justify-center">
@@ -351,7 +351,7 @@ export default function EditProduct() {
         </div>
 
         {/* Features (one per line) */}
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-2">{t('admin.product.features')}</h2>
           <p className="text-[var(--gray)] text-xs mb-4">{t('admin.product.featuresHint')}</p>
           <textarea
@@ -363,7 +363,7 @@ export default function EditProduct() {
         </div>
 
         {/* Status */}
-        <div className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6">
+        <div className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6">
           <h2 className="text-lg tracking-[0.06em] uppercase font-bold mb-6">{t('admin.product.status')}</h2>
           <label className="flex items-center gap-3 cursor-pointer">
             <input

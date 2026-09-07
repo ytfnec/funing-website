@@ -40,12 +40,12 @@ export default function AccessoriesPage() {
           {accessories.map((item) => (
             <div
               key={item.name}
-              className="bg-card border border-[rgba(32,29,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col"
+              className="bg-card border border-[rgba(23,23,23,0.06)] rounded-lg p-6 hover:border-[var(--amber)] transition-colors flex flex-col"
             >
               <span className="text-[10px] tracking-[0.2em] uppercase text-[var(--amber)] mb-3">{item.cat}</span>
               <h3 className="text-[16px] font-bold mb-2 text-ink">{item.name}</h3>
               <p className="text-[var(--gray)] text-[14px] leading-relaxed mb-4 flex-1">{item.desc}</p>
-              <div className="flex items-center justify-between pt-4 border-t border-[rgba(32,29,23,0.06)]">
+              <div className="flex items-center justify-between pt-4 border-t border-[rgba(23,23,23,0.06)]">
                 <span className="text-[14px]" style={{ color: 'var(--wood)' }}>{item.price}</span>
                 <Link href="/quote" className="text-[var(--amber)] text-[12px] tracking-[0.12em] uppercase font-bold hover:text-ink transition-colors">
                   {t('acc.quote')}
