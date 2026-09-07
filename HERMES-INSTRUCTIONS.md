@@ -1,7 +1,7 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第六十批（最新）** · 更新: 2026-09-07 · 来源: Claude Code
-> 状态: **授权品牌整机：加品牌与卖点 · 待执行部署**
+> 批次: **第六十批（最新）** · 更新: 2026-09-07 · 来源: Hermes
+> 状态: **✅ 授权品牌整机内容补充 + 详情页卖点bug修复 · 已部署上线 v9823d352**
 
 ---
 
@@ -55,10 +55,10 @@ curl -s <ROOT>/products | grep -c "COSTCO"            # 预期 ≥1
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推送代码 | 待执行 | |
-| 2 D1 数据同步 | 待执行 | |
-| 3 构建+部署 | 待执行 | |
-| 4 抽查+目检 | 待执行 | |
+| 1 推送代码 | ✅ 完成 | `0fd04a0` 推送上线 |
+| 2 D1 数据同步 | ✅ 完成 | UPDATE 受影响 2 行,SELECT 复核 `prod-branded-units.sub_title = 'Authorized Distributor · NEWGENSAUNA · AXISSAUNA'` |
+| 3 构建+部署 | ✅ 完成(两次) | 首发 v`5fadb1e9`;发现详情页卖点 bug 修复后重发 v`9823d352`(当前线上) |
+| 4 抽查+目检 | ✅ 通过(含 bug 修复) | `/products` NEWGENSAUNA/COSTCO ✓;详情页中英双语副标题+4卖点 ✓;<br>**发现并修复历史 bug**:产品详情页 Key Features fallback 写死 `p.saunaControllers.spec1-4`,导致 branded/jacquard/accessories 详情页错显示桑拿卖点——按 slug 映射各产品线自身 spec(commit `2ebac96`)。修复后 branded 显示 COSTCO/折扣/质保/门到门,jacquard 显示多通道驱动卡/RS-485,sauna 不受影响 |
 
 ---
 
