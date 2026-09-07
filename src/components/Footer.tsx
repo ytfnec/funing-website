@@ -74,7 +74,7 @@ export function Footer() {
                 className="h-11 w-auto object-contain"
               />
               {lang === 'zh' ? (
-                <span className="brand-zh text-[20px]">烟台富宁</span>
+                <span className="brand-zh text-[20px]">烟台富宁电子</span>
               ) : (
                 <span className="text-[18px] font-semibold tracking-[0.14em] text-[#171717]">YANTAI FUNING</span>
               )}
