@@ -25,7 +25,7 @@ export default function GlobalError({
         <div className="text-center px-6 max-w-[540px]">
           <div className="w-14 h-14 rounded-full border border-[rgba(111,90,65,0.3)] flex items-center justify-center mx-auto mb-6">
             <svg
-              className="w-6 h-6 text-amber"
+              className="w-6 h-6 text-[var(--amber)]"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
