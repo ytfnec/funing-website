@@ -1,6 +1,8 @@
 'use client';
 
 import Image from "next/image";
+import { useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 
 export default function Home() {
@@ -92,13 +94,18 @@ export default function Home() {
   };
 
   const clientLogos = [
-    { src: '/assets/client-logos/axis.png', alt: 'AXIS' },
-    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN' },
-    { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate' },
-    { src: '/assets/client-logos/beem.png', alt: 'Beem' },
-    { src: '/assets/client-logos/finnmark.svg', alt: 'Finnmark Designs' },
-    { src: '/assets/client-logos/symmetry.svg', alt: 'Symmetry' },
+    { src: '/assets/client-logos/axis.png', alt: 'AXIS', h: 36, maxW: 230 },
+    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', h: 36, maxW: 230 },
+    { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate', h: 28, maxW: 300 },
+    { src: '/assets/client-logos/beem.png', alt: 'Beem', h: 42, maxW: 260 },
+    { src: '/assets/client-logos/finnmark.svg', alt: 'Finnmark Designs', h: 34, maxW: 240 },
+    { src: '/assets/client-logos/symmetry.svg', alt: 'Symmetry', mark: '/assets/client-logos/symmetry-mark.png', h: 30, maxW: 220 },
   ];
+
+  const logoScrollRef = useRef<HTMLDivElement>(null);
+  const scrollLogos = (dir: number) => {
+    logoScrollRef.current?.scrollBy({ left: dir * 340, behavior: 'smooth' });
+  };
 
   return (
     <main className="flex-1">
@@ -166,21 +173,53 @@ export default function Home() {
           <h3 className="text-center text-[clamp(20px,2.4vw,28px)] font-bold tracking-[0.02em] mb-10 text-ink">
             {t('home.clientLogos.title')}
           </h3>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {clientLogos.map((logo) => (
-              <div
-                key={logo.alt}
-                className="bg-white border border-[rgba(23,23,23,0.08)] rounded-xl h-[72px] px-7 flex items-center justify-center min-w-[170px]"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={logo.src}
-                  alt={logo.alt}
-                  loading="lazy"
-                  className="max-h-[44px] max-w-[190px] w-auto object-contain"
-                />
-              </div>
-            ))}
+          <div className="relative">
+            <button
+              type="button"
+              aria-label="Previous logos"
+              onClick={() => scrollLogos(-1)}
+              className="absolute -left-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-[rgba(23,23,23,0.12)] shadow-[0_6px_16px_rgba(23,23,23,0.08)] text-[#171717] hover:border-[#171717] flex items-center justify-center"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div
+              ref={logoScrollRef}
+              className="flex items-center gap-5 overflow-x-auto px-4 py-1 scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {clientLogos.map((logo) => (
+                <div
+                  key={logo.alt}
+                  className="bg-white border border-[rgba(23,23,23,0.08)] rounded-xl h-[84px] px-8 flex-shrink-0 flex items-center justify-center"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {logo.mark && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={logo.mark}
+                      alt=""
+                      style={{ height: 48, width: 48 }}
+                      className="object-contain flex-shrink-0 mr-3"
+                    />
+                  )}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={logo.src}
+                    alt={logo.alt}
+                    loading="lazy"
+                    style={{ height: logo.h, maxWidth: logo.maxW }}
+                    className="w-auto object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              aria-label="Next logos"
+              onClick={() => scrollLogos(1)}
+              className="absolute -right-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-[rgba(23,23,23,0.12)] shadow-[0_6px_16px_rgba(23,23,23,0.08)] text-[#171717] hover:border-[#171717] flex items-center justify-center"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </section>
