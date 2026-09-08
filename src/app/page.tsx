@@ -95,7 +95,7 @@ export default function Home() {
 
   const clientLogos = [
     { src: '/assets/client-logos/axis.png', alt: 'AXIS', h: 36, maxW: 230 },
-    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', h: 36, maxW: 230 },
+    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', h: 60, maxW: 320 },
     { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate', h: 28, maxW: 300 },
     { src: '/assets/client-logos/beem.png', alt: 'Beem', h: 76, maxW: 380 },
     { src: '/assets/client-logos/finnmark.png', alt: 'Finnmark Designs', h: 36, maxW: 240 },
