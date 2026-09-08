@@ -54,6 +54,8 @@ const translations = {
     'home.hero.ctaContact': 'Contact Us',
 
     // ─── Home Products ───
+    'home.clientLogos.eyebrow': 'Trusted Partners',
+    'home.clientLogos.title': 'Brands & retailers we work with',
     'home.products.eyebrow': 'Our Products',
     'home.products.title': 'Electronic Control Solutions',
     'home.products.desc': 'Four product lines covering infrared sauna control, textile machine drivers, branded units, and electronic components — all backed by 15 years of embedded systems expertise.',
@@ -810,6 +812,8 @@ const translations = {
     'home.hero.ctaContact': '联系我们',
 
     // ─── Home Products ───
+    'home.clientLogos.eyebrow': '合作伙伴',
+    'home.clientLogos.title': '我们服务的品牌与零售渠道',
     'home.products.eyebrow': '主营产品',
     'home.products.title': '电子控制解决方案',
     'home.products.desc': '四大产品线覆盖红外桑拿控制、纺织机械驱动、品牌整机与电子元器件——15年嵌入式系统经验为后盾。',

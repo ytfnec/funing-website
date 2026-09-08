@@ -91,6 +91,15 @@ export default function Home() {
       })),
   };
 
+  const clientLogos = [
+    { src: '/assets/client-logos/axis.png', alt: 'AXIS' },
+    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN' },
+    { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate' },
+    { src: '/assets/client-logos/beem.png', alt: 'Beem' },
+    { src: '/assets/client-logos/finnmark.svg', alt: 'Finnmark Designs' },
+    { src: '/assets/client-logos/symmetry.svg', alt: 'Symmetry' },
+  ];
+
   return (
     <main className="flex-1">
       <script
@@ -146,6 +155,32 @@ export default function Home() {
                 {t('home.hero.ctaContact')}
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Client Logos */}
+      <section className="px-page py-[clamp(56px,7vw,96px)] bg-cream border-b border-[rgba(23,23,23,0.06)]">
+        <div className="max-w-[1200px] mx-auto">
+          <p className="eyebrow text-center" style={{ marginBottom: '14px' }}>{t('home.clientLogos.eyebrow')}</p>
+          <h3 className="text-center text-[clamp(20px,2.4vw,28px)] font-bold tracking-[0.02em] mb-10 text-ink">
+            {t('home.clientLogos.title')}
+          </h3>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {clientLogos.map((logo) => (
+              <div
+                key={logo.alt}
+                className="bg-white border border-[rgba(23,23,23,0.08)] rounded-xl h-[72px] px-6 flex items-center justify-center min-w-[150px]"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  loading="lazy"
+                  className="max-h-[44px] max-w-[150px] w-auto object-contain"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
