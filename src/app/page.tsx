@@ -98,7 +98,7 @@ export default function Home() {
     { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', h: 36, maxW: 230 },
     { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate', h: 28, maxW: 300 },
     { src: '/assets/client-logos/beem.png', alt: 'Beem', h: 76, maxW: 380 },
-    { src: '/assets/client-logos/finnmark.svg', alt: 'Finnmark Designs', h: 34, maxW: 240 },
+    { src: '/assets/client-logos/finnmark.png', alt: 'Finnmark Designs', h: 36, maxW: 240 },
     { src: '/assets/client-logos/symmetry.svg', alt: 'Symmetry', mark: '/assets/client-logos/symmetry-mark.png', h: 30, maxW: 220 },
   ];
 
