@@ -1,68 +1,54 @@
-# Hermes 操作指令（Claude Code 下发）
+# HERMES ↔ CC 指令通道
 
-> 批次: **第六十五批（最新）** · 更新: 2026-09-08 · 来源: Claude Code
-> 状态: **首页合作客户 logo 墙 · 待执行部署**
-
----
-
-## 第六十五批：首页加“合作客户”logo 墙
-
-用户要求首页展示合作客户 logo，体现可信度。CC 已做（提交 `b325ba8`）：
-
-- **位置**：首页 hero 下方、产品区之前（社会证明区）
-- **呈现**：原色原样，白底圆角卡片、统一高度；六个品牌
-  - AXIS（黑字标 `/assets/client-logos/axis.png`）
-  - NEWGEN（深字标 `/newgen.png`）
-  - Health Mate（红字标 `/healthmate.png`）
-  - Beem（灰红 `/beem.png`）
-  - Finnmark Designs（矢量 `/finnmark.svg`）
-  - Symmetry（徽标 `/symmetry.svg`）
-- 文案：eyebrow「合作伙伴 / Trusted Partners」+ 标题「我们服务的品牌与零售渠道 / Brands & retailers we work with」（i18n en/zh）
-
-素材取自 `D:\Work_Hermes\07_图片素材`（Hermes 从官网抓取/已有，授权由用户确认）。
-
-## 执行任务（按序执行，回报表见文末）
-
-### 任务 1 · 推送代码
-```
-git push
-```
-预期：origin/master 同步（含 `b325ba8` 与新 logo 资源）。
-
-### 任务 2 · 清缓存构建并部署
-```
-rm -rf .next .open-next && npm run build:cf:static && npm run deploy
-```
-预期：构建成功部署。
-
-### 任务 3 · 浏览器目检（中英双语）
-1. 首页 hero 下方出现“合作客户”logo 墙：6 张白卡片、6 个 logo 均正常显示（SVG/PNG 加载 200）
-2. 中文/英文标题切换正确；logo 白卡片上无破图/溢出
-3. 移动端换行整齐；Symmetry/Finnmark（SVG）在浅底上清晰
-4. 若某 logo 在白底上看不清（如含白色部分）请记录，我再调整底色/版本
-5. 记录仍不理想项
+> 批次: **第六十六批（最新）** · 更新: 2026-09-08 · 来源: Hermes（用户指示"通报 CC，你来安排"）
+> 状态: **logo 墙素材勘误通报 + 正确素材已备好 · 待 CC 安排替换**
 
 ---
 
-## 执行回报（Hermes 填写）
+## 任务来源
 
-| 任务 | 结果 | 说明 |
-|------|------|------|
-| 1 推送代码 | ✅ | `b36d823..352ca9a` 推送成功(**64 批页脚社媒 `22b333f` + 65 批 logo 墙 `b325ba8` 一并上线**) |
-| 2 构建+部署 | ✅ | build:cf:static 成功(无告警)→ 部署 v`1d251b6d-d5b3-4bc1-9177-5ef1f5b238c8` |
-| 3 浏览器目检 | ✅ 见明细 | 中英双语确认(64+65 合并目检) |
+用户验收批次65 logo 墙后指出：**NEWGEN 与 Symmetry 两个 logo 素材不完整**。
+Hermes 已查明根因并找到官方正确素材（详见下），请 CC 安排替换与后续部署。
 
-### 任务 3 目检明细(双语,64+65 合并)
-- **logo 墙(位置/结构)**:首页 hero 正下方、产品区之前 ✅;eyebrow"合作伙伴/TRUSTED PARTNERS"+ 标题"我们服务的品牌与零售渠道/Brands & retailers we work with"中英切换正确 ✅
-- **6 logo 逐个实测**:AXIS(1150×330)、NEWGEN(600×260)、Health Mate(368×45)、Beem(1200×630)、Finnmark Designs(SVG 256×60)、Symmetry(SVG 50×50)——**全部 naturalWidth>0 加载成功,无破图**;卡片统一高度排列整齐,无溢出;白底上均清晰(未发现含大量白色的看不清 logo)✅
-- **页脚社媒(批次 64)**:YouTube/Instagram/Facebook 三链接均带内联 SVG 图标,浅底可见 ✅(URL 暂为个人账号 maxeonshin8448/minhsuan0707/61552022292033,历史备注已记后续换品牌账号)
-- **无发现仍不理想项**
+## 问题详情（Hermes 勘误结论）
 
----
+### 1. NEWGEN —— 现素材缺"四方块"图形标
+- 现用 `public/assets/client-logos/newgen.png`（= 官网 newgenshop.co.kr 页头 600×260）经像素连通域分析证实：**纯 "newgen" 字标**，无图形。
+- 官方完整标 = **四个黑色实心方块（2×2 十字排列）+ "newgen" 字标 + 下方小字 "Newgen Home Sauna"**。
+- 权威出处：日本 Costco Halo 系列《取扱説明書》PDF 首页（已 300dpi 渲染 + 像素级裁剪 + 白底抠除透明化处理）。
 
-## 历史备注（供参考，无需执行）
+### 2. Symmetry —— 现素材只有 S 方块徽标，缺 "SYMMETRY" 文字
+- 现用 `public/assets/client-logos/symmetry.svg`（官网现行版）**只有 S 方形徽标（50×50），无文字**。
+- 官方完整组合标 = **S 方块徽标 + "SYMMETRY" 大写字标**（深灰 #40464d 系配色），已从 **Web Archive 2024 旧版官网** 找到矢量原件。
 
-- ✅ 批次64：页脚社媒图标，已部署 v`？`（若未执行随本批一并上线）。
-- ✅ 批次63：logo 右侧中文回“烟台富宁电子”，已部署 v`9a77f39f`。
-- 待办：社媒 URL 后续换品牌账号；Symmetry 等 logo 授权已由用户确认。
-- 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
+## 正确素材位置（已备好，可直接取用）
+
+### NEWGEN（D:\Work_Hermes\07_图片素材\newgenshop_co_kr\logos\）
+| 文件 | 说明 |
+|---|---|
+| `Newgen_logo_官方完整_四方块_透明底.png` | ⭐ 黑色透明底（700×175，白底抠除），网页浅色卡片用 |
+| `Newgen_logo_官方完整_四方块_白版透明底.png` | 白色反色透明底（深底用） |
+| `Newgen_logo_官方完整_四方块_说明书.png` | 白底实物原版（未抠除） |
+
+### Symmetry（D:\Work_Hermes\07_图片素材\symmetrysauna_com\logos\）
+| 文件 | 说明 |
+|---|---|
+| `Symmetry_logo_legacy_2024.svg` | ⭐ 官方组合标矢量（435.71×114.96，27 path：[S方块 x<97]+"SYMMETRY" 字 x97-435，fill #40464d） |
+| `Symmetry_logo_footer_legacy_2024.png` | 同款页脚印刷级 PNG（8010×5757） |
+
+**SVG 使用注意**：`Symmetry_logo_legacy_2024.svg` 为官网原件未改动，样式在 `<defs><style>` 内用类（`.cls-1` 描边 #545864 / `.cls-1,.cls-2` 填充 #40464d）——若直接内嵌进组件请保留 defs，或转 fill 内联；若放到 `/public` 静态引用则原样可用。
+
+## CC 待办（建议顺序）
+
+1. 替换 `public/assets/client-logos/newgen.png` → Newgen 四方块透明底版
+   - 提示：完整标含下方 "Newgen Home Sauna" 小字行，卡片高度统一约束下若显字小，可裁主标区（方块+newgen）或整体等比缩小，由 CC 视视觉决定
+2. 替换 `public/assets/client-logos/symmetry.svg` → Symmetry legacy 组合标（需处理 defs/style）
+3. 无需改页面代码（仅换素材）；**本地目检 6 卡视觉协调性**（Newgen 横版比例、Symmetry 由方块变宽版组合标后与 Axis/HealthMate 的视觉平衡；白底清晰度）
+4. 自测 OK 后提交，并写部署指令（推送 / build:cf:static / 双语目检 logo 墙）→ 交 Hermes 执行
+5. 若 6 卡高度/间距需配合新比例微调（如 Symmetry 组合标较宽），一并调整
+
+## 历史备注
+
+- ✅ 批次64+65：页脚社媒 + 合作客户 logo 墙，已部署 v`1d251b6d`；本批为 logo 墙素材勘误。
+- 其余 logo 已核对：Axis（图标+AXIS™）、Health Mate（火焰+字标）、Beem、Finnmark 均完整，无需动。
+- 社媒 URL 待换品牌账号；不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
