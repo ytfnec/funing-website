@@ -170,14 +170,14 @@ export default function Home() {
             {clientLogos.map((logo) => (
               <div
                 key={logo.alt}
-                className="bg-white border border-[rgba(23,23,23,0.08)] rounded-xl h-[72px] px-6 flex items-center justify-center min-w-[150px]"
+                className="bg-white border border-[rgba(23,23,23,0.08)] rounded-xl h-[72px] px-7 flex items-center justify-center min-w-[170px]"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={logo.src}
                   alt={logo.alt}
                   loading="lazy"
-                  className="max-h-[44px] max-w-[150px] w-auto object-contain"
+                  className="max-h-[44px] max-w-[190px] w-auto object-contain"
                 />
               </div>
             ))}
