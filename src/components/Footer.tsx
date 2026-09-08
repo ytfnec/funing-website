@@ -4,6 +4,31 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useLang } from '@/lib/i18n';
 
+// Brand glyphs (lucide-react removed brand icons; use inline SVGs)
+function YoutubeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.55 15.57V8.43L15.82 12z" />
+    </svg>
+  );
+}
+function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07c0 6 4.39 10.97 10.13 11.87v-8.4H7.08v-3.47h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.25h3.32l-.53 3.47h-2.79v8.4C19.61 23.04 24 18.07 24 12.07z" />
+    </svg>
+  );
+}
+
 export function Footer() {
   const { t, lang } = useLang();
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -59,6 +84,12 @@ export function Footer() {
       { label: t('footer.cookies'), href: '/cookies' },
     ],
   };
+
+  const socials = [
+    { href: 'https://www.youtube.com/@maxeonshin8448', label: 'YouTube', Icon: YoutubeIcon },
+    { href: 'https://www.instagram.com/minhsuan0707/', label: 'Instagram', Icon: InstagramIcon },
+    { href: 'https://www.facebook.com/profile.php?id=61552022292033', label: 'Facebook', Icon: FacebookIcon },
+  ];
 
   return (
     <footer className="bg-cream border-t border-[rgba(23,23,23,0.06)]">
@@ -144,6 +175,23 @@ export function Footer() {
               {newsletterStatus}
             </p>
           )}
+        </div>
+
+        {/* Social */}
+        <div className="flex items-center justify-center md:justify-end gap-3 mt-10">
+          {socials.map(({ href, label, Icon }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              title={label}
+              className="w-10 h-10 rounded-full border border-[rgba(23,23,23,0.18)] text-[var(--gray)] hover:text-[#171717] hover:border-[#171717] hover:bg-[rgba(23,23,23,0.05)] transition-colors flex items-center justify-center"
+            >
+              <Icon className="w-[18px] h-[18px]" />
+            </a>
+          ))}
         </div>
 
         {/* Bottom Bar */}
