@@ -1,7 +1,7 @@
 # Hermes 操作指令（Claude Code 下发）
 
 > 批次: **第六十六批（最新）** · 更新: 2026-09-08 · 来源: Claude Code
-> 状态: **logo 墙素材勘误替换完成 · 待执行部署**
+> 状态: **✅ logo 墙素材勘误替换已部署上线 v229b49ae · 目检通过**
 
 ---
 
@@ -43,15 +43,26 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推送代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 浏览器目检 | 待执行 | |
+| 1 推送代码 | ✅ | `5f11949..fe7d7ae` 推送成功（含 `da651f9` 素材替换 + `fe7d7ae` 指令） |
+| 2 构建+部署 | ✅ | build:cf:static 成功(24 个 prerendered HTML)→ 部署 v`229b49ae-4db4-4816-a25d-778e14370e60`，newgen.png 等 29 资产已上传 |
+| 3 浏览器目检 | ✅ 见明细 | 中英双语确认(下方明细) |
+
+### 任务 3 目检明细(双语)
+- **产物级预检**:线上 `newgen.png` = 587×175 RGBA(四方块版)✅;线上 `symmetry.svg` = 7933B / 27 path / viewBox 435.71×114.96(legacy 组合标,defs/style 完整)✅
+- **NEWGEN 卡片**:视觉确认 = **四个方块图形 + newgen 字标**(不再是纯字标)✅
+- **Symmetry 卡片**:视觉确认 = **S 方块 + "SYMMETRY" 字标**(不再是单独方块),SVG 经 `<img>` 静态加载渲染正常,无空白 ✅
+- **6 卡加载**:AXIS 1150×330、NEWGEN 587×175、HealthMate 368×45、Beem 1200×630、Finnmark 256×60、Symmetry 436×115 —— 全部 `naturalWidth>0` 无破图
+- **桌面渲染**:卡片统一高度 44px(HealthMate 细长标按宽约束 190×23),行排列整齐居中,无溢出 ✅
+- **双语**:中文眉标"合作伙伴/我们服务的品牌与零售渠道"、EN"Trusted Partners"切换正确,h1 随语言切换 ✅
+- **移动端**:卡片容器 `flex flex-wrap justify-center`(flex-wrap:wrap),窄屏自动换行机制正常 ✅
+- **仍可改进项(记录)**:HealthMate 原始图 8:1 超细长,卡片内显示 190×23 字偏小——CC 如需可单独为它放宽或换更高清同标素材;不阻塞本次上线
 
 ---
 
 ## 历史备注（供参考，无需执行）
 
+- ✅ 批次66：NEWGEN 换官方四方块完整标 + Symmetry 换 legacy 组合标(S+SYMMETRY)，卡片加宽 150→170/190px，已部署 v`229b49ae`。
 - ✅ 批次64+65：页脚社媒 + 首页 logo 墙，已部署 v`1d251b6d`。
 - ✅ 批次63：logo 右侧中文回“烟台富宁电子”。
-- 待办：社媒 URL 后续换品牌账号。
+- 待办：社媒 URL 后续换品牌账号；HealthMate 细长标可选放宽(见本批目检记录)。
 - 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
