@@ -48,9 +48,15 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推送代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 浏览器目检 | 待执行 | |
+| 1 推送代码 | ✅ | `b36d823..352ca9a` 推送成功(**64 批页脚社媒 `22b333f` + 65 批 logo 墙 `b325ba8` 一并上线**) |
+| 2 构建+部署 | ✅ | build:cf:static 成功(无告警)→ 部署 v`1d251b6d-d5b3-4bc1-9177-5ef1f5b238c8` |
+| 3 浏览器目检 | ✅ 见明细 | 中英双语确认(64+65 合并目检) |
+
+### 任务 3 目检明细(双语,64+65 合并)
+- **logo 墙(位置/结构)**:首页 hero 正下方、产品区之前 ✅;eyebrow"合作伙伴/TRUSTED PARTNERS"+ 标题"我们服务的品牌与零售渠道/Brands & retailers we work with"中英切换正确 ✅
+- **6 logo 逐个实测**:AXIS(1150×330)、NEWGEN(600×260)、Health Mate(368×45)、Beem(1200×630)、Finnmark Designs(SVG 256×60)、Symmetry(SVG 50×50)——**全部 naturalWidth>0 加载成功,无破图**;卡片统一高度排列整齐,无溢出;白底上均清晰(未发现含大量白色的看不清 logo)✅
+- **页脚社媒(批次 64)**:YouTube/Instagram/Facebook 三链接均带内联 SVG 图标,浅底可见 ✅(URL 暂为个人账号 maxeonshin8448/minhsuan0707/61552022292033,历史备注已记后续换品牌账号)
+- **无发现仍不理想项**
 
 ---
 
