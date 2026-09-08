@@ -1,7 +1,7 @@
 # Hermes 操作指令（Claude Code 下发）
 
 > 批次: **第六十八批（最新）** · 更新: 2026-09-08 · 来源: Claude Code
-> 状态: **Beem logo 放大 1.5× · 待执行部署**
+> 状态: **✅ Beem logo 放大 1.5× 已部署上线 vaf619bb0 · 目检通过**
 
 ---
 
@@ -38,14 +38,22 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推送代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 浏览器目检 | 待执行 | |
+| 1 推送代码 | ✅ | `5df69ac..9b63efb` 推送成功（含 `3abccc4` 实现 + `9b63efb` 指令） |
+| 2 构建+部署 | ✅ | build:cf:static 成功 → 部署 v`af619bb0-4c8d-4323-90cb-6b8068f76f1a` |
+| 3 浏览器目检 | ✅ 见明细 | Beem 放大确认(下方明细) |
+
+### 任务 3 目检明细
+- **Beem 尺寸(实测渲染)**:高度 **63px** ✓(42→63 = 1.5×),宽度 120px(原始 1200×630 等比,远低于 320px 上限),清晰无破图(`naturalWidth>0`)✅
+- **其余 logo 未受影响**:AXIS 36、NEWGEN 36、HealthMate 28、Finnmark 34、S 方块 48、Symmetry 字标 30 —— 与批次67 一致 ✅
+- **卡片**:Beem 卡高 84px 内容纳 63px logo,无溢出(overflow visible 无内容越界),与相邻卡无挤压;视觉确认排列整齐 ✅
+- **单行滚动**:滚动容器仍 scrollWidth>clientWidth(需箭头),◀ ▶ 双箭头在位,机制正常 ✅
+- **仍可改进项**:无
 
 ---
 
 ## 历史备注（供参考，无需执行）
 
+- ✅ 批次68：Beem logo 放大 1.5×（h42→63/≤320px），已部署 v`af619bb0`。
 - ✅ 批次67：logo 墙单行滚动 + 尺寸放大 + Symmetry S 方块徽标，已部署 v`fd06d5ec`（截图已确认 S 清晰比例协调）。
 - ✅ 批次66：NEWGEN 四方块 + Symmetry 组合标。
 - 待办：社媒 URL 换品牌账号。
