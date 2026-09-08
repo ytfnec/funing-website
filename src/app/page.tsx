@@ -97,7 +97,7 @@ export default function Home() {
     { src: '/assets/client-logos/axis.png', alt: 'AXIS', h: 36, maxW: 230 },
     { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', h: 36, maxW: 230 },
     { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate', h: 28, maxW: 300 },
-    { src: '/assets/client-logos/beem.png', alt: 'Beem', h: 63, maxW: 320 },
+    { src: '/assets/client-logos/beem.png', alt: 'Beem', h: 76, maxW: 380 },
     { src: '/assets/client-logos/finnmark.svg', alt: 'Finnmark Designs', h: 34, maxW: 240 },
     { src: '/assets/client-logos/symmetry.svg', alt: 'Symmetry', mark: '/assets/client-logos/symmetry-mark.png', h: 30, maxW: 220 },
   ];
@@ -178,13 +178,13 @@ export default function Home() {
               type="button"
               aria-label="Previous logos"
               onClick={() => scrollLogos(-1)}
-              className="absolute -left-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-[rgba(23,23,23,0.12)] shadow-[0_6px_16px_rgba(23,23,23,0.08)] text-[#171717] hover:border-[#171717] flex items-center justify-center"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-[rgba(23,23,23,0.12)] shadow-[0_6px_16px_rgba(23,23,23,0.08)] text-[#171717] hover:border-[#171717] flex items-center justify-center"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <div
               ref={logoScrollRef}
-              className="flex items-center gap-5 overflow-x-auto px-4 py-1 scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex items-center gap-5 overflow-x-auto px-12 py-1 scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {clientLogos.map((logo) => (
                 <div
@@ -216,7 +216,7 @@ export default function Home() {
               type="button"
               aria-label="Next logos"
               onClick={() => scrollLogos(1)}
-              className="absolute -right-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-[rgba(23,23,23,0.12)] shadow-[0_6px_16px_rgba(23,23,23,0.08)] text-[#171717] hover:border-[#171717] flex items-center justify-center"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-[rgba(23,23,23,0.12)] shadow-[0_6px_16px_rgba(23,23,23,0.08)] text-[#171717] hover:border-[#171717] flex items-center justify-center"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
