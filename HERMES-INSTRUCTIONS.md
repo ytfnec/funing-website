@@ -1,17 +1,23 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第六十三批（最新）** · 更新: 2026-09-07 · 来源: Hermes
-> 状态: **✅ logo 右侧中文回“烟台富宁电子” · 已部署上线 v9a77f39f**
+> 批次: **第六十四批（最新）** · 更新: 2026-09-07 · 来源: Claude Code
+> 状态: **页脚社媒图标链接 · 待执行部署**
 
 ---
 
-## 第六十三批：字标中文回“烟台富宁电子”（英文不变）
+## 第六十四批：页脚加 YouTube / Instagram / Facebook
 
-用户：logo 右侧汉字用“烟台富宁电子”，英文保持“YANTAI FUNING”。
+用户要求网站底部可点官方社媒链接；URL 已提供（**后续会换成品牌账号**，本批先用提供的链接）。
 
-CC 已改（提交 `f14c6e4`，Header/Footer）：
-- 中文界面字标 → `烟台富宁电子`
-- 英文界面字标 → `YANTAI FUNING`（不变）
+CC 已改（提交 `22b333f`，`src/components/Footer.tsx`）：
+- 页脚中部（newsletter 下方、版权条上方）新增 3 个圆形社媒图标：YouTube / Instagram / Facebook
+- 品牌图标用内联 SVG（当前 lucide-react 已移除品牌图标，tsc 已验证）
+- 样式：描边圆钮、浅底近黑/灰，hover 加深；`target="_blank" rel="noopener noreferrer"` + aria-label
+
+链接（临时）：
+- YouTube：`https://www.youtube.com/@maxeonshin8448`
+- Instagram：`https://www.instagram.com/minhsuan0707/`
+- Facebook：`https://www.facebook.com/profile.php?id=61552022292033`
 
 ## 执行任务（按序执行，回报表见文末）
 
@@ -19,7 +25,7 @@ CC 已改（提交 `f14c6e4`，Header/Footer）：
 ```
 git push
 ```
-预期：origin/master 同步（含提交 `f14c6e4`）。
+预期：origin/master 同步（含提交 `22b333f`）。
 
 ### 任务 2 · 清缓存构建并部署
 ```
@@ -28,9 +34,9 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 预期：构建成功部署。
 
 ### 任务 3 · 浏览器目检
-1. 中文界面页头/页脚 logo 右侧 = “烟台富宁电子”（6 字）
-2. 英文界面 = “YANTAI FUNING”
-3. 无溢出、字标正常
+1. 页脚 newsletter 下方出现 YouTube/Instagram/Facebook 三个圆形图标
+2. 点击新开标签且地址正确；图标 hover 可见
+3. 桌面/移动布局无溢出
 4. 记录仍不理想项
 
 ---
@@ -39,14 +45,15 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推送代码 | ✅ 完成 | `f14c6e4` 推送上线 |
-| 2 构建+部署 | ✅ 完成 | v`9a77f39f`(当前线上) |
-| 3 浏览器目检 | ✅ 通过 | 中文:页头/页脚"烟台富宁电子"(6字)+页脚法律全称在;EN:页头/页脚"YANTAI FUNING"不变;均无溢出 |
+| 1 推送代码 | 待执行 | |
+| 2 构建+部署 | 待执行 | |
+| 3 浏览器目检 | 待执行 | |
 
 ---
 
 ## 历史备注（供参考，无需执行）
 
-- ✅ 批次62：hero 加载黑屏修复（暖色占位），已部署 v`17dbcf86`。
-- ✅ 批次61：字标中文“烟台富宁”/英文“YANTAI FUNING”，已部署 v`8326a850`（本批中文再加回“电子”）。
+- ✅ 批次63：logo 右侧中文回“烟台富宁电子”，已部署 v`9a77f39f`。
+- ✅ 批次62：hero 黑屏修复，已部署 v`17dbcf86`。
+- 待办：首页合作客户 logo 墙（AXIS/NEWGEN/SYMMETRY logo 素材待补）；社媒 URL 后续换品牌账号。
 - 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
