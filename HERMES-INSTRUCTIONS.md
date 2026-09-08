@@ -1,23 +1,25 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第六十四批（最新）** · 更新: 2026-09-07 · 来源: Claude Code
-> 状态: **页脚社媒图标链接 · 待执行部署**
+> 批次: **第六十五批（最新）** · 更新: 2026-09-08 · 来源: Claude Code
+> 状态: **首页合作客户 logo 墙 · 待执行部署**
 
 ---
 
-## 第六十四批：页脚加 YouTube / Instagram / Facebook
+## 第六十五批：首页加“合作客户”logo 墙
 
-用户要求网站底部可点官方社媒链接；URL 已提供（**后续会换成品牌账号**，本批先用提供的链接）。
+用户要求首页展示合作客户 logo，体现可信度。CC 已做（提交 `b325ba8`）：
 
-CC 已改（提交 `22b333f`，`src/components/Footer.tsx`）：
-- 页脚中部（newsletter 下方、版权条上方）新增 3 个圆形社媒图标：YouTube / Instagram / Facebook
-- 品牌图标用内联 SVG（当前 lucide-react 已移除品牌图标，tsc 已验证）
-- 样式：描边圆钮、浅底近黑/灰，hover 加深；`target="_blank" rel="noopener noreferrer"` + aria-label
+- **位置**：首页 hero 下方、产品区之前（社会证明区）
+- **呈现**：原色原样，白底圆角卡片、统一高度；六个品牌
+  - AXIS（黑字标 `/assets/client-logos/axis.png`）
+  - NEWGEN（深字标 `/newgen.png`）
+  - Health Mate（红字标 `/healthmate.png`）
+  - Beem（灰红 `/beem.png`）
+  - Finnmark Designs（矢量 `/finnmark.svg`）
+  - Symmetry（徽标 `/symmetry.svg`）
+- 文案：eyebrow「合作伙伴 / Trusted Partners」+ 标题「我们服务的品牌与零售渠道 / Brands & retailers we work with」（i18n en/zh）
 
-链接（临时）：
-- YouTube：`https://www.youtube.com/@maxeonshin8448`
-- Instagram：`https://www.instagram.com/minhsuan0707/`
-- Facebook：`https://www.facebook.com/profile.php?id=61552022292033`
+素材取自 `D:\Work_Hermes\07_图片素材`（Hermes 从官网抓取/已有，授权由用户确认）。
 
 ## 执行任务（按序执行，回报表见文末）
 
@@ -25,7 +27,7 @@ CC 已改（提交 `22b333f`，`src/components/Footer.tsx`）：
 ```
 git push
 ```
-预期：origin/master 同步（含提交 `22b333f`）。
+预期：origin/master 同步（含 `b325ba8` 与新 logo 资源）。
 
 ### 任务 2 · 清缓存构建并部署
 ```
@@ -33,11 +35,12 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 ```
 预期：构建成功部署。
 
-### 任务 3 · 浏览器目检
-1. 页脚 newsletter 下方出现 YouTube/Instagram/Facebook 三个圆形图标
-2. 点击新开标签且地址正确；图标 hover 可见
-3. 桌面/移动布局无溢出
-4. 记录仍不理想项
+### 任务 3 · 浏览器目检（中英双语）
+1. 首页 hero 下方出现“合作客户”logo 墙：6 张白卡片、6 个 logo 均正常显示（SVG/PNG 加载 200）
+2. 中文/英文标题切换正确；logo 白卡片上无破图/溢出
+3. 移动端换行整齐；Symmetry/Finnmark（SVG）在浅底上清晰
+4. 若某 logo 在白底上看不清（如含白色部分）请记录，我再调整底色/版本
+5. 记录仍不理想项
 
 ---
 
@@ -53,7 +56,7 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 ## 历史备注（供参考，无需执行）
 
+- ✅ 批次64：页脚社媒图标，已部署 v`？`（若未执行随本批一并上线）。
 - ✅ 批次63：logo 右侧中文回“烟台富宁电子”，已部署 v`9a77f39f`。
-- ✅ 批次62：hero 黑屏修复，已部署 v`17dbcf86`。
-- 待办：首页合作客户 logo 墙（AXIS/NEWGEN/SYMMETRY logo 素材待补）；社媒 URL 后续换品牌账号。
+- 待办：社媒 URL 后续换品牌账号；Symmetry 等 logo 授权已由用户确认。
 - 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
