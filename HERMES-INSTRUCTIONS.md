@@ -1,20 +1,19 @@
 # Hermes 操作指令（Claude Code 下发）
 
-> 批次: **第七十批（最新）** · 更新: 2026-09-08 · 来源: Claude Code
-> 状态: **✅ Finnmark 官方配色(藏青+橙)透明PNG 已部署上线 v564cfda4 · 目检通过**
+> 批次: **第七十一批（最新）** · 更新: 2026-09-08 · 来源: Claude Code
+> 状态: **NEWGEN 彩色 logo · 待执行部署**
 
 ---
 
-## 第七十批：Finnmark logo 换成官方配色（藏青 + 橙）
+## 第七十一批：NEWGEN 换官方彩色 logo
 
-用户：logo 墙里 Finnmark 用官方小 logo 的配色。
+用户：从产品图 `newgenshop_co_kr/products/1dbefc03e5e6b313ea86c2909ec0f482.jpg` 左上角彩色标提取四个方块及外框色，修改 NEWGEN logo。
 
-**方法说明**：原 `finnmark.svg` 实际是**内嵌 base64 位图的 SVG**（无矢量 path，fill 改色无效），真正的官方彩色内容在用户提供的 `fnec/finnmark-designs-logo-small.jpg`。因此采用「提取官方配色 + 抠白底转透明 PNG」。
-
-CC 已改（提交 `e860748`）：
-- `public/assets/client-logos/finnmark.png` = 官方小 logo（500×143）抠白底透明化，主色 **藏青 #103040 + 橙 #f07020**
-- 删除原灰白 `finnmark.svg`；`src/app/page.tsx` Finnmark 卡片引用改 `.png`，h36/≤240px
-- 视觉复核：透明底干净、藏青+橙、无白边残留
+CC 已做（提交 `186b188`）：
+- 从产品图左上角裁出官方彩色 lockup（**2×2 四色块 + 黑色 newgen 字**），白底抠透明
+- 色块实测：绿 `#A9C948`、黄橙 `#F09A28`、红橙 `#F05A26`、淡紫 `#B28FC0`（视觉复核完整、背景干净）
+- `public/assets/client-logos/newgen.png` 替换为该彩色版（172×90 透明）；卡片高度调 **60px**（原 36，因新版更宽矮以保持视觉占比）
+- `src/app/page.tsx` 引用不变（仍 newgen.png）
 
 ## 执行任务（按序执行，回报表见文末）
 
@@ -22,19 +21,20 @@ CC 已改（提交 `e860748`）：
 ```
 git push
 ```
-预期：origin/master 同步（含 `e860748` 与 `finnmark.png`，删除 svg）。
+预期：origin/master 同步（含 `186b188` 与新版 `newgen.png`）。
 
 ### 任务 2 · 清缓存构建并部署
 ```
 rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 ```
-预期：构建成功部署。
+预期：构建成功部署。若本地浏览器仍见旧黑色版，强刷 `Ctrl+F5`。
 
 ### 任务 3 · 浏览器目检
-1. logo 墙 Finnmark 卡片显示**藏青 + 橙**双色字标（不再是灰白）
-2. 白卡上透明底干净、无白边/黑边；清晰无破图
-3. 与其它 logo 高度协调（约 36px）；单行滚动正常
-4. 记录仍不理想项
+1. logo 墙 NEWGEN = **彩色四色块 + 黑字**（不再是纯黑）
+2. 色块绿/黄橙/红橙/淡紫排列正常；透明底干净无白边/黑边/残留
+3. 卡片内高度协调（约 60px），无溢出；单行滚动正常
+4. 截图回报 NEWGEN 卡片观感；若色块颜色与实物有偏差，回传后 CC 按精确色微调
+5. 记录仍不理想项
 
 ---
 
@@ -42,24 +42,16 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 1 推送代码 | ✅ | `781311a..00d9e64` 推送成功（含 `e860748` 实现 + `00d9e64` 指令，finnmark.svg 删除） |
-| 2 构建+部署 | ✅ | build:cf:static 成功 → 部署 v`564cfda4-c7ee-43b9-a3ba-361a9b05c7b1` |
-| 3 浏览器目检 | ✅ 见明细 | Finnmark 官方配色确认(下方明细) |
-
-### 任务 3 目检明细
-- **产物级复核**:本地 + 线上 `finnmark.png` 均 500×143 RGBA;主色 PIL 实测 **藏青 (16,48,64)=#103040**(9038px)+ **橙 (240,96,32)=#f07020**(1418px)✓;透明像素 76%(白底干净抠除)
-- **页面引用**:Finnmark 卡片 `src=finnmark.png`(naturalWidth 500×143)✓;⚠️ 首次访问命中边缘缓存仍显示旧 finnmark.svg,`?v=` cache-bust 后取到新版——**用户本地若见旧灰白 logo,强刷(ctrl+F5)即可**
-- **视觉目检**:藏青+橙双色字标 ✓;白卡上透明底干净、无白边/黑边残留 ✓;渲染 126×36(h36 符合规格),与相邻 logo 协调,无破图 ✓
-- **单行滚动**:箭头在位,机制未受影响 ✅
-- **仍可改进项**:无
+| 1 推送代码 | 待执行 | |
+| 2 构建+部署 | 待执行 | |
+| 3 浏览器目检 | 待执行 | |
 
 ---
 
 ## 历史备注（供参考，无需执行）
 
-- ✅ 批次70：Finnmark 改官方配色(藏青 #103040 + 橙 #f07020)透明 PNG，替换原灰白(内嵌位图)SVG，已部署 v`564cfda4`。原 finnmark.svg 实为 base64 位图无矢量 path，已删。
-- ✅ 批次69：箭头避让 + Beem 1.2×，已部署 v`81cd4930`。
+- ✅ 批次70：Finnmark 官方配色（藏青+橙）透明 PNG，已部署 v`564cfda4`。
+- ✅ 批次69：箭头避让 + Beem 1.2×。
 - ✅ 批次68：Beem 放大 1.5×。
-- ✅ 批次67：logo 墙单行滚动 + Symmetry S 方块。
 - 待办：社媒 URL 换品牌账号。
 - 保持既有约定：不改 `wrangler.toml`、不动 DNS、不整库 `db:deploy`。
