@@ -95,7 +95,7 @@ export default function Home() {
 
   const clientLogos = [
     { src: '/assets/client-logos/axis.png', alt: 'AXIS', href: 'https://www.axissaunas.com', h: 36, maxW: 230 },
-    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', href: 'https://newgenshop.co.kr', h: 60, maxW: 320 },
+    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', href: 'https://newgenshop.co.kr', h: 60, maxW: 300 },
     { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate', href: 'https://healthmatesauna.com', h: 28, maxW: 300 },
     { src: '/assets/client-logos/beem.png', alt: 'Beem', href: 'https://beemlightsauna.com', h: 76, maxW: 380 },
     { src: '/assets/client-logos/finnmark.png', alt: 'Finnmark Designs', href: 'https://finnmarkdesigns.com', h: 36, maxW: 240 },

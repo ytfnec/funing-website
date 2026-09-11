@@ -1,8 +1,22 @@
 # Hermes ↔ Claude Code 协作指令
 
-> 批次: **第七十四批（最新）** · 更新: 2026-09-11 · 来源: **Hermes**（用户文案定稿）
-> 状态: **待 CC 实现** —— 官网「选择富宁」两大支柱卖点重写（6 条 + 数据带），**落点与实现方式由 CC 决定**
-> ⚠️ 本批为**文案类**改动：注意三条渲染路径（列表页/首页卡片 = i18n；详情页 = API/D1 + features fallback）。详见下文待办。
+> 批次: **第七十四批（最新）** · 更新: 2026-09-11 · 来源: **Hermes**（用户文案定稿）+ CC 追加
+> 状态: **✅ CC 已实现 —— ⚠️ 本轮 CC 沙箱故障，请 Hermes 代为 `tsc + commit + push + build + deploy`**
+> ⚠️ 本批为**文案类**改动：全部落在 i18n（首页 Why 卡片 + FAQ），**不涉及 API/D1**。
+
+---
+
+## ⚠️ 本轮追加（用户：NEWGEN 用回批次71 的彩色版）
+
+用户拍板：**不要黑版、也不再折腾高清重制**，**用回批次71 的彩色四色块版**（用户认为那版是好的），一起提交。
+
+请 Hermes 用 git 恢复批次71 的 `newgen.png`（CC 沙箱故障无法处理图片）：
+```
+# 批次71 提交 = 彩色四色块版（172×90）
+git checkout 186b188 -- public/assets/client-logos/newgen.png
+```
+- CC 已把 `src/app/page.tsx` NEWGEN 卡片高度设为 `h:60, maxW:300`（彩色版显示尺寸），已落盘
+- 说明：彩色版源为产品图小区域裁剪（172×90），显示 60px 在 2× 屏会略软；用户已知悉、接受，后续若想要更锐利再另行高清重制
 
 ---
 
@@ -127,13 +141,66 @@ EN:
 
 | 项 | 结果 | 说明 |
 |----|------|------|
-| 落点决策 | | 6 条最终落在哪些页面/组件、结构（替换 / 展开 / 新 section） |
-| i18n 改动 | | zh / en 各自的 key 与文件 |
-| 详情页/DB | | 是否涉及 API/D1；给出的 D1 语句 |
-| 数据带 | | 做 / 不做；位置与样式 |
-| FAQ 与产品页校正 | | 改动位置与前后文 |
-| tsc | | 结果 |
-| 遗留 | | 未做/待议项 |
+| 落点决策 | ✅ 卡片三行径行替换 | 6 条按「短句版」压缩进首页「选择富宁」02/03 卡片的 3 行 bullets（不新增独立 section、不做数据带，保持版式收敛）。用户已确认此范围。 |
+| i18n 改动 | ✅ `src/lib/i18n.tsx`（仅此一文件） | en 块：`home.why.1.b2 / 2.b1-b3 / 3.b1-b3 / faq.a1 / faq.a4`；zh 块：同名 key。中英一一对应，无增删 key。 |
+| 详情页/DB | ✅ 不涉及 | 首页 Why 卡片与 FAQ 均由 i18n 渲染，无需 API/D1；**无 D1 UPDATE**。 |
+| 数据带 | ❌ 本批不做 | 首页数据带（35万片/24h/100%/PSE·KC·CE·FCC）暂缓，待用户确认是否新增区块。 |
+| FAQ 与产品页校正 | ✅ | ① `home.faq.a4`：删「印尼是我们的重点市场」，改为「东南亚主要是产能与贴牌合作通道」，RCEP Form E 0% 限定「发往印尼线路」。② `home.faq.a1`：删「已量产数千台 / proven in thousands of units」，改为真实数据「工业驱动卡年产约35万片、桑拿控制器约1万台」。 |
+| tsc | ⚠️ 未运行 | CC 沙箱故障，无法本地跑 tsc，**请 Hermes 代跑**。改动为纯字符串，类型风险极低。 |
+| 遗留 | 2 项 | ① 数据带/6条展开独立区块未做（待议）；② 页头/页脚字标「YANTAI FUNING」为全大写——系用户明确要求的 wordmark（非正文），故保留，未按术语表小写化。 |
+
+### CC 具体改动清单（`src/lib/i18n.tsx`）
+
+**01「15年专业经验」第 2 行**
+- zh：`8051 MCU平台——成熟、可靠、经过验证` → `8051/ARM MCU平台——成熟、可靠、经过验证`
+- en：`8051 MCU platform — mature, reliable, proven` → `8051/ARM MCU platform — mature, reliable, proven`
+
+**02「品质制造」三行（英文优先措辞，中文为翻译）**
+- en：`Own factory in Yantai, Shandong` / `100% tested before shipment — no sampling` / `CE / RoHS compliant components`
+- zh：`烟台（山东）自有工厂` / `出货前 100% 全检，不做抽检` / `CE / RoHS 合规元器件`
+
+**03「全球出口能力」三行（英文优先措辞，中文为翻译）**
+- en：`Main markets: Japan, Korea, US and Europe` / `PSE / KC / CE / FCC / ETL compliant` / `Door-to-door delivery — freight, customs and last mile`
+- zh：`主要市场：日韩美欧` / `PSE / KC / CE / FCC / ETL 合规` / `门到门交付——含海运、清关与末端派送`
+
+> 措辞决策：面向海外客户，英文以母语者顺读、具体可信为准（弃用 Hermes「Certified to ship, not to chase / our home markets」一类为押韵或不合逻辑的表达）；中文作忠实翻译。02 卡承载认证信息、03 卡承载市场+交付，避免重复。
+
+---
+
+## Hermes 执行任务（本轮 CC 沙箱故障，请代提交）
+
+### 任务 0 · 代提交
+```
+cd <repo> && \
+git checkout 186b188 -- public/assets/client-logos/newgen.png && \
+npx tsc --noEmit && \
+git add src/lib/i18n.tsx src/app/page.tsx public/assets/client-logos/newgen.png && \
+git commit -m "批次74: 选择富宁卖点重写(英文优先)+FAQ校正; NEWGEN用回批次71彩色版"
+```
+预期：tsc 通过、提交成功。若 tsc 报错请贴回报表。
+
+### 任务 1 · 推送
+```
+git push
+```
+
+### 任务 2 · 清缓存构建并部署
+```
+rm -rf .next .open-next && npm run build:cf:static && npm run deploy
+```
+
+### 任务 3 · 浏览器目检（中英双语）
+1. 首页「选择富宁」区：01 第 2 行 = 8051/ARM MCU 平台…；02 = 烟台（山东）自有生产基地 / 台台全检，不做抽检 / 认证齐备，随货同行；03 = 主战场：日韩美欧 / 门槛：过最严认证 / 交付：门到门
+2. 首页 FAQ：a1 无「数千台」，含「35万片/1万台」；a4 无「印尼重点市场」，RCEP 0% 限定印尼线路
+3. EN 侧对应英文一致
+4. 记录仍不理想项
+
+| 任务 | 结果 | 说明 |
+|------|------|------|
+| 0 代提交 | 待执行 | |
+| 1 推送 | 待执行 | |
+| 2 构建+部署 | 待执行 | |
+| 3 目检 | 待执行 | |
 
 ## 历史备注
 
