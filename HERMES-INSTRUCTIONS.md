@@ -146,7 +146,7 @@ EN:
 | 详情页/DB | ✅ 不涉及 | 首页 Why 卡片与 FAQ 均由 i18n 渲染，无需 API/D1；**无 D1 UPDATE**。 |
 | 数据带 | ❌ 本批不做 | 首页数据带（35万片/24h/100%/PSE·KC·CE·FCC）暂缓，待用户确认是否新增区块。 |
 | FAQ 与产品页校正 | ✅ | ① `home.faq.a4`：删「印尼是我们的重点市场」，改为「东南亚主要是产能与贴牌合作通道」，RCEP Form E 0% 限定「发往印尼线路」。② `home.faq.a1`：删「已量产数千台 / proven in thousands of units」，改为真实数据「工业驱动卡年产约35万片、桑拿控制器约1万台」。 |
-| tsc | ⚠️ 未运行 | CC 沙箱故障，无法本地跑 tsc，**请 Hermes 代跑**。改动为纯字符串，类型风险极低。 |
+| tsc | ✅ Hermes 代跑通过 | CC 沙箱故障无法本地跑;Hermes 执行 `npx tsc --noEmit` **通过,0 错误**(改动为纯字符串,类型零风险) |
 | 遗留 | 2 项 | ① 数据带/6条展开独立区块未做（待议）；② 页头/页脚字标「YANTAI FUNING」为全大写——系用户明确要求的 wordmark（非正文），故保留，未按术语表小写化。 |
 
 ### CC 具体改动清单（`src/lib/i18n.tsx`）
@@ -197,10 +197,33 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 0 代提交 | 待执行 | |
-| 1 推送 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 目检 | 待执行 | |
+| 0 代提交 | ✅ | `git checkout 186b188 -- newgen.png`(恢复批次71彩色版 172×90 RGBA,实测含绿 `(189,216,83)`/红橙 `(242,100,50)` 彩色像素)+ `npx tsc --noEmit` **通过** → 代提交 `cb796eb`(i18n.tsx + page.tsx + newgen.png + 指令文件) |
+| 1 推送 | ✅ | `05119f5..cb796eb` |
+| 2 构建+部署 | ✅ | build:cf:static 成功 → 部署 v`1077430b-6d25-4e3e-91ba-03915f63dfe8` |
+| 3 目检 | ✅ 见明细 | 中英双语全部实测通过 |
+
+### 任务 3 目检明细(双语)
+**中文侧(SSR HTML 实测)**
+- 01 第2行:"8051/ARM MCU平台——成熟、可靠、经过验证" ✅
+- 02:"烟台（山东）自有工厂" / "出货前 100% 全检，不做抽检" / "CE / RoHS 合规元器件" ✅
+- 03:"主要市场：日韩美欧" / "PSE / KC / CE / FCC / ETL 合规" / "门到门交付——含海运、清关与末端派送" ✅
+- FAQ a1:"…工业驱动卡年产约35万片、桑拿控制器约1万台，量产一致性经过验证。" ✅;**无"数千台"**
+- FAQ a4:"东南亚主要是我们的产能与贴牌合作通道，烟台港可稳定拼箱（LCL）发运。发往印尼线路可享 RCEP Form E 0% 关税…" ✅;**无"印尼重点市场"**,0% 已限定印尼线路
+- 旧表述残留:已量产数千台=0 / 数千台=0 / 印尼是我们的重点市场=0 ✅
+
+**英文侧(浏览器切 EN 实测)**
+- 01:"8051/ARM MCU platform — mature, reliable, proven" ✅
+- 02:"Own factory in Yantai, Shandong" / "100% tested before shipment — no sampling" / "CE / RoHS compliant components" ✅
+- 03:"Main markets: Japan, Korea, US and Europe" / "PSE / KC / CE / FCC / ETL compliant" / "Door-to-door delivery — freight, customs and last mile" ✅
+- FAQ a1:"…Proven at volume: around 350,000 industrial driver boards and 10,000 sauna controllers a year." ✅(无 "proven in thousands of units")
+- FAQ a4:"Yes. Southeast Asia is primarily a capacity and OEM partnership channel for us… The Indonesia lane qualifies for RCEP Form E 0% tariff…" ✅
+- 旧表述残留:RCEP-certified exports=0 / thousands of units=0 / Indonesia is one of our key=0 ✅
+
+**NEWGEN logo**
+- 线上图 172×90(批次71彩色版)加载正常;视觉目检彩色四色块 + 黑字清晰、无破图、卡片尺寸协调 ✅
+
+**截图回报**:`D:\Work_Hermes\04Hermes\批次74_回报\卖点重写_EN版.png`
+**无发现仍不理想项**(data 带/6条展开独立区块按 CC 决策本批不做,属已知待议项)
 
 ## 历史备注
 
