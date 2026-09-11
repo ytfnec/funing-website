@@ -56,10 +56,36 @@ rm -rf .next .open-next && npm run build:cf:static && npm run deploy
 
 | 任务 | 结果 | 说明 |
 |------|------|------|
-| 0 代提交 | 待执行 | |
-| 1 推送代码 | 待执行 | |
-| 2 构建+部署 | 待执行 | |
-| 3 浏览器目检 | 待执行 | |
+| 0 代提交 | ✅ | `npx tsc --noEmit` 通过(无类型错误)→ 代提交 `b8194d0`(page.tsx + 本指令文件) |
+| 1 推送代码 | ✅ | `e86d726..b8194d0` 推送成功 |
+| 2 构建+部署 | ✅ | build:cf:static 成功 → 部署 v`478731cd-c7f4-4198-9bc7-eab51a448900` |
+| 3 浏览器目检 | ✅ 见明细 | 中英双语全部实测通过,6 外链全部可达 |
+
+### 任务 3 目检明细(双语)
+- **6 外链逐个实测**(`<a>` 标签 + `target="_blank"` + `rel="noopener noreferrer"` + `aria-label="{品牌} — official website"` 全部正确):
+  - AXIS → https://www.axissaunas.com ✅ 200
+  - NEWGEN → https://newgenshop.co.kr ✅ 200
+  - Health Mate → https://healthmatesauna.com ✅ 200
+  - Beem → https://beemlightsauna.com ✅ 200(跳转 www 正常)
+  - Finnmark Designs → https://finnmarkdesigns.com ✅ 200
+  - Symmetry → https://symmetrysauna.com ✅ 200(跳转 www 正常)
+  - **6/6 全部 200 可达,无不可达域名**
+- **hover 高亮**:`hover:border-var(--amber)` + hover 阴影规则已进产物 CSS(`--tw-shadow:0 8px 24px`、`border-color:var(--amber)`);`transition-all duration-200` 生效 ✅
+- **键盘聚焦**:Tab 可聚焦,聚焦态实测 outline `rgb(23,23,23) solid 3px` focus 环 ✅;`rel=noopener noreferrer` 生效 ✅
+- **单行滚动/箭头**:Previous/Next logos 按钮存在可用,6 卡片同高 84px,无溢出/错位/破图 ✅
+- **双语**:zh 标题"合作伙伴/我们服务的品牌与零售渠道" ↔ en "TRUSTED PARTNERS/Brands & retailers we work with" 切换正确;6 aria-label 两语一致 ✅
+- **截图回报**:`D:\Work_Hermes\04Hermes\批次73_回报\logo墙外链_EN版.png`
+- **无发现仍不理想项**
+
+---
+
+## 执行回报（批次72,补记 — 回报表被 CC 批次73指令覆盖前已完成）
+
+| 任务 | 结果 | 说明 |
+|------|------|------|
+| 1 推送 | ✅ | `dbe4214..e86d726`(含 `7dc055f` newgen.png) |
+| 2 构建+部署 | ✅ | 部署 v`5a3a829c-6717-42ec-8ce0-abbfc015513f` |
+| 3 目检 | ✅ | **四色像素级实测精确命中**:绿 `(142,196,63)`=#8EC43F / 黄橙 `(255,194,14)`=#FFC20E / 红橙 `(244,130,33)`=#F48221 / 紫 `(140,91,168)`=#8C5BA8;黑字完整、透明底干净、无溢出;截图存 `D:\Work_Hermes\04Hermes\批次72_回报\` |
 
 ---
 
