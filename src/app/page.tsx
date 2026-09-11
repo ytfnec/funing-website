@@ -94,12 +94,12 @@ export default function Home() {
   };
 
   const clientLogos = [
-    { src: '/assets/client-logos/axis.png', alt: 'AXIS', h: 36, maxW: 230 },
-    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', h: 60, maxW: 320 },
-    { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate', h: 28, maxW: 300 },
-    { src: '/assets/client-logos/beem.png', alt: 'Beem', h: 76, maxW: 380 },
-    { src: '/assets/client-logos/finnmark.png', alt: 'Finnmark Designs', h: 36, maxW: 240 },
-    { src: '/assets/client-logos/symmetry.svg', alt: 'Symmetry', mark: '/assets/client-logos/symmetry-mark.png', h: 30, maxW: 220 },
+    { src: '/assets/client-logos/axis.png', alt: 'AXIS', href: 'https://www.axissaunas.com', h: 36, maxW: 230 },
+    { src: '/assets/client-logos/newgen.png', alt: 'NEWGEN', href: 'https://newgenshop.co.kr', h: 60, maxW: 320 },
+    { src: '/assets/client-logos/healthmate.png', alt: 'Health Mate', href: 'https://healthmatesauna.com', h: 28, maxW: 300 },
+    { src: '/assets/client-logos/beem.png', alt: 'Beem', href: 'https://beemlightsauna.com', h: 76, maxW: 380 },
+    { src: '/assets/client-logos/finnmark.png', alt: 'Finnmark Designs', href: 'https://finnmarkdesigns.com', h: 36, maxW: 240 },
+    { src: '/assets/client-logos/symmetry.svg', alt: 'Symmetry', href: 'https://symmetrysauna.com', mark: '/assets/client-logos/symmetry-mark.png', h: 30, maxW: 220 },
   ];
 
   const logoScrollRef = useRef<HTMLDivElement>(null);
@@ -187,9 +187,13 @@ export default function Home() {
               className="flex items-center gap-5 overflow-x-auto px-12 py-1 scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {clientLogos.map((logo) => (
-                <div
+                <a
                   key={logo.alt}
-                  className="bg-white border border-[rgba(23,23,23,0.08)] rounded-xl h-[84px] px-8 flex-shrink-0 flex items-center justify-center"
+                  href={logo.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${logo.alt} — official website`}
+                  className="bg-white border border-[rgba(23,23,23,0.08)] rounded-xl h-[84px] px-8 flex-shrink-0 flex items-center justify-center transition-all duration-200 hover:border-[var(--amber)] hover:shadow-[0_8px_24px_rgba(23,23,23,0.1)]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   {logo.mark && (
@@ -209,7 +213,7 @@ export default function Home() {
                     style={{ height: logo.h, maxWidth: logo.maxW }}
                     className="w-auto object-contain"
                   />
-                </div>
+                </a>
               ))}
             </div>
             <button
